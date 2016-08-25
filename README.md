@@ -22,7 +22,7 @@ You can then call .Setup() and .Verify() on the mocks in your test methods.
 
 ![After Screenshot](AfterScreenshot.png)
 
-See the [changelog](CHANGELOG.md) for changes.
+See the [changelog](CHANGELOG.md) for changes and roadmap.
 
 ## Contribute
 Check out the [contribution guidelines](CONTRIBUTING.md)
