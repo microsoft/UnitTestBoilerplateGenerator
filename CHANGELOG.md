@@ -12,3 +12,4 @@ on the official Visual Studio extension gallery.
 **2016-08-25**
 
 - Initial release
+- Support for Moq, constructor injection and Unity dependency injection

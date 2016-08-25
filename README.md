@@ -1,10 +1,10 @@
 # Unit Test Boilerplate Generator
 
 <!-- Replace this badge with your own-->
-[![Build status](https://ci.appveyor.com/api/projects/status/hv6uyc059rqbc6fj?svg=true)](https://ci.appveyor.com/project/madskristensen/extensibilitytools)
+[![Build status](https://ci.appveyor.com/api/projects/status/7ecfxkoe7sj4nw5h?svg=true)](https://ci.appveyor.com/project/RandomEngy/unittestboilerplategenerator)
 
 <!-- Update the VS Gallery link after you upload the VSIX-->
-Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/[GuidFromGallery])
+Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/e1bc3b8f-6280-490e-8294-5109fe7bed77)
 or get the [CI build](http://vsixgallery.com/extension/UnitTestBoilerplate.RandomEngy.ab470ad4-8fce-418f-9a5d-d22d50d71215/).
 
 ---------------------------------------
@@ -15,7 +15,7 @@ Right click an item in Solution Explorer and choose "Create Unit Test Boilerplat
 
 ![Before Screenshot](BeforeScreenshot.png)
 
-See the [changelog](CHANGELOG.md) for changes and roadmap.
+See the [changelog](CHANGELOG.md) for changes.
 
 ## Contribute
 Check out the [contribution guidelines](CONTRIBUTING.md)
