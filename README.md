@@ -15,6 +15,13 @@ Right click an item in Solution Explorer and choose "Create Unit Test Boilerplat
 
 ![Before Screenshot](BeforeScreenshot.png)
 
+This will create a test class in the same relative path as the class in a specified unit test project.
+All the dependencies are mocked and saved as fields which are created fresh for each test via [TestInitialize].
+It also adds a helper method which will construct the class for you and pass in all of the mock dependencies.
+You can then call .Setup() and .Verify() on the mocks in your test methods.
+
+![After Screenshot](AfterScreenshot.png)
+
 See the [changelog](CHANGELOG.md) for changes.
 
 ## Contribute
