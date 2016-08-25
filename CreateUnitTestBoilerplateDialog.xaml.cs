@@ -30,9 +30,6 @@ namespace UnitTestBoilerplate
     /// </summary>
     public partial class CreateUnitTestBoilerplateDialog : DialogWindow, ICreateUnitTestBoilerplateView
     {
-        //private const string SettingsCollectionPath = "CreateUnitTestBoilerplate";
-        //private const string UnitTestProjectPathKey = "SelectedTestProjectPath";
-
         public CreateUnitTestBoilerplateDialog()
         {
             this.InitializeComponent();
@@ -41,23 +38,6 @@ namespace UnitTestBoilerplate
             viewModel.View = this;
 
             this.DataContext = viewModel;
-
-
-            //var persistOpts = (IVsPersistSolutionOpts2)ServiceProvider.GlobalProvider.GetService(typeof(IVsPersistSolutionOpts2));
-
-
-            //SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
-            //WritableSettingsStore userSettingsStore = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
-
-            //string path = userSettingsStore.GetString(SettingsCollectionPath, UnitTestProjectPathKey, null);
-            //if (path == null)
-            //{
-            //    userSettingsStore.SetString(SettingsCollectionPath, UnitTestProjectPathKey, "test");
-            //}
-            //else
-            //{
-            //    System.Diagnostics.Debug.WriteLine("Read value:" + path);
-            //}
         }
     }
 }

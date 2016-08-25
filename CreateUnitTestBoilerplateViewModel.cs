@@ -198,11 +198,6 @@ namespace UnitTestBoilerplate
                             }
                         }
                     }
-
-                    //if (semanticModel.GetSymbolInfo(attribute).Symbol.ContainingType.ToString() == "Microsoft.Practices.Unity.DependencyAttribute")
-                    //{
-                    //    System.Diagnostics.Debug.WriteLine("Found dependency attribute!");
-                    //}
                 }
             }
 
