@@ -270,23 +270,26 @@ namespace UnitTestBoilerplate
                 mockFields.Add(new MockField("mock" + Utilities.GetTypeBaseName(constructorType), constructorType));
             }
 
-            StringBuilder builder = new StringBuilder(
-@"using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System;
+            StringBuilder builder = new StringBuilder();
 
-namespace ");
+            builder.Append(
+                "using Microsoft.VisualStudio.TestTools.UnitTesting;" + Environment.NewLine +
+                "using Moq;" + Environment.NewLine +
+                "using System;" + Environment.NewLine +
+                Environment.NewLine +
+                "namespace ");
 
             builder.Append(unitTestNamespace);
-            builder.Append(@"
-{
-    [TestClass]
-    public class ");
+            builder.Append(
+                Environment.NewLine +
+                "{" + Environment.NewLine +
+                "    [TestClass]" + Environment.NewLine + 
+                "    public class ");
             builder.Append(className);
-            builder.Append(@"Tests
-    {
-        private MockRepository mockRepository;
-");
+            builder.Append(
+                "Tests" + Environment.NewLine +
+                "    {" + Environment.NewLine +
+                "        private MockRepository mockRepository;" + Environment.NewLine);
 
             if (mockFields.Count > 0)
             {
@@ -299,12 +302,11 @@ namespace ");
             }
 
             builder.Append(
-@"
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-");
+                Environment.NewLine +
+                @"        [TestInitialize]" + Environment.NewLine +
+                "        public void TestInitialize()" + Environment.NewLine +
+                "        {" + Environment.NewLine +
+                "            this.mockRepository = new MockRepository(MockBehavior.Strict);" + Environment.NewLine);
 
             if (mockFields.Count > 0)
             {
@@ -317,20 +319,17 @@ namespace ");
             }
 
             builder.Append(
-@"        }
-
-        [TestMethod]
-        public void TestMethod1()
-        {
-            ");
+                @"        }" + Environment.NewLine +
+                Environment.NewLine +
+                "        [TestMethod]" + Environment.NewLine +
+                "        public void TestMethod1()" + Environment.NewLine +
+                "        {" + Environment.NewLine +
+                "            ");
 
             builder.AppendLine($"{className} {classVariableName} = this.Create{pascalCaseShortClassName}();");
-            builder.Append(
-@"        }
-
-        ");
-
-            builder.AppendLine($"private {className} Create{pascalCaseShortClassName}()");
+            builder.AppendLine("        }");
+            builder.AppendLine();
+            builder.AppendLine($"        private {className} Create{pascalCaseShortClassName}()");
             builder.AppendLine("        {");
             builder.Append($"            return new {className}");
 
@@ -369,10 +368,9 @@ namespace ");
             }
 
             builder.AppendLine(";");
-            builder.Append(
-@"        }
-    }
-}");
+            builder.AppendLine("        }");
+            builder.AppendLine("    }");
+            builder.AppendLine("}");
 
             return builder.ToString();
         }
