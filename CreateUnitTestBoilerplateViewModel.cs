@@ -11,8 +11,10 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Project = EnvDTE.Project;
 using Window = EnvDTE.Window;
 
 namespace UnitTestBoilerplate
@@ -23,9 +25,19 @@ namespace UnitTestBoilerplate
         private string relativePath;
         private string className;
 
+        private static readonly IList<string> ClassSuffixes = new List<string>
+        {
+            "ViewModel",
+            "Service",
+            "Provider",
+            "Factory",
+            "Manager"
+        };
+
         public CreateUnitTestBoilerplateViewModel()
         {
             this.dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
+
 
             this.TestProjects = new List<TestProject>();
             IList<Project> allProjects = Utilities.GetProjects(this.dte);
@@ -71,12 +83,16 @@ namespace UnitTestBoilerplate
             get
             {
                 return this.createUnitTestCommand ?? (this.createUnitTestCommand = new RelayCommand(
-                    () =>
+                    async () =>
                     {
                         try
                         {
                             IEnumerable<ProjectItemSummary> selectedFiles = Utilities.GetSelectedFiles(this.dte);
-                            IEnumerable<ProjectItem> createdItems = selectedFiles.Select(this.GenerateUnitTestFromProjectItemSummary);
+                            var createdItems = new List<ProjectItem>();
+                            foreach (ProjectItemSummary selectedFile in selectedFiles)
+                            {
+                                createdItems.Add(await this.GenerateUnitTestFromProjectItemSummaryAsync(selectedFile));
+                            }
 
                             bool focusSet = false;
                             foreach (ProjectItem createdItem in createdItems)
@@ -93,14 +109,15 @@ namespace UnitTestBoilerplate
 
                             this.View.Close();
                         }
-                        catch (Exception)
+                        catch (Exception exception)
                         {
+                            MessageBox.Show(exception.ToString());
                         }
                     }));
             }
         }
 
-        private ProjectItem GenerateUnitTestFromProjectItemSummary(ProjectItemSummary selectedFile)
+        private async Task<ProjectItem> GenerateUnitTestFromProjectItemSummaryAsync(ProjectItemSummary selectedFile)
         {
             string projectDirectory = Path.GetDirectoryName(selectedFile.ProjectFilePath);
             string selectedFileDirectory = Path.GetDirectoryName(selectedFile.FilePath);
@@ -116,7 +133,7 @@ namespace UnitTestBoilerplate
                 relativePath = relativePath.Substring(1);
             }
 
-            string unitTestContents = this.GenerateUnitTestContentsFromFile(selectedFile.FilePath);
+            string unitTestContents = await this.GenerateUnitTestContentsFromFileAsync(selectedFile.FilePath);
 
             string testFolder = Path.Combine(this.SelectedProject.ProjectDirectory, this.relativePath);
             string testPath = Path.Combine(testFolder, this.className + "Tests.cs");
@@ -140,10 +157,20 @@ namespace UnitTestBoilerplate
             return testItem;
         }
 
-        private string GenerateUnitTestContentsFromFile(string inputFilePath)
+        private async Task<string> GenerateUnitTestContentsFromFileAsync(string inputFilePath)
         {
-            SyntaxTree tree = CSharpSyntaxTree.ParseText(File.ReadAllText(inputFilePath));
-            SyntaxNode root = tree.GetRoot();
+            Microsoft.CodeAnalysis.Solution solution = CreateUnitTestBoilerplateCommandPackage.VisualStudioWorkspace.CurrentSolution;
+            DocumentId documentId = solution.GetDocumentIdsWithFilePath(inputFilePath).FirstOrDefault();
+            if (documentId == null)
+            {
+                this.HandleError("Could not find document in solution with file path " + inputFilePath);
+            }
+
+            var document = solution.GetDocument(documentId);
+
+            SyntaxNode root = await document.GetSyntaxRootAsync();
+            SemanticModel semanticModel = await document.GetSemanticModelAsync();
+
             SyntaxNode firstClassDeclaration = root.DescendantNodes().FirstOrDefault(node => node.Kind() == SyntaxKind.ClassDeclaration);
 
             if (firstClassDeclaration == null)
@@ -162,47 +189,38 @@ namespace UnitTestBoilerplate
                 this.HandleError("Could not find class identifier.");
             }
 
-            this.className = classIdentifierToken.ToString();
-
-            // Find injectable properties
-            var injectableProperties = new List<InjectableProperty>();
-            foreach (SyntaxNode propertyDeclaration in firstClassDeclaration.ChildNodes().Where(node => node.Kind() == SyntaxKind.PropertyDeclaration))
+            NamespaceDeclarationSyntax namespaceDeclarationSyntax = null;
+            if (!Utilities.TryGetParentSyntax(firstClassDeclaration, out namespaceDeclarationSyntax))
             {
-                var attributeListNode = propertyDeclaration.ChildNodes().FirstOrDefault(n => n.Kind() == SyntaxKind.AttributeList);
-                if (attributeListNode == null)
-                {
-                    break;
-                }
+                this.HandleError("Could not find class namespace.");
+            }
 
-                bool propertyIsPublic = propertyDeclaration.ChildTokens().Any(n => n.Kind() == SyntaxKind.PublicKeyword);
-                if (!propertyIsPublic)
-                {
-                    // If the property is not marked as public it's not exposed.
-                    break;
-                }
+            // Find property injection types
+            var injectableProperties = new List<InjectableProperty>();
 
-                var attributeNodeList = attributeListNode.ChildNodes().Where(n => n.Kind() == SyntaxKind.Attribute);
-                foreach (var attribute in attributeNodeList)
+            string classFullName = namespaceDeclarationSyntax.Name + "." + classIdentifierToken;
+            INamedTypeSymbol classType = semanticModel.Compilation.GetTypeByMetadataName(classFullName);
+
+            foreach (ISymbol member in classType.GetBaseTypesAndThis().SelectMany(n => n.GetMembers()))
+            {
+                if (member.Kind == SymbolKind.Property)
                 {
-                    SyntaxNode attributeNameNode = attribute.ChildNodes().FirstOrDefault(n => n.Kind() == SyntaxKind.IdentifierName);
-                    if (attributeNameNode != null)
+                    IPropertySymbol property = (IPropertySymbol)member;
+
+                    foreach (AttributeData attribute in property.GetAttributes())
                     {
-                        if (attributeNameNode.ToString() == "Dependency")
+                        if (attribute.AttributeClass.ToString() == "Microsoft.Practices.Unity.DependencyAttribute")
                         {
-                            SyntaxNode typeNameNode = propertyDeclaration.ChildNodes().FirstOrDefault(n => n.Kind() == SyntaxKind.IdentifierName);
-                            SyntaxToken propertyNameToken = propertyDeclaration.ChildTokens().FirstOrDefault(n => n.Kind() == SyntaxKind.IdentifierToken);
-
-                            if (typeNameNode != null && propertyNameToken != null)
-                            {
-                                injectableProperties.Add(new InjectableProperty(propertyNameToken.ToString(), typeNameNode.ToString()));
-                            }
+                            injectableProperties.Add(new InjectableProperty(property.Name, property.Type.Name, property.Type.ContainingNamespace.ToString()));
                         }
                     }
                 }
             }
 
+            this.className = classIdentifierToken.ToString();
+
             // Find constructor injection types
-            var constructorInjectionTypes = new List<string>();
+            var constructorInjectionTypes = new List<InjectableType>();
             SyntaxNode constructorDeclaration = firstClassDeclaration.ChildNodes().FirstOrDefault(n => n.Kind() == SyntaxKind.ConstructorDeclaration);
             if (constructorDeclaration != null)
             {
@@ -212,7 +230,12 @@ namespace UnitTestBoilerplate
                 foreach (SyntaxNode node in parameterNodes)
                 {
                     SyntaxNode identifierNode = node.ChildNodes().First(n => n.Kind() == SyntaxKind.IdentifierName);
-                    constructorInjectionTypes.Add(identifierNode.ToString());
+                    SymbolInfo symbolInfo = semanticModel.GetSymbolInfo(identifierNode);
+
+                    constructorInjectionTypes.Add(
+                        new InjectableType(
+                            symbolInfo.Symbol.Name, 
+                            symbolInfo.Symbol.ContainingNamespace.ToString()));
                 }
             }
 
@@ -232,45 +255,66 @@ namespace UnitTestBoilerplate
                 unitTestNamespace = string.Join(".", unitTestNamespaceParts);
             }
 
-            return this.GenerateUnitTestContents(unitTestNamespace, this.className, injectableProperties, constructorInjectionTypes);
+            return this.GenerateUnitTestContents(
+                unitTestNamespace, 
+                this.className,
+                namespaceDeclarationSyntax.Name.ToString(),
+                injectableProperties,
+                constructorInjectionTypes);
         }
 
-        private string GenerateUnitTestContents(string unitTestNamespace, string className, IList<InjectableProperty> properties, IList<string> constructorTypes)
+        private string GenerateUnitTestContents(
+            string unitTestNamespace, 
+            string className, 
+            string classNamespace, 
+            IList<InjectableProperty> properties, 
+            IList<InjectableType> constructorTypes)
         {
-            string pascalCaseShortClassName;
-            if (className.EndsWith("ViewModel"))
+            string pascalCaseShortClassName = null;
+            foreach (string suffix in ClassSuffixes)
             {
-                pascalCaseShortClassName = "ViewModel";
+                if (className.EndsWith(suffix))
+                {
+                    pascalCaseShortClassName = suffix;
+                    break;
+                }
             }
-            else if (className.EndsWith("Service"))
-            {
-                pascalCaseShortClassName = "Service";
-            }
-            else
+
+            if (pascalCaseShortClassName == null)
             {
                 pascalCaseShortClassName = className;
             }
 
             string classVariableName = pascalCaseShortClassName.Substring(0, 1).ToLowerInvariant() + pascalCaseShortClassName.Substring(1);
 
+            List<InjectableType> injectedTypes = new List<InjectableType>(properties);
+            injectedTypes.AddRange(constructorTypes);
+
             var mockFields = new List<MockField>();
-
-            foreach (InjectableProperty property in properties)
+            foreach (InjectableType injectedType in injectedTypes)
             {
-                mockFields.Add(new MockField("mock" + property.TypeBaseName, property.TypeName));
+                mockFields.Add(new MockField("mock" + injectedType.TypeBaseName, injectedType.TypeName));
             }
 
-            foreach (string constructorType in constructorTypes)
+            List<string> namespaces = new List<string>
             {
-                mockFields.Add(new MockField("mock" + Utilities.GetTypeBaseName(constructorType), constructorType));
-            }
+                "Microsoft.VisualStudio.TestTools.UnitTesting",
+                "Moq"
+            };
+
+            namespaces.Add(classNamespace);
+            namespaces.AddRange(injectedTypes.Select(t => t.TypeNamespace));
+            namespaces = namespaces.Distinct().ToList();
+            namespaces.Sort(StringComparer.Ordinal);
 
             StringBuilder builder = new StringBuilder();
 
+            foreach (string ns in namespaces)
+            {
+                builder.AppendLine($"using {ns};");
+            }
+
             builder.Append(
-                "using Microsoft.VisualStudio.TestTools.UnitTesting;" + Environment.NewLine +
-                "using Moq;" + Environment.NewLine +
-                "using System;" + Environment.NewLine +
                 Environment.NewLine +
                 "namespace ");
 
@@ -322,6 +366,10 @@ namespace UnitTestBoilerplate
                 "            ");
 
             builder.AppendLine($"{className} {classVariableName} = this.Create{pascalCaseShortClassName}();");
+            builder.AppendLine("            ");
+            builder.AppendLine("            ");
+            builder.AppendLine("            ");
+            builder.AppendLine("            this.mockRepository.VerifyAll();");
             builder.AppendLine("        }");
             builder.AppendLine();
             builder.AppendLine($"        private {className} Create{pascalCaseShortClassName}()");
@@ -334,7 +382,7 @@ namespace UnitTestBoilerplate
 
                 for (int i = 0; i < constructorTypes.Count; i++)
                 {
-                    builder.Append($"                this.mock{Utilities.GetTypeBaseName(constructorTypes[i])}.Object");
+                    builder.Append($"                this.mock{constructorTypes[i].TypeBaseName}.Object");
 
                     if (i < constructorTypes.Count - 1)
                     {

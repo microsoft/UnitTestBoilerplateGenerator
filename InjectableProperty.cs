@@ -6,18 +6,13 @@ using System.Threading.Tasks;
 
 namespace UnitTestBoilerplate
 {
-    public class InjectableProperty
+    public class InjectableProperty : InjectableType
     {
-        public InjectableProperty(string name, string typeName)
+        public InjectableProperty(string name, string typeName, string typeNamespace) : base(typeName, typeNamespace)
         {
             this.Name = name;
-            this.TypeName = typeName;
         }
 
         public string Name { get; }
-
-        public string TypeName { get; }
-
-        public string TypeBaseName => Utilities.GetTypeBaseName(this.TypeName);
     }
 }

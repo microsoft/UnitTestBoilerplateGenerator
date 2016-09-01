@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.CodeAnalysis;
+using Project = EnvDTE.Project;
 
 namespace UnitTestBoilerplate
 {
@@ -32,6 +34,39 @@ namespace UnitTestBoilerplate
                 var projectItem = i.Object as ProjectItem;
                 return new ProjectItemSummary(projectItem.FileNames[1], projectItem.ContainingProject.FileName);
             });
+        }
+
+        public static bool TryGetParentSyntax<T>(SyntaxNode syntaxNode, out T result)
+            where T : SyntaxNode
+        {
+            result = null;
+
+            if (syntaxNode == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                syntaxNode = syntaxNode.Parent;
+
+                if (syntaxNode == null)
+                {
+                    return false;
+                }
+
+                if (syntaxNode.GetType() == typeof(T))
+                {
+                    result = syntaxNode as T;
+                    return true;
+                }
+
+                return TryGetParentSyntax<T>(syntaxNode, out result);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static IList<Project> GetProjects(DTE2 dte)

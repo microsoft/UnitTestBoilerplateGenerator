@@ -11,6 +11,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -69,8 +71,13 @@ namespace UnitTestBoilerplate
         {
             CreateUnitTestBoilerplateCommand.Initialize(this);
             base.Initialize();
+
+            var componentModel = (IComponentModel)this.GetService(typeof(SComponentModel));
+            VisualStudioWorkspace = componentModel.GetService<VisualStudioWorkspace>();
         }
 
         #endregion
+
+        public static VisualStudioWorkspace VisualStudioWorkspace { get; private set; }
     }
 }
