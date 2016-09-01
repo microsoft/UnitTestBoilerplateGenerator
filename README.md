@@ -1,11 +1,9 @@
 # Unit Test Boilerplate Generator
 
-<!-- Replace this badge with your own-->
 [![Build status](https://ci.appveyor.com/api/projects/status/7ecfxkoe7sj4nw5h?svg=true)](https://ci.appveyor.com/project/RandomEngy/unittestboilerplategenerator)
 
-<!-- Update the VS Gallery link after you upload the VSIX-->
-Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/e1bc3b8f-6280-490e-8294-5109fe7bed77)
-or get the [CI build](http://vsixgallery.com/extension/UnitTestBoilerplate.RandomEngy.ab470ad4-8fce-418f-9a5d-d22d50d71215/).
+Download this extension from the [VS Gallery](http://vsixgallery.com/extension/UnitTestBoilerplate.RandomEngy.ca0bb824-eb5a-41a8-ab39-3b81f03ba3fe/)
+or get the [CI build](http://vsixgallery.com/extension/UnitTestBoilerplate.RandomEngy.ca0bb824-eb5a-41a8-ab39-3b81f03ba3fe/).
 
 ---------------------------------------
 
