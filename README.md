@@ -22,6 +22,10 @@ You can then call .Setup() and .Verify() on the mocks in your test methods.
 
 ![After Screenshot](AfterScreenshot.png)
 
+The mock repository is set up as Strict by default, which means that it expects every call to a mock object
+to have a .Setup() call for it. The VerifyAll() call at the end ensures that all of the setups in any mock
+object have been invoked at least once.
+
 See the [changelog](CHANGELOG.md) for changes and roadmap.
 
 ## Contribute
