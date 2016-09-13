@@ -342,7 +342,7 @@ namespace UnitTestBoilerplate
 
             builder.Append(
                 Environment.NewLine +
-                @"        [TestInitialize]" + Environment.NewLine +
+                "        [TestInitialize]" + Environment.NewLine +
                 "        public void TestInitialize()" + Environment.NewLine +
                 "        {" + Environment.NewLine +
                 "            this.mockRepository = new MockRepository(MockBehavior.Strict);" + Environment.NewLine);
@@ -358,18 +358,23 @@ namespace UnitTestBoilerplate
             }
 
             builder.Append(
-                @"        }" + Environment.NewLine +
+                "        }" + Environment.NewLine +
+                Environment.NewLine +
+                "        [TestCleanup]" + Environment.NewLine +
+                "        public void TestCleanup()" + Environment.NewLine +
+                "        {" + Environment.NewLine +
+                "            this.mockRepository.VerifyAll();" + Environment.NewLine +
+                "        }" + Environment.NewLine +
                 Environment.NewLine +
                 "        [TestMethod]" + Environment.NewLine +
                 "        public void TestMethod1()" + Environment.NewLine +
                 "        {" + Environment.NewLine +
-                "            ");
+                "            " + Environment.NewLine +
+                "            " + Environment.NewLine);
 
-            builder.AppendLine($"{className} {classVariableName} = this.Create{pascalCaseShortClassName}();");
+            builder.AppendLine($"            {className} {classVariableName} = this.Create{pascalCaseShortClassName}();");
             builder.AppendLine("            ");
             builder.AppendLine("            ");
-            builder.AppendLine("            ");
-            builder.AppendLine("            this.mockRepository.VerifyAll();");
             builder.AppendLine("        }");
             builder.AppendLine();
             builder.AppendLine($"        private {className} Create{pascalCaseShortClassName}()");
