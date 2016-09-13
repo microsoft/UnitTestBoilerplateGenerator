@@ -24,7 +24,8 @@ The mock repository is set up as Strict by default, which means that it expects 
 to have a .Setup() call for it. The [TestCleanup] method will call VerifyAll() for you at the end of every test:
 this ensures that all of the setups in any mock object have been invoked at least once.
 
-See the [changelog](CHANGELOG.md) for changes and roadmap.
+See the [changelog](CHANGELOG.md) for changes and roadmap. If you'd like to see support for other test frameworks
+like NUnit, other IoC frameworks like Ninject or other coding styles, [open an issue](https://github.com/Microsoft/UnitTestBoilerplateGenerator/issues/new).
 
 ## Contribute
 Check out the [contribution guidelines](CONTRIBUTING.md)
