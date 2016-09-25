@@ -42,7 +42,9 @@ namespace UnitTestBoilerplate
             this.TestProjects = new List<TestProject>();
             IList<Project> allProjects = Utilities.GetProjects(this.dte);
 
-            foreach (Project project in allProjects)
+	        string lastSelectedProject = Settings.GetLastSelectedProject(this.dte.Solution.FileName);
+
+			foreach (Project project in allProjects)
             {
                 TestProject testProject = new TestProject
                 {
@@ -51,13 +53,35 @@ namespace UnitTestBoilerplate
                 };
 
                 this.TestProjects.Add(testProject);
-
-                if (this.selectedProject == null && project.Name.ToLowerInvariant().Contains("test"))
-                {
-                    this.selectedProject = testProject;
-                }
             }
 
+			// First see if we've saved an entry for the last selected test project for this solution.
+	        if (this.selectedProject == null && lastSelectedProject != null)
+	        {
+				foreach (var project in this.TestProjects)
+				{
+					if (string.Equals(lastSelectedProject, project.Project.FileName, StringComparison.OrdinalIgnoreCase))
+					{
+						this.selectedProject = project;
+						break;
+					}
+				}
+			}
+
+			// If we don't have an entry yet, look for a project name that contains "Test"
+	        if (this.selectedProject == null)
+	        {
+		        foreach (var project in this.TestProjects)
+		        {
+			        if (project.Name.ToLowerInvariant().Contains("test"))
+			        {
+				        this.selectedProject = project;
+				        break;
+			        }
+		        }
+	        }
+
+			// Otherwise select the first project
             if (this.selectedProject == null && this.TestProjects.Count > 0)
             {
                 this.selectedProject = this.TestProjects[0];
@@ -106,6 +130,8 @@ namespace UnitTestBoilerplate
                                     focusSet = true;
                                 }
                             }
+
+							Settings.SaveSelectedTestProject(this.dte.Solution.FileName, this.SelectedProject.Project.FileName);
 
                             this.View.Close();
                         }

@@ -8,11 +8,14 @@ using System;
 using System.ComponentModel.Design;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Settings;
+using Microsoft.VisualStudio.Shell.Settings;
 
 namespace UnitTestBoilerplate
 {
@@ -98,7 +101,7 @@ namespace UnitTestBoilerplate
         private void MenuItemCallback(object sender, EventArgs e)
         {
             var dialog = new CreateUnitTestBoilerplateDialog();
-            dialog.ShowModal();
+			dialog.ShowModal();
         }
     }
 }
