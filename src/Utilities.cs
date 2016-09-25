@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.CodeAnalysis;
@@ -94,6 +96,42 @@ namespace UnitTestBoilerplate
 
             return list;
         }
+
+	    public static TestFramework FindTestFramework(Project project)
+	    {
+		    XDocument document = XDocument.Load(project.FileName);
+		    XNamespace ns = "http://schemas.microsoft.com/developer/msbuild/2003";
+
+			foreach (XElement element in document.Descendants(ns + "Reference"))
+		    {
+			    XAttribute includeAttribute = element.Attribute("Include");
+			    string fullAssemblyString = includeAttribute?.Value;
+
+			    if (!string.IsNullOrEmpty(fullAssemblyString))
+			    {
+				    string assemblyName;
+				    if (fullAssemblyString.Contains(','))
+				    {
+					    int commaIndex = fullAssemblyString.IndexOf(",", StringComparison.Ordinal);
+					    assemblyName = fullAssemblyString.Substring(0, commaIndex);
+				    }
+				    else
+				    {
+					    assemblyName = fullAssemblyString;
+				    }
+
+				    switch (assemblyName.ToLowerInvariant())
+				    {
+					    case "nunit.framework":
+						    return TestFramework.NUnit;
+					    case "microsoft.visualstudio.qualitytools.unittestframework":
+						    return TestFramework.VisualStudio;
+				    }
+			    }
+		    }
+
+			return TestFramework.Unknown;
+	    }
 
         private static IEnumerable<Project> GetSolutionFolderProjects(Project solutionFolder)
         {

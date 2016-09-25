@@ -270,6 +270,8 @@ namespace UnitTestBoilerplate
             IList<InjectableProperty> properties, 
             IList<InjectableType> constructorTypes)
         {
+	        TestFramework testFramework = Utilities.FindTestFramework(this.SelectedProject.Project);
+
             string pascalCaseShortClassName = null;
             foreach (string suffix in ClassSuffixes)
             {
@@ -298,10 +300,10 @@ namespace UnitTestBoilerplate
 
             List<string> namespaces = new List<string>
             {
-                "Microsoft.VisualStudio.TestTools.UnitTesting",
-                "Moq"
+                "Moq",
             };
 
+			namespaces.Add(FrameworkAbstraction.GetUsing(testFramework));
             namespaces.Add(classNamespace);
             namespaces.AddRange(injectedTypes.Select(t => t.TypeNamespace));
             namespaces = namespaces.Distinct().ToList();
@@ -322,7 +324,7 @@ namespace UnitTestBoilerplate
             builder.Append(
                 Environment.NewLine +
                 "{" + Environment.NewLine +
-                "    [TestClass]" + Environment.NewLine + 
+                $"    [{FrameworkAbstraction.GetTestClassAttribute(testFramework)}]" + Environment.NewLine + 
                 "    public class ");
             builder.Append(className);
             builder.Append(
@@ -342,8 +344,9 @@ namespace UnitTestBoilerplate
 
             builder.Append(
                 Environment.NewLine +
-                "        [TestInitialize]" + Environment.NewLine +
-                "        public void TestInitialize()" + Environment.NewLine +
+                $"        [{FrameworkAbstraction.GetTestInitializeAttribute(testFramework)}]" + Environment.NewLine +
+
+				"        public void TestInitialize()" + Environment.NewLine +
                 "        {" + Environment.NewLine +
                 "            this.mockRepository = new MockRepository(MockBehavior.Strict);" + Environment.NewLine);
 
@@ -360,14 +363,14 @@ namespace UnitTestBoilerplate
             builder.Append(
                 "        }" + Environment.NewLine +
                 Environment.NewLine +
-                "        [TestCleanup]" + Environment.NewLine +
-                "        public void TestCleanup()" + Environment.NewLine +
+                $"        [{FrameworkAbstraction.GetTestCleanupAttribute(testFramework)}]" + Environment.NewLine +
+				"        public void TestCleanup()" + Environment.NewLine +
                 "        {" + Environment.NewLine +
                 "            this.mockRepository.VerifyAll();" + Environment.NewLine +
                 "        }" + Environment.NewLine +
                 Environment.NewLine +
-                "        [TestMethod]" + Environment.NewLine +
-                "        public void TestMethod1()" + Environment.NewLine +
+                $"        [{FrameworkAbstraction.GetTestMethodAttribute(testFramework)}]" + Environment.NewLine +
+				"        public void TestMethod1()" + Environment.NewLine +
                 "        {" + Environment.NewLine +
                 "            " + Environment.NewLine +
                 "            " + Environment.NewLine);

@@ -27,10 +27,20 @@ namespace UnitBoilerplate.Sandbox.VSTestCases.Reference
             this.mockInterface4 = this.mockRepository.Create<IInterface4>();
         }
 
+	    [TestCleanup]
+	    public void TestCleanup()
+	    {
+		    this.mockRepository.VerifyAll();
+	    }
+
         [TestMethod]
         public void TestMethod1()
         {
+
+
             MixedInjectedClassMultiple viewModel = this.CreateViewModel();
+
+
         }
 
         private MixedInjectedClassMultiple CreateViewModel()
