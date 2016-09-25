@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UnitTestBoilerplate
 {
-	public static class FrameworkAbstraction
+	public static class TestFrameworkAbstraction
 	{
 		private static readonly Dictionary<TestFramework, string> UsingStrings = new Dictionary<TestFramework, string>
 		{

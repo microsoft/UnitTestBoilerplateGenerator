@@ -61,10 +61,12 @@
     </Compile>
     <Compile Include="CreateUnitTestBoilerplateViewModel.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="FrameworkAbstraction.cs" />
+    <Compile Include="MockFrameworkAbstraction.cs" />
+    <Compile Include="TestFrameworkAbstraction.cs" />
     <Compile Include="InjectableType.cs" />
     <Compile Include="InjectableProperty.cs" />
     <Compile Include="MockField.cs" />
+    <Compile Include="MockFramework.cs" />
     <Compile Include="ProjectItemSummary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />

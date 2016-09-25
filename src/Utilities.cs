@@ -99,39 +99,68 @@ namespace UnitTestBoilerplate
 
 	    public static TestFramework FindTestFramework(Project project)
 	    {
-		    XDocument document = XDocument.Load(project.FileName);
-		    XNamespace ns = "http://schemas.microsoft.com/developer/msbuild/2003";
-
-			foreach (XElement element in document.Descendants(ns + "Reference"))
-		    {
-			    XAttribute includeAttribute = element.Attribute("Include");
-			    string fullAssemblyString = includeAttribute?.Value;
-
-			    if (!string.IsNullOrEmpty(fullAssemblyString))
-			    {
-				    string assemblyName;
-				    if (fullAssemblyString.Contains(','))
-				    {
-					    int commaIndex = fullAssemblyString.IndexOf(",", StringComparison.Ordinal);
-					    assemblyName = fullAssemblyString.Substring(0, commaIndex);
-				    }
-				    else
-				    {
-					    assemblyName = fullAssemblyString;
-				    }
-
-				    switch (assemblyName.ToLowerInvariant())
-				    {
-					    case "nunit.framework":
-						    return TestFramework.NUnit;
-					    case "microsoft.visualstudio.qualitytools.unittestframework":
-						    return TestFramework.VisualStudio;
-				    }
-			    }
-		    }
+			IList<string> references = GetProjectReferences(project);
+			foreach (string reference in references)
+			{
+				switch (reference.ToLowerInvariant())
+				{
+					case "nunit.framework":
+						return TestFramework.NUnit;
+					case "microsoft.visualstudio.qualitytools.unittestframework":
+						return TestFramework.VisualStudio;
+				}
+			}
 
 			return TestFramework.Unknown;
 	    }
+
+	    public static MockFramework FindMockFramework(Project project)
+	    {
+			IList<string> references = GetProjectReferences(project);
+			foreach (string reference in references)
+			{
+			    switch (reference.ToLowerInvariant())
+			    {
+					case "moq":
+						return MockFramework.Moq;
+					case "etg.simplestubs":
+					    return MockFramework.SimpleStubs;
+				}
+			}
+
+			return MockFramework.Unknown;
+		}
+
+	    private static IList<string> GetProjectReferences(Project project)
+	    {
+			XDocument document = XDocument.Load(project.FileName);
+			XNamespace ns = "http://schemas.microsoft.com/developer/msbuild/2003";
+
+		    var result = new List<string>();
+			foreach (XElement element in document.Descendants(ns + "Reference"))
+			{
+				XAttribute includeAttribute = element.Attribute("Include");
+				string fullAssemblyString = includeAttribute?.Value;
+
+				if (!string.IsNullOrEmpty(fullAssemblyString))
+				{
+					string assemblyName;
+					if (fullAssemblyString.Contains(','))
+					{
+						int commaIndex = fullAssemblyString.IndexOf(",", StringComparison.Ordinal);
+						assemblyName = fullAssemblyString.Substring(0, commaIndex);
+					}
+					else
+					{
+						assemblyName = fullAssemblyString;
+					}
+
+					result.Add(assemblyName);
+				}
+			}
+
+			return result;
+		}
 
         private static IEnumerable<Project> GetSolutionFolderProjects(Project solutionFolder)
         {
