@@ -9,7 +9,7 @@ Right click an item in Solution Explorer and choose "Create Unit Test Boilerplat
     <License>Resources\LICENSE</License>
     <Icon>Resources\PackageIcon-90x90.png</Icon>
     <PreviewImage>Resources\Preview.png</PreviewImage>
-    <Tags>unit test, test, moq, dependency injection</Tags>
+    <Tags>Unit Testing, unity, dependency injection, MOQ, SimpleStubs, NUnit</Tags>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />

@@ -299,6 +299,11 @@ namespace UnitTestBoilerplate
 			TestFramework testFramework = Utilities.FindTestFramework(this.SelectedProject.Project);
 			MockFramework mockFramework = Utilities.FindMockFramework(this.SelectedProject.Project);
 
+			if (mockFramework == MockFramework.Unknown)
+			{
+				mockFramework = MockFramework.Moq;
+			}
+
 			string pascalCaseShortClassName = null;
 			foreach (string suffix in ClassSuffixes)
 			{
@@ -324,8 +329,8 @@ namespace UnitTestBoilerplate
 			{
 				mockFields.Add(
 					new MockField(
-						mockFramework == MockFramework.Moq ? "mock" + injectedType.TypeBaseName : "stub" + injectedType.TypeBaseName,
-						mockFramework == MockFramework.Moq ? injectedType.TypeName : "Stub" + injectedType.TypeName));
+						mockFramework == MockFramework.SimpleStubs ? "stub" + injectedType.TypeBaseName : "mock" + injectedType.TypeBaseName,
+						mockFramework == MockFramework.SimpleStubs ? "Stub" + injectedType.TypeName : injectedType.TypeName));
 			}
 
 			List<string> namespaces = new List<string>();
@@ -369,13 +374,13 @@ namespace UnitTestBoilerplate
 
 			foreach (MockField field in mockFields)
 			{
-				if (mockFramework == MockFramework.Moq)
-				{
-					builder.AppendLine($"        private Mock<{field.TypeName}> {field.Name};");
-				}
-				else if (mockFramework == MockFramework.SimpleStubs)
+				if (mockFramework == MockFramework.SimpleStubs)
 				{
 					builder.AppendLine($"        private {field.TypeName} {field.Name};");
+				}
+				else
+				{
+					builder.AppendLine($"        private Mock<{field.TypeName}> {field.Name};");
 				}
 			}
 

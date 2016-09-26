@@ -7,7 +7,19 @@ or get the [CI build](http://vsixgallery.com/extension/UnitTestBoilerplate.Rando
 
 ---------------------------------------
 
-Generates a unit test boilerplate from a given class, setting up mocks for all dependencies. Supports Moq with constructor injection or dependency injection via Unity.
+Generates a unit test boilerplate from a given class, setting up mocks for all dependencies.
+
+Test frameworks supported:
+* Visual Studio
+* NUnit
+
+Mock frameworks supported:
+* Moq
+* SimpleStubs
+
+Dependency injection modes supported:
+* Constructor injection
+* Property injection via Unity
 
 Right click an item in Solution Explorer and choose "Create Unit Test Boilerplate" .
 
@@ -24,8 +36,8 @@ The mock repository is set up as Strict by default, which means that it expects 
 to have a .Setup() call for it. The [TestCleanup] method will call VerifyAll() for you at the end of every test:
 this ensures that all of the setups in any mock object have been invoked at least once.
 
-See the [changelog](CHANGELOG.md) for changes and roadmap. If you'd like to see support for other test frameworks
-like NUnit, other IoC frameworks like Ninject or other coding styles, [open an issue](https://github.com/Microsoft/UnitTestBoilerplateGenerator/issues/new).
+See the [changelog](CHANGELOG.md) for changes and roadmap. If you'd like to see support for other mocking
+frameworks like Rhino Mocks, other IoC frameworks like Ninject or other coding styles, [open an issue](https://github.com/Microsoft/UnitTestBoilerplateGenerator/issues/new).
 
 ## Contribute
 Check out the [contribution guidelines](CONTRIBUTING.md)
