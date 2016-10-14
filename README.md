@@ -7,7 +7,7 @@ or get the [CI build](http://vsixgallery.com/extension/UnitTestBoilerplate.Rando
 
 ---------------------------------------
 
-Generates a unit test boilerplate from a given class, setting up mocks for all dependencies.
+Generates a unit test boilerplate from a given C# class, setting up mocks for all dependencies.
 
 Test frameworks supported:
 * Visual Studio
