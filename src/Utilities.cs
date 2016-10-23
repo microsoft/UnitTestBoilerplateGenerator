@@ -8,6 +8,8 @@ using System.Xml.Linq;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.CodeAnalysis;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Project = EnvDTE.Project;
 
 namespace UnitTestBoilerplate
@@ -105,6 +107,7 @@ namespace UnitTestBoilerplate
 				switch (reference.ToLowerInvariant())
 				{
 					case "nunit.framework":
+					case "nunit":
 						return TestFramework.NUnit;
 					case "microsoft.visualstudio.qualitytools.unittestframework":
 						return TestFramework.VisualStudio;
@@ -158,6 +161,31 @@ namespace UnitTestBoilerplate
 					result.Add(assemblyName);
 				}
 			}
+
+		    string projectJsonPath = Path.Combine(Path.GetDirectoryName(project.FileName), "project.json");
+
+		    if (File.Exists(projectJsonPath))
+		    {
+			    try
+			    {
+				    JObject projectObject = JObject.Parse(File.ReadAllText(projectJsonPath));
+				    var dependenciesObject = projectObject["dependencies"] as JObject;
+				    if (dependenciesObject != null)
+				    {
+					    foreach (var property in dependenciesObject)
+					    {
+						    if (!result.Contains(property.Key))
+						    {
+							    result.Add(property.Key);
+						    }
+					    }
+				    }
+			    }
+			    catch (JsonException exception)
+			    {
+				    throw new InvalidOperationException("Could not parse project.json to search for references.", exception);
+			    }
+		    }
 
 			return result;
 		}

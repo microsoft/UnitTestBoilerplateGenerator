@@ -44,6 +44,8 @@ namespace UnitTestBoilerplate
 
 			string lastSelectedProject = Settings.GetLastSelectedProject(this.dte.Solution.FileName);
 
+
+			var newProjectList = new List<TestProject>();
 			foreach (Project project in allProjects)
 			{
 				TestProject testProject = new TestProject
@@ -52,8 +54,10 @@ namespace UnitTestBoilerplate
 					Project = project
 				};
 
-				this.TestProjects.Add(testProject);
+				newProjectList.Add(testProject);
 			}
+
+			this.TestProjects = newProjectList.OrderBy(p => p.Name).ToList();
 
 			// First see if we've saved an entry for the last selected test project for this solution.
 			if (this.selectedProject == null && lastSelectedProject != null)
@@ -255,13 +259,20 @@ namespace UnitTestBoilerplate
 
 				foreach (SyntaxNode node in parameterNodes)
 				{
-					SyntaxNode identifierNode = node.ChildNodes().First(n => n.Kind() == SyntaxKind.IdentifierName);
-					SymbolInfo symbolInfo = semanticModel.GetSymbolInfo(identifierNode);
+					SyntaxNode identifierNode = node.ChildNodes().FirstOrDefault(n => n.Kind() == SyntaxKind.IdentifierName);
+					if (identifierNode != null)
+					{
+						SymbolInfo symbolInfo = semanticModel.GetSymbolInfo(identifierNode);
 
-					constructorInjectionTypes.Add(
-						new InjectableType(
-							symbolInfo.Symbol.Name,
-							symbolInfo.Symbol.ContainingNamespace.ToString()));
+						constructorInjectionTypes.Add(
+							new InjectableType(
+								symbolInfo.Symbol.Name,
+								symbolInfo.Symbol.ContainingNamespace.ToString()));
+					}
+					else
+					{
+						constructorInjectionTypes.Add(null);
+					}
 				}
 			}
 
@@ -322,7 +333,7 @@ namespace UnitTestBoilerplate
 			string classVariableName = pascalCaseShortClassName.Substring(0, 1).ToLowerInvariant() + pascalCaseShortClassName.Substring(1);
 
 			List<InjectableType> injectedTypes = new List<InjectableType>(properties);
-			injectedTypes.AddRange(constructorTypes);
+			injectedTypes.AddRange(constructorTypes.Where(t => t != null));
 
 			var mockFields = new List<MockField>();
 			foreach (InjectableType injectedType in injectedTypes)
@@ -454,13 +465,18 @@ namespace UnitTestBoilerplate
 				for (int i = 0; i < constructorTypes.Count; i++)
 				{
 					string mockReferenceStatement;
-					if (mockFramework == MockFramework.SimpleStubs)
+					InjectableType constructorType = constructorTypes[i];
+					if (constructorType == null)
 					{
-						mockReferenceStatement = $"this.stub{constructorTypes[i].TypeBaseName}";
+						mockReferenceStatement = "TODO";
+					}
+					else if (mockFramework == MockFramework.SimpleStubs)
+					{
+						mockReferenceStatement = $"this.stub{constructorType.TypeBaseName}";
 					}
 					else
 					{
-						mockReferenceStatement = $"this.mock{constructorTypes[i].TypeBaseName}.Object";
+						mockReferenceStatement = $"this.mock{constructorType.TypeBaseName}.Object";
 					}
 
 					builder.Append($"                {mockReferenceStatement}");
