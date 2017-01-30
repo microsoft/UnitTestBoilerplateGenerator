@@ -15,6 +15,8 @@ namespace UnitTestBoilerplate
 				case MockFramework.Unknown:
 				case MockFramework.Moq:
 					return new List<string> { "Moq" };
+				case MockFramework.AutoMoq:
+					return new List<string> { "AutoMoq", "Moq" };
 				case MockFramework.SimpleStubs:
 					return new List<string>();
 				default:

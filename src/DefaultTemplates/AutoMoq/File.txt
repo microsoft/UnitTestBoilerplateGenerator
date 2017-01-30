@@ -1,0 +1,20 @@
+﻿$UsingStatements$
+
+namespace $Namespace$
+{
+	[$TestClassAttribute$]
+	public class $ClassName$Tests
+	{
+		[$TestMethodAttribute$]
+		public void TestMethod1()
+		{
+			var mocker = new AutoMoqer();
+
+			
+
+			var $ClassNameShortLower$ = mocker.Create<$ClassName$>();
+
+
+		}
+	}
+}

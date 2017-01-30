@@ -132,6 +132,7 @@
     <EmbeddedResource Include="DefaultTemplates\SimpleStubs\File.txt" />
     <EmbeddedResource Include="DefaultTemplates\SimpleStubs\MockFieldInitialization.txt" />
     <EmbeddedResource Include="DefaultTemplates\SimpleStubs\MockObjectReference.txt" />
+    <EmbeddedResource Include="DefaultTemplates\AutoMoq\File.txt" />
     <Content Include="index.html" />
     <Content Include="Resources\CreateUnitTestBoilerplateCommand.png" />
     <Content Include="Resources\CreateUnitTestBoilerplateCommandPackage.ico" />

@@ -7,8 +7,8 @@
     <ProjectGuid>{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SandboxAutoMoqTestCases</RootNamespace>
-    <AssemblyName>SandboxAutoMoqTestCases</AssemblyName>
+    <RootNamespace>UnitBoilerplate.Sandbox.AutoMoqTestCases</RootNamespace>
+    <AssemblyName>UnitBoilerplate.Sandbox.AutoMoqTestCases</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -70,6 +70,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Classes\SandboxClasses.csproj">
+      <Project>{c858ab02-55a4-4f5a-950f-6f403912777f}</Project>
+      <Name>SandboxClasses</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

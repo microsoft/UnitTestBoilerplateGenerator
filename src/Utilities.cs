@@ -120,15 +120,24 @@ namespace UnitTestBoilerplate
 	    public static MockFramework FindMockFramework(Project project)
 	    {
 			IList<string> references = GetProjectReferences(project);
+			bool hasMoqReference = false;
 			foreach (string reference in references)
 			{
 			    switch (reference.ToLowerInvariant())
 			    {
+					case "automoq":
+						return MockFramework.AutoMoq;
 					case "moq":
-						return MockFramework.Moq;
+						hasMoqReference = true;
+						break;
 					case "etg.simplestubs":
 					    return MockFramework.SimpleStubs;
 				}
+			}
+
+			if (hasMoqReference)
+			{
+				return MockFramework.Moq;
 			}
 
 			return MockFramework.Unknown;
