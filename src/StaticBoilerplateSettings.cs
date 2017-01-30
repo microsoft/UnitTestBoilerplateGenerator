@@ -74,6 +74,11 @@ namespace UnitTestBoilerplate
 				return Store.GetString(CollectionPath, GetTemplateSettingsKey(mockFramework, templateType));
 			}
 
+			return GetDefaultTemplate(mockFramework, templateType);
+		}
+
+		public static string GetDefaultTemplate(MockFramework mockFramework, TemplateType templateType)
+		{
 			// When looking for default templates, redirect "Unknown" to "Moq"
 			if (mockFramework == MockFramework.Unknown)
 			{

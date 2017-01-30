@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,6 +136,24 @@ namespace UnitTestBoilerplate
 		public bool MockObjectReferenceTemplateVisible
 		{
 			get { return this.FileTemplate.Contains("$ExplicitConstructor$"); }
+		}
+
+		private RelayCommand resetCommand;
+		public RelayCommand ResetCommand
+		{
+			get
+			{
+				return this.resetCommand ?? (this.resetCommand = new RelayCommand(
+					() =>
+					{
+						MockFramework mockFramework = this.SelectedMockFramework.Value;
+
+						this.FileTemplate = StaticBoilerplateSettings.GetDefaultTemplate(mockFramework, TemplateType.File);
+						this.MockFieldDeclarationTemplate = StaticBoilerplateSettings.GetDefaultTemplate(mockFramework, TemplateType.MockFieldDeclaration);
+						this.MockFieldInitializationTemplate = StaticBoilerplateSettings.GetDefaultTemplate(mockFramework, TemplateType.MockFieldInitialization);
+						this.MockObjectReferenceTemplate = StaticBoilerplateSettings.GetDefaultTemplate(mockFramework, TemplateType.MockObjectReference);
+					}));
+			}
 		}
 
 		/// <summary>

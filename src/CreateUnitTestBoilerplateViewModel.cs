@@ -115,7 +115,6 @@ namespace UnitTestBoilerplate
 		}
 
 		private RelayCommand createUnitTestCommand;
-
 		public RelayCommand CreateUnitTestCommand
 		{
 			get

@@ -13,27 +13,45 @@
 		<Style x:Key="LineSection" TargetType="StackPanel">
 			<Setter Property="Margin" Value="0 10 0 0" />
 		</Style>
+		<Style x:Key="LineTextBox" TargetType="TextBox">
+			<Setter Property="Margin" Value="0 2 0 0" />
+		</Style>
 	</UserControl.Resources>
 	<StackPanel Orientation="Vertical">
-		<StackPanel Orientation="Horizontal">
-			<TextBlock Text="Mock Framework:" />
-			<ComboBox
-				DisplayMemberPath="Display"
-				ItemsSource="{Binding MockFrameworkChoices}"
-				SelectedItem="{Binding SelectedMockFramework}" />
-		</StackPanel>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock VerticalAlignment="Center" Text="Mock Framework:" />
+				<ComboBox
+					Margin="6 0 0 0"
+					VerticalAlignment="Center"
+					DisplayMemberPath="Display"
+					ItemsSource="{Binding MockFrameworkChoices}"
+					SelectedItem="{Binding SelectedMockFramework}" />
+			</StackPanel>
+			<Button
+				Grid.Column="1"
+				Padding="10 2"
+				Command="{Binding ResetCommand}"
+				Content="Reset to default" />
+		</Grid>
+
 		<TextBox
 			Name="fileTemplateTextBox"
+			Margin="0 2 0 0"
 			AcceptsReturn="True"
 			AcceptsTab="True"
-			Text="{Binding FileTemplate}" />
+			Text="{Binding FileTemplate, UpdateSourceTrigger=PropertyChanged}" />
 
 		<StackPanel
 			Orientation="Vertical"
 			Style="{StaticResource LineSection}"
 			Visibility="{Binding MockFieldDeclarationTemplateVisible, Converter={StaticResource VisibilityConverter}}">
 			<TextBlock Text="Mock field declaration format" />
-			<TextBox Text="{Binding MockFieldDeclarationTemplate}" />
+			<TextBox Style="{StaticResource LineTextBox}" Text="{Binding MockFieldDeclarationTemplate, UpdateSourceTrigger=PropertyChanged}" />
 		</StackPanel>
 
 		<StackPanel
@@ -41,7 +59,7 @@
 			Style="{StaticResource LineSection}"
 			Visibility="{Binding MockFieldInitializationTemplateVisible, Converter={StaticResource VisibilityConverter}}">
 			<TextBlock Text="Mock field initialization format" />
-			<TextBox Text="{Binding MockFieldInitializationTemplate}" />
+			<TextBox Style="{StaticResource LineTextBox}" Text="{Binding MockFieldInitializationTemplate, UpdateSourceTrigger=PropertyChanged}" />
 		</StackPanel>
 
 		<StackPanel
@@ -49,7 +67,7 @@
 			Style="{StaticResource LineSection}"
 			Visibility="{Binding MockObjectReferenceTemplateVisible, Converter={StaticResource VisibilityConverter}}">
 			<TextBlock Text="Mock field initialization format" />
-			<TextBox Text="{Binding MockObjectReferenceTemplate}" />
+			<TextBox Style="{StaticResource LineTextBox}" Text="{Binding MockObjectReferenceTemplate, UpdateSourceTrigger=PropertyChanged}" />
 		</StackPanel>
 	</StackPanel>
 </UserControl>
