@@ -74,6 +74,12 @@ namespace UnitTestBoilerplate
 				return Store.GetString(CollectionPath, GetTemplateSettingsKey(mockFramework, templateType));
 			}
 
+			// When looking for default templates, redirect "Unknown" to "Moq"
+			if (mockFramework == MockFramework.Unknown)
+			{
+				mockFramework = MockFramework.Moq;
+			}
+
 			using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"UnitTestBoilerplate.DefaultTemplates.{mockFramework}.{templateType}.txt"))
 			{
 				if (stream == null)

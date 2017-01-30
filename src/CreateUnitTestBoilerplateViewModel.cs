@@ -302,18 +302,12 @@ namespace UnitTestBoilerplate
 				unitTestNamespace = string.Join(".", unitTestNamespaceParts);
 			}
 
-			MockFramework mockFramework = Utilities.FindMockFramework(this.SelectedProject.Project);
-			if (mockFramework == MockFramework.Unknown)
-			{
-				mockFramework = MockFramework.Moq;
-			}
-
 			List<InjectableType> injectedTypes = new List<InjectableType>(injectableProperties);
 			injectedTypes.AddRange(constructorInjectionTypes.Where(t => t != null));
 
 			// Compile information needed to generate the test
 			var context = new TestGenerationContext(
-				mockFramework,
+				Utilities.FindMockFramework(this.SelectedProject.Project),
 				Utilities.FindTestFramework(this.SelectedProject.Project),
 				unitTestNamespace,
 				this.className,

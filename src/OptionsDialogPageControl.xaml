@@ -8,8 +8,48 @@
 	d:DesignHeight="300"
 	d:DesignWidth="300"
 	mc:Ignorable="d">
+	<UserControl.Resources>
+		<BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+		<Style x:Key="LineSection" TargetType="StackPanel">
+			<Setter Property="Margin" Value="0 10 0 0" />
+		</Style>
+	</UserControl.Resources>
 	<StackPanel Orientation="Vertical">
-		<TextBlock Text="Template" />
-		<TextBox />
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Mock Framework:" />
+			<ComboBox
+				DisplayMemberPath="Display"
+				ItemsSource="{Binding MockFrameworkChoices}"
+				SelectedItem="{Binding SelectedMockFramework}" />
+		</StackPanel>
+		<TextBox
+			Name="fileTemplateTextBox"
+			AcceptsReturn="True"
+			AcceptsTab="True"
+			Text="{Binding FileTemplate}" />
+
+		<StackPanel
+			Orientation="Vertical"
+			Style="{StaticResource LineSection}"
+			Visibility="{Binding MockFieldDeclarationTemplateVisible, Converter={StaticResource VisibilityConverter}}">
+			<TextBlock Text="Mock field declaration format" />
+			<TextBox Text="{Binding MockFieldDeclarationTemplate}" />
+		</StackPanel>
+
+		<StackPanel
+			Orientation="Vertical"
+			Style="{StaticResource LineSection}"
+			Visibility="{Binding MockFieldInitializationTemplateVisible, Converter={StaticResource VisibilityConverter}}">
+			<TextBlock Text="Mock field initialization format" />
+			<TextBox Text="{Binding MockFieldInitializationTemplate}" />
+		</StackPanel>
+
+		<StackPanel
+			Orientation="Vertical"
+			Style="{StaticResource LineSection}"
+			Visibility="{Binding MockObjectReferenceTemplateVisible, Converter={StaticResource VisibilityConverter}}">
+			<TextBlock Text="Mock field initialization format" />
+			<TextBox Text="{Binding MockObjectReferenceTemplate}" />
+		</StackPanel>
 	</StackPanel>
 </UserControl>

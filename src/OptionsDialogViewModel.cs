@@ -11,9 +11,22 @@ namespace UnitTestBoilerplate
 	{
 		private Dictionary<string, string> templateHoldingDictionary = new Dictionary<string, string>();
 
+		public OptionsDialogViewModel()
+		{
+			this.MockFrameworkChoices = new List<ComboChoice<MockFramework>>
+			{
+				new ComboChoice<MockFramework>(MockFramework.Moq, "Moq"),
+				new ComboChoice<MockFramework>(MockFramework.SimpleStubs, "SimpleStubs"),
+				new ComboChoice<MockFramework>(MockFramework.Unknown, "Unknown"),
+			};
+
+			this.selectedMockFramework = this.MockFrameworkChoices.First(c => c.Value == MockFramework.Moq);
+		}
+
 		public void Initialize()
 		{
 			this.templateHoldingDictionary.Clear();
+			this.RaiseAllChanged();
 		}
 
 		public void Apply()
@@ -29,23 +42,46 @@ namespace UnitTestBoilerplate
 			}
 		}
 
-		private MockFramework mockFramework;
-		public MockFramework MockFramework
+		public IList<ComboChoice<MockFramework>> MockFrameworkChoices { get; }
+
+		private ComboChoice<MockFramework> selectedMockFramework;
+		public ComboChoice<MockFramework> SelectedMockFramework
 		{
-			get { return this.mockFramework; }
-			set { this.Set(ref this.mockFramework); }
+			get { return this.selectedMockFramework; }
+
+			set
+			{
+				if (value == null)
+				{
+					return;
+				}
+
+				this.Set(ref this.selectedMockFramework, value);
+				this.RaiseAllChanged();
+			}
+		}
+
+		private void RaiseAllChanged()
+		{
+			this.RaisePropertyChanged(nameof(this.FileTemplate));
+			this.RaisePropertyChanged(nameof(this.MockFieldDeclarationTemplate));
+			this.RaisePropertyChanged(nameof(this.MockFieldInitializationTemplate));
+			this.RaisePropertyChanged(nameof(this.MockObjectReferenceTemplate));
+			this.RaisePropertyChanged(nameof(this.MockFieldDeclarationTemplateVisible));
+			this.RaisePropertyChanged(nameof(this.MockFieldInitializationTemplateVisible));
+			this.RaisePropertyChanged(nameof(this.MockObjectReferenceTemplateVisible));
 		}
 
 		public string FileTemplate
 		{
 			get
 			{
-				return this.GetTemplate(this.MockFramework, TemplateType.File);
+				return this.GetTemplate(this.SelectedMockFramework.Value, TemplateType.File);
 			}
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.MockFramework, TemplateType.File, value);
+				this.SaveTemplateToDialogHolding(this.SelectedMockFramework.Value, TemplateType.File, value);
 				this.RaisePropertyChanged();
 				this.RaisePropertyChanged(nameof(this.MockFieldDeclarationTemplateVisible));
 				this.RaisePropertyChanged(nameof(this.MockFieldInitializationTemplateVisible));
@@ -55,11 +91,11 @@ namespace UnitTestBoilerplate
 
 		public string MockFieldDeclarationTemplate
 		{
-			get { return this.GetTemplate(this.MockFramework, TemplateType.MockFieldDeclaration); }
+			get { return this.GetTemplate(this.SelectedMockFramework.Value, TemplateType.MockFieldDeclaration); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.MockFramework, TemplateType.MockFieldDeclaration, value);
+				this.SaveTemplateToDialogHolding(this.SelectedMockFramework.Value, TemplateType.MockFieldDeclaration, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -71,11 +107,11 @@ namespace UnitTestBoilerplate
 
 		public string MockFieldInitializationTemplate
 		{
-			get { return this.GetTemplate(this.MockFramework, TemplateType.MockFieldInitialization); }
+			get { return this.GetTemplate(this.SelectedMockFramework.Value, TemplateType.MockFieldInitialization); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.MockFramework, TemplateType.MockFieldInitialization, value);
+				this.SaveTemplateToDialogHolding(this.SelectedMockFramework.Value, TemplateType.MockFieldInitialization, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -87,11 +123,11 @@ namespace UnitTestBoilerplate
 
 		public string MockObjectReferenceTemplate
 		{
-			get { return this.GetTemplate(this.MockFramework, TemplateType.MockObjectReference); }
+			get { return this.GetTemplate(this.SelectedMockFramework.Value, TemplateType.MockObjectReference); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.MockFramework, TemplateType.MockObjectReference, value);
+				this.SaveTemplateToDialogHolding(this.SelectedMockFramework.Value, TemplateType.MockObjectReference, value);
 				this.RaisePropertyChanged();
 			}
 		}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,17 @@ namespace UnitTestBoilerplate
 
 			this.ViewModel = new OptionsDialogViewModel();
 			this.DataContext = this.ViewModel;
+
+			this.fileTemplateTextBox.AddHandler(UIElementDialogPage.DialogKeyPendingEvent, new RoutedEventHandler(OnDialogKeyPendingEvent));
+		}
+
+		void OnDialogKeyPendingEvent(object sender, RoutedEventArgs e)
+		{
+			var args = e as DialogKeyEventArgs;
+			if (args != null && args.Key == Key.Enter)
+			{
+				e.Handled = true;
+			}
 		}
 	}
 }
