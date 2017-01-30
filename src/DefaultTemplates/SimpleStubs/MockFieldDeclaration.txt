@@ -1,0 +1,1 @@
+﻿private Stub$InterfaceName$ stub$InterfaceNameBase$;

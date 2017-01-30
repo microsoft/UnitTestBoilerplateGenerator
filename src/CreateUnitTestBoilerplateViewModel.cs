@@ -16,6 +16,9 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Project = EnvDTE.Project;
 using Window = EnvDTE.Window;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.CodeAnalysis.Formatting;
+using System.Reflection;
 
 namespace UnitTestBoilerplate
 {
@@ -42,7 +45,8 @@ namespace UnitTestBoilerplate
 			this.TestProjects = new List<TestProject>();
 			IList<Project> allProjects = Utilities.GetProjects(this.dte);
 
-			string lastSelectedProject = Settings.GetLastSelectedProject(this.dte.Solution.FileName);
+
+			string lastSelectedProject = StaticBoilerplateSettings.GetLastSelectedProject(this.dte.Solution.FileName);
 
 
 			var newProjectList = new List<TestProject>();
@@ -92,6 +96,12 @@ namespace UnitTestBoilerplate
 			}
 		}
 
+		private IBoilerplateSettings GetSettings()
+		{
+			var componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
+			return componentModel.DefaultExportProvider.GetExportedValue<IBoilerplateSettings>();
+		}
+
 		public ICreateUnitTestBoilerplateView View { get; set; }
 
 		public List<TestProject> TestProjects { get; }
@@ -135,7 +145,7 @@ namespace UnitTestBoilerplate
 								}
 							}
 
-							Settings.SaveSelectedTestProject(this.dte.Solution.FileName, this.SelectedProject.Project.FileName);
+							StaticBoilerplateSettings.SaveSelectedTestProject(this.dte.Solution.FileName, this.SelectedProject.Project.FileName);
 
 							this.View.Close();
 						}
@@ -292,15 +302,302 @@ namespace UnitTestBoilerplate
 				unitTestNamespace = string.Join(".", unitTestNamespaceParts);
 			}
 
-			return this.GenerateUnitTestContents(
+			MockFramework mockFramework = Utilities.FindMockFramework(this.SelectedProject.Project);
+			if (mockFramework == MockFramework.Unknown)
+			{
+				mockFramework = MockFramework.Moq;
+			}
+
+			List<InjectableType> injectedTypes = new List<InjectableType>(injectableProperties);
+			injectedTypes.AddRange(constructorInjectionTypes.Where(t => t != null));
+
+			// Compile information needed to generate the test
+			var context = new TestGenerationContext(
+				mockFramework,
+				Utilities.FindTestFramework(this.SelectedProject.Project),
 				unitTestNamespace,
 				this.className,
 				namespaceDeclarationSyntax.Name.ToString(),
 				injectableProperties,
-				constructorInjectionTypes);
+				constructorInjectionTypes,
+				injectedTypes);
+
+			return this.GenerateUnitTestContents(context);
 		}
 
-		private string GenerateUnitTestContents(
+		private string GenerateUnitTestContents(TestGenerationContext context)
+		{
+			TestFramework testFramework = context.TestFramework;
+			MockFramework mockFramework = context.MockFramework;
+
+			string pascalCaseShortClassName = null;
+			foreach (string suffix in ClassSuffixes)
+			{
+				if (className.EndsWith(suffix))
+				{
+					pascalCaseShortClassName = suffix;
+					break;
+				}
+			}
+
+			if (pascalCaseShortClassName == null)
+			{
+				pascalCaseShortClassName = className;
+			}
+
+			string classVariableName = pascalCaseShortClassName.Substring(0, 1).ToLowerInvariant() + pascalCaseShortClassName.Substring(1);
+
+			string fileTemplate = StaticBoilerplateSettings.GetTemplate(mockFramework, TemplateType.File);
+			var builder = new StringBuilder();
+
+			for (int i = 0; i < fileTemplate.Length; i++)
+			{
+				char c = fileTemplate[i];
+				if (c == '$')
+				{
+					int endIndex = -1;
+					for (int j = i + 1; j < fileTemplate.Length; j++)
+					{
+						if (fileTemplate[j] == '$')
+						{
+							endIndex = j;
+							break;
+						}
+					}
+
+					if (endIndex < 0)
+					{
+						// We couldn't find the end index for the replacement property name. Continue.
+						builder.Append(c);
+					}
+					else
+					{
+						// Calculate values on demand from switch statement. Some are preset values, some need a bit of calc like base name,
+						// some are dependent on the test framework (attributes), some need to pull down other templates and loop through mock fields
+						string propertyName = fileTemplate.Substring(i + 1, endIndex - i - 1);
+						switch (propertyName)
+						{
+							case "UsingStatements":
+								WriteUsings(builder, context);
+								break;
+							case "Namespace":
+								builder.Append(context.UnitTestNamespace);
+								break;
+							case "MockFieldDeclarations":
+								WriteMockFieldDeclarations(builder, context);
+								break;
+							case "MockFieldInitializations":
+								WriteMockFieldInitializations(builder, context);
+								break;
+							case "ExplicitConstructor":
+								WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, i));
+								break;
+							case "ClassName":
+								builder.Append(context.ClassName);
+								break;
+							case "ClassNameShort":
+								builder.Append(GetShortClassName(context.ClassName));
+								break;
+							case "ClassNameShortLower":
+								builder.Append(GetShortClassNameLower(context.ClassName));
+								break;
+							case "TestClassAttribute":
+								builder.Append(TestFrameworkAbstraction.GetTestClassAttribute(testFramework));
+								break;
+							case "TestInitializeAttribute":
+								builder.Append(TestFrameworkAbstraction.GetTestInitializeAttribute(testFramework));
+								break;
+							case "TestCleanupAttribute":
+								builder.Append(TestFrameworkAbstraction.GetTestCleanupAttribute(testFramework));
+								break;
+							case "TestMethodAttribute":
+								builder.Append(TestFrameworkAbstraction.GetTestMethodAttribute(testFramework));
+								break;
+							default:
+								// We didn't recognize it, just pass through.
+								builder.Append($"${propertyName}$");
+								break;
+						}
+
+						i = endIndex;
+					}
+				}
+				else
+				{
+					builder.Append(c);
+				}
+			}
+
+			SyntaxTree tree = CSharpSyntaxTree.ParseText(builder.ToString());
+			SyntaxNode formattedNode = Formatter.Format(tree.GetRoot(), CreateUnitTestBoilerplateCommandPackage.VisualStudioWorkspace);
+
+			return formattedNode.ToString();
+		}
+
+		private static void WriteUsings(StringBuilder builder, TestGenerationContext context)
+		{
+			List<string> namespaces = new List<string>();
+			namespaces.AddRange(MockFrameworkAbstraction.GetUsings(context.MockFramework));
+			namespaces.Add(TestFrameworkAbstraction.GetUsing(context.TestFramework));
+			namespaces.Add(context.ClassNamespace);
+			namespaces.AddRange(context.InjectedTypes.Select(t => t.TypeNamespace));
+			namespaces = namespaces.Distinct().ToList();
+			namespaces.Sort(StringComparer.Ordinal);
+
+			for (int i = 0; i < namespaces.Count; i++)
+			{
+				builder.Append($"using {namespaces[i]};");
+
+				if (i < namespaces.Count - 1)
+				{
+					builder.AppendLine();
+				}
+			}
+		}
+
+		private static void WriteMockFieldDeclarations(StringBuilder builder, TestGenerationContext context)
+		{
+			string template = StaticBoilerplateSettings.GetTemplate(context.MockFramework, TemplateType.MockFieldDeclaration);
+			WriteFieldLines(builder, context, template);
+		}
+
+		private static void WriteMockFieldInitializations(StringBuilder builder, TestGenerationContext context)
+		{
+			string template = StaticBoilerplateSettings.GetTemplate(context.MockFramework, TemplateType.MockFieldInitialization);
+			WriteFieldLines(builder, context, template);
+		}
+
+		// Works for both field declarations and initializations.
+		private static void WriteFieldLines(StringBuilder builder, TestGenerationContext context, string template)
+		{
+			for (int i = 0; i < context.InjectedTypes.Count; i++)
+			{
+				InjectableType injectedType = context.InjectedTypes[i];
+				string line = template
+					.Replace("$InterfaceName$", injectedType.TypeName)
+					.Replace("$InterfaceNameBase$", injectedType.TypeBaseName);
+
+				builder.Append(line);
+
+				if (i < context.InjectedTypes.Count - 1)
+				{
+					builder.AppendLine();
+				}
+			}
+		}
+
+		private static void WriteExplicitConstructor(StringBuilder builder, TestGenerationContext context, string currentIndent)
+		{
+			builder.Append($"new {context.ClassName}");
+
+			if (context.ConstructorTypes.Count > 0)
+			{
+				builder.AppendLine("(");
+
+				for (int i = 0; i < context.ConstructorTypes.Count; i++)
+				{
+					string mockReferenceStatement;
+					InjectableType constructorType = context.ConstructorTypes[i];
+					if (constructorType == null)
+					{
+						mockReferenceStatement = "TODO";
+					}
+					else
+					{
+						string template = StaticBoilerplateSettings.GetTemplate(context.MockFramework, TemplateType.MockObjectReference);
+						mockReferenceStatement = template
+							.Replace("$InterfaceName$", constructorType.TypeName)
+							.Replace("$InterfaceNameBase$", constructorType.TypeBaseName);
+					}
+
+					builder.Append($"{currentIndent}    {mockReferenceStatement}");
+
+					if (i < context.ConstructorTypes.Count - 1)
+					{
+						builder.AppendLine(",");
+					}
+				}
+
+				builder.Append(")");
+			}
+			else if (context.Properties.Count == 0)
+			{
+				builder.Append("()");
+			}
+
+			if (context.Properties.Count > 0)
+			{
+				builder.AppendLine();
+				builder.AppendLine("{");
+
+				foreach (InjectableProperty property in context.Properties)
+				{
+					string template = StaticBoilerplateSettings.GetTemplate(context.MockFramework, TemplateType.MockObjectReference);
+					string mockReferenceStatement = template
+						.Replace("$InterfaceName$", property.TypeName)
+						.Replace("$InterfaceNameBase$", property.TypeBaseName);
+
+					builder.AppendLine($"{property.Name} = {mockReferenceStatement},");
+				}
+
+				builder.Append(@"}");
+			}
+		}
+
+		private static string FindIndent(string template, int currentIndex)
+		{
+			// Go back and find line start
+			int lineStart = -1;
+			for (int i = currentIndex - 1; i >= 0; i--)
+			{
+				char c = template[i];
+				if (c == '\n')
+				{
+					lineStart = i + 1;
+					break;
+				}
+			}
+
+			// Go forward and find first non-whitespace character
+			for (int i = lineStart; i <= currentIndex; i++)
+			{
+				char c = template[i];
+				if (c != ' ' && c != '\t')
+				{
+					return template.Substring(lineStart, i - lineStart);
+				}
+			}
+
+			return string.Empty;
+		}
+
+		private static string GetShortClassName(string className)
+		{
+			string pascalCaseShortClassName = null;
+			foreach (string suffix in ClassSuffixes)
+			{
+				if (className.EndsWith(suffix))
+				{
+					pascalCaseShortClassName = suffix;
+					break;
+				}
+			}
+
+			if (pascalCaseShortClassName == null)
+			{
+				pascalCaseShortClassName = className;
+			}
+
+			return pascalCaseShortClassName;
+		}
+
+		private static string GetShortClassNameLower(string className)
+		{
+			string shortName = GetShortClassName(className);
+			return shortName.Substring(0, 1).ToLowerInvariant() + shortName.Substring(1);
+		}
+
+		private string GenerateUnitTestContentsOld(
 			string unitTestNamespace,
 			string className,
 			string classNamespace,
@@ -367,15 +664,15 @@ namespace UnitTestBoilerplate
 			builder.Append(
 				Environment.NewLine +
 				"{" + Environment.NewLine +
-				$"    [{TestFrameworkAbstraction.GetTestClassAttribute(testFramework)}]" + Environment.NewLine +
-				"    public class ");
+				$"[{TestFrameworkAbstraction.GetTestClassAttribute(testFramework)}]" + Environment.NewLine +
+				"public class ");
 			builder.Append(className);
 			builder.Append(
 				"Tests" + Environment.NewLine +
-				"    {" + Environment.NewLine);
+				"{" + Environment.NewLine);
 			if (mockFramework == MockFramework.Moq)
 			{
-				builder.Append("        private MockRepository mockRepository;" + Environment.NewLine);
+				builder.Append("private MockRepository mockRepository;" + Environment.NewLine);
 
 				if (mockFields.Count > 0)
 				{
@@ -387,23 +684,23 @@ namespace UnitTestBoilerplate
 			{
 				if (mockFramework == MockFramework.SimpleStubs)
 				{
-					builder.AppendLine($"        private {field.TypeName} {field.Name};");
+					builder.AppendLine($"private {field.TypeName} {field.Name};");
 				}
 				else
 				{
-					builder.AppendLine($"        private Mock<{field.TypeName}> {field.Name};");
+					builder.AppendLine($"private Mock<{field.TypeName}> {field.Name};");
 				}
 			}
 
 			builder.Append(
 				Environment.NewLine +
-				$"        [{TestFrameworkAbstraction.GetTestInitializeAttribute(testFramework)}]" + Environment.NewLine +
-				"        public void TestInitialize()" + Environment.NewLine +
-				"        {" + Environment.NewLine);
+				$"[{TestFrameworkAbstraction.GetTestInitializeAttribute(testFramework)}]" + Environment.NewLine +
+				"public void TestInitialize()" + Environment.NewLine +
+				"{" + Environment.NewLine);
 
 			if (mockFramework == MockFramework.Moq)
 			{
-				builder.AppendLine("            this.mockRepository = new MockRepository(MockBehavior.Strict);");
+				builder.AppendLine("this.mockRepository = new MockRepository(MockBehavior.Strict);");
 
 				if (mockFields.Count > 0)
 				{
@@ -424,39 +721,39 @@ namespace UnitTestBoilerplate
 					fieldCreationStatement = $"this.mockRepository.Create<{field.TypeName}>()";
 				}
 
-				builder.AppendLine($"            this.{field.Name} = {fieldCreationStatement};");
+				builder.AppendLine($"this.{field.Name} = {fieldCreationStatement};");
 			}
 
 			builder.Append(
-				"        }" + Environment.NewLine +
+				"}" + Environment.NewLine +
 				Environment.NewLine);
 
 			if (mockFramework == MockFramework.Moq)
 			{
 				builder.Append(
-					$"        [{TestFrameworkAbstraction.GetTestCleanupAttribute(testFramework)}]" + Environment.NewLine +
-					"        public void TestCleanup()" + Environment.NewLine +
-					"        {" + Environment.NewLine +
-					"            this.mockRepository.VerifyAll();" + Environment.NewLine +
-					"        }" + Environment.NewLine +
+					$"[{TestFrameworkAbstraction.GetTestCleanupAttribute(testFramework)}]" + Environment.NewLine +
+					"public void TestCleanup()" + Environment.NewLine +
+					"{" + Environment.NewLine +
+					"this.mockRepository.VerifyAll();" + Environment.NewLine +
+					"}" + Environment.NewLine +
 					Environment.NewLine);
 			}
 
 			builder.Append(
-				$"        [{TestFrameworkAbstraction.GetTestMethodAttribute(testFramework)}]" + Environment.NewLine +
-				"        public void TestMethod1()" + Environment.NewLine +
-				"        {" + Environment.NewLine +
-				"            " + Environment.NewLine +
-				"            " + Environment.NewLine);
+				$"[{TestFrameworkAbstraction.GetTestMethodAttribute(testFramework)}]" + Environment.NewLine +
+				"public void TestMethod1()" + Environment.NewLine +
+				"{" + Environment.NewLine +
+				"" + Environment.NewLine +
+				"" + Environment.NewLine);
 
-			builder.AppendLine($"            {className} {classVariableName} = this.Create{pascalCaseShortClassName}();");
-			builder.AppendLine("            ");
-			builder.AppendLine("            ");
-			builder.AppendLine("        }");
+			builder.AppendLine($"{className} {classVariableName} = this.Create{pascalCaseShortClassName}();");
+			builder.AppendLine("");
+			builder.AppendLine("");
+			builder.AppendLine("}");
 			builder.AppendLine();
-			builder.AppendLine($"        private {className} Create{pascalCaseShortClassName}()");
-			builder.AppendLine("        {");
-			builder.Append($"            return new {className}");
+			builder.AppendLine($"private {className} Create{pascalCaseShortClassName}()");
+			builder.AppendLine("{");
+			builder.Append($"return new {className}");
 
 			if (constructorTypes.Count > 0)
 			{
@@ -479,7 +776,7 @@ namespace UnitTestBoilerplate
 						mockReferenceStatement = $"this.mock{constructorType.TypeBaseName}.Object";
 					}
 
-					builder.Append($"                {mockReferenceStatement}");
+					builder.Append($"    {mockReferenceStatement}");
 
 					if (i < constructorTypes.Count - 1)
 					{
@@ -497,7 +794,7 @@ namespace UnitTestBoilerplate
 			if (properties.Count > 0)
 			{
 				builder.AppendLine();
-				builder.AppendLine("            {");
+				builder.AppendLine("{");
 
 				foreach (InjectableProperty property in properties)
 				{
@@ -511,18 +808,23 @@ namespace UnitTestBoilerplate
 						mockReferenceStatement = $"this.mock{property.TypeBaseName}.Object";
 					}
 
-					builder.AppendLine($"                {property.Name} = {mockReferenceStatement},");
+					builder.AppendLine($"{property.Name} = {mockReferenceStatement},");
 				}
 
-				builder.Append(@"            }");
+				builder.Append(@"}");
 			}
 
 			builder.AppendLine(";");
-			builder.AppendLine("        }");
-			builder.AppendLine("    }");
+			builder.AppendLine("}");
+			builder.AppendLine("}");
 			builder.AppendLine("}");
 
-			return builder.ToString();
+			SyntaxTree tree = CSharpSyntaxTree.ParseText(builder.ToString());
+			SyntaxNode formattedNode = Formatter.Format(tree.GetRoot(), CreateUnitTestBoilerplateCommandPackage.VisualStudioWorkspace);
+
+			return formattedNode.ToString();
+
+			//return builder.ToString();
 		}
 
 		private void HandleError(string message)

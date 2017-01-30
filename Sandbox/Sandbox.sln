@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26127.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandboxClasses", "Classes\SandboxClasses.csproj", "{C858AB02-55A4-4F5A-950F-6F403912777F}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandboxNoFrameworkTestCases", "NoFrameworkTestCases\SandboxNoFrameworkTestCases.csproj", "{9EDC35D0-82E1-4C6F-8D5E-A2F1F3177C83}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandboxNUnitUwpTestCases", "NUnitUwpTestCases\SandboxNUnitUwpTestCases.csproj", "{54446DDB-6661-43D8-B02C-FA4081D4EFE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandboxAutoMoqTestCases", "SandboxAutoMoqTestCases\SandboxAutoMoqTestCases.csproj", "{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,6 +125,22 @@ Global
 		{54446DDB-6661-43D8-B02C-FA4081D4EFE3}.Release|x64.Build.0 = Release|x64
 		{54446DDB-6661-43D8-B02C-FA4081D4EFE3}.Release|x86.ActiveCfg = Release|x86
 		{54446DDB-6661-43D8-B02C-FA4081D4EFE3}.Release|x86.Build.0 = Release|x86
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Debug|ARM.Build.0 = Debug|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Debug|x64.Build.0 = Debug|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Debug|x86.Build.0 = Debug|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Release|ARM.ActiveCfg = Release|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Release|ARM.Build.0 = Release|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Release|x64.ActiveCfg = Release|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Release|x64.Build.0 = Release|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Release|x86.ActiveCfg = Release|Any CPU
+		{CF35042F-B6DB-42B2-96E8-46FA5F114B9E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

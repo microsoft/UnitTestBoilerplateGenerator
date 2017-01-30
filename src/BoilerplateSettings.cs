@@ -7,23 +7,37 @@ using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Settings;
 using Newtonsoft.Json;
+using System.ComponentModel.Composition;
 
 namespace UnitTestBoilerplate
 {
-	public static class Settings
+	// TODO: Migrate from StaticBoilerplateSettings to this
+	[PartCreationPolicy(CreationPolicy.Shared)]
+	[Export(typeof(IBoilerplateSettings))]
+	public class BoilerplateSettings : IBoilerplateSettings
 	{
 		private const string CollectionPath = "UnitTestBoilerplateGenerator";
 
 		private const string TestProjectsKey = "TestProjectsDictionary";
 
-		private static readonly WritableSettingsStore Store;
+		private readonly WritableSettingsStore Store;
 
 		// Key is the solution path and value is the last used unit test project for the solution.
-		private static readonly Dictionary<string, string> TestProjectsDictionary;
+		private readonly Dictionary<string, string> TestProjectsDictionary;
 
-		static Settings()
+		//[ImportingConstructor]
+		//public Encouragements(SVsServiceProvider vsServiceProvider)
+		//{
+		//	var shellSettingsManager = new ShellSettingsManager(vsServiceProvider);
+		//	writableSettingsStore = shellSettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+
+		//	LoadSettings();
+		//}
+
+		[ImportingConstructor]
+		public BoilerplateSettings(SVsServiceProvider vsServiceProvider)
 		{
-			SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
+			SettingsManager settingsManager = new ShellSettingsManager(vsServiceProvider);
 			Store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
 			Store.CreateCollection(CollectionPath);
 
@@ -46,13 +60,13 @@ namespace UnitTestBoilerplate
 			}
 		}
 
-		public static void SaveSelectedTestProject(string solutionPath, string testProjectPath)
+		public void SaveSelectedTestProject(string solutionPath, string testProjectPath)
 		{
 			TestProjectsDictionary[solutionPath] = testProjectPath;
 			Store.SetString(CollectionPath, TestProjectsKey, JsonConvert.SerializeObject(TestProjectsDictionary));
 		}
 
-		public static string GetLastSelectedProject(string solutionPath)
+		public string GetLastSelectedProject(string solutionPath)
 		{
 			string result;
 			if (TestProjectsDictionary.TryGetValue(solutionPath, out result))

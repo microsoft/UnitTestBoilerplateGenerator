@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace UnitTestBoilerplate
 {
-	public enum MockFramework
+	public enum TemplateType
 	{
-		Unknown,
-		Moq,
-		AutoMoq,
-		SimpleStubs
+		File,
+		MockFieldDeclaration,
+		MockFieldInitialization,
+		MockObjectReference
 	}
 }

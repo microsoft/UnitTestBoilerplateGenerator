@@ -82,7 +82,17 @@
     </Compile>
     <Compile Include="CreateUnitTestBoilerplateViewModel.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="IBoilerplateSettings.cs" />
     <Compile Include="MockFrameworkAbstraction.cs" />
+    <Compile Include="OptionsDialogPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsDialogPageControl.xaml.cs">
+      <DependentUpon>OptionsDialogPageControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OptionsDialogViewModel.cs" />
+    <Compile Include="StaticBoilerplateSettings.cs" />
+    <Compile Include="TemplateType.cs" />
     <Compile Include="TestFrameworkAbstraction.cs" />
     <Compile Include="InjectableType.cs" />
     <Compile Include="InjectableProperty.cs" />
@@ -90,8 +100,9 @@
     <Compile Include="MockFramework.cs" />
     <Compile Include="ProjectItemSummary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="BoilerplateSettings.cs" />
     <Compile Include="TestFramework.cs" />
+    <Compile Include="TestGenerationContext.cs" />
     <Compile Include="TestProject.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
@@ -112,6 +123,14 @@
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
     </VSCTCompile>
+    <EmbeddedResource Include="DefaultTemplates\Moq\MockFieldDeclaration.txt" />
+    <EmbeddedResource Include="DefaultTemplates\Moq\MockFieldInitialization.txt" />
+    <EmbeddedResource Include="DefaultTemplates\Moq\File.txt" />
+    <EmbeddedResource Include="DefaultTemplates\Moq\MockObjectReference.txt" />
+    <EmbeddedResource Include="DefaultTemplates\SimpleStubs\MockFieldDeclaration.txt" />
+    <EmbeddedResource Include="DefaultTemplates\SimpleStubs\File.txt" />
+    <EmbeddedResource Include="DefaultTemplates\SimpleStubs\MockFieldInitialization.txt" />
+    <EmbeddedResource Include="DefaultTemplates\SimpleStubs\MockObjectReference.txt" />
     <Content Include="index.html" />
     <Content Include="Resources\CreateUnitTestBoilerplateCommand.png" />
     <Content Include="Resources\CreateUnitTestBoilerplateCommandPackage.ico" />
@@ -404,6 +423,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="CreateUnitTestBoilerplateDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OptionsDialogPageControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

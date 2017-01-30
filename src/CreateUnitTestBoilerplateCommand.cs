@@ -16,6 +16,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
+using Microsoft.VisualStudio.ComponentModelHost;
 
 namespace UnitTestBoilerplate
 {
@@ -100,7 +101,10 @@ namespace UnitTestBoilerplate
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            var dialog = new CreateUnitTestBoilerplateDialog();
+			//var componentModel = (IComponentModel)this.ServiceProvider.GetService(typeof(SComponentModel));
+			//var settings = componentModel.DefaultExportProvider.GetExportedValue<IBoilerplateSettings>();
+
+			var dialog = new CreateUnitTestBoilerplateDialog();
 			dialog.ShowModal();
         }
     }

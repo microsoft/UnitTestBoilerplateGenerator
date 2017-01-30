@@ -1,0 +1,41 @@
+﻿$UsingStatements$
+
+namespace $Namespace$
+{
+	[$TestClassAttribute$]
+	public class $ClassName$Tests
+	{
+		private MockRepository mockRepository;
+
+		$MockFieldDeclarations$
+
+		[$TestInitializeAttribute$]
+		public void TestInitialize()
+		{
+			this.mockRepository = new MockRepository(MockBehavior.Strict);
+
+			$MockFieldInitializations$
+		}
+
+		[$TestCleanupAttribute$]
+		public void TestCleanup()
+		{
+			this.mockRepository.VerifyAll();
+		}
+
+		[$TestMethodAttribute$]
+		public void TestMethod1()
+		{
+			
+			
+			$ClassName$ $ClassNameShortLower$ = this.Create$ClassNameShort$();
+
+
+		}
+
+		private $ClassName$ Create$ClassNameShort$()
+		{
+			return $ExplicitConstructor$;
+		}
+	}
+}

@@ -1,0 +1,31 @@
+﻿$UsingStatements$
+
+namespace $Namespace$
+{
+	[$TestClassAttribute$]
+	public class $ClassName$Tests
+	{
+		$MockFieldDeclarations$
+
+		[$TestInitializeAttribute$]
+		public void TestInitialize()
+		{
+			$MockFieldInitializations$
+		}
+
+		[$TestMethodAttribute$]
+		public void TestMethod1()
+		{
+			
+			
+			$ClassName$ $ClassNameShortLower$ = this.Create$ClassNameShort$();
+
+
+		}
+
+		private $ClassName$ Create$ClassNameShort$()
+		{
+			return $ExplicitConstructor$;
+		}
+	}
+}
