@@ -1,0 +1,14 @@
+﻿<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <AssemblyName>UnitBoilerplate.Sandbox.Classes.AspCore</AssemblyName>
+    <RootNamespace>UnitBoilerplate.Sandbox.Classes.AspCore</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0-beta1" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="1.0.3" />
+  </ItemGroup>
+</Project>
