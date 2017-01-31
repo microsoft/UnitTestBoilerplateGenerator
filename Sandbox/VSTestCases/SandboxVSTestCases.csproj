@@ -73,10 +73,6 @@
       <Project>{c858ab02-55a4-4f5a-950f-6f403912777f}</Project>
       <Name>SandboxClasses</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SandboxClassesAspCore\SandboxClassesAspCore.csproj">
-      <Project>{b369978d-9132-4fd6-8fad-96f716752ca6}</Project>
-      <Name>SandboxClassesAspCore</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
