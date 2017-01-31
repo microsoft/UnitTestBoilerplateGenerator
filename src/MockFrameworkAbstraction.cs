@@ -19,6 +19,8 @@ namespace UnitTestBoilerplate
 					return new List<string> { "AutoMoq", "Moq" };
 				case MockFramework.SimpleStubs:
 					return new List<string>();
+				case MockFramework.NSubstitute:
+					return new List<string> { "NSubstitute" };
 				default:
 					throw new ArgumentOutOfRangeException(nameof(framework));
 			}

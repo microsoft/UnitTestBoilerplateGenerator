@@ -132,6 +132,8 @@ namespace UnitTestBoilerplate
 						break;
 					case "etg.simplestubs":
 					    return MockFramework.SimpleStubs;
+					case "nsubstitute":
+						return MockFramework.NSubstitute;
 				}
 			}
 

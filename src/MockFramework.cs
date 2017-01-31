@@ -11,6 +11,7 @@ namespace UnitTestBoilerplate
 		Unknown,
 		Moq,
 		AutoMoq,
-		SimpleStubs
+		SimpleStubs,
+		NSubstitute
 	}
 }
