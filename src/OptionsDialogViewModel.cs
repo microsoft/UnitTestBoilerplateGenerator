@@ -18,6 +18,7 @@ namespace UnitTestBoilerplate
 			{
 				new ComboChoice<MockFramework>(MockFramework.Moq, "Moq"),
 				new ComboChoice<MockFramework>(MockFramework.AutoMoq, "AutoMoq"),
+				new ComboChoice<MockFramework>(MockFramework.NSubstitute, "NSubstitute"),
 				new ComboChoice<MockFramework>(MockFramework.SimpleStubs, "SimpleStubs"),
 				new ComboChoice<MockFramework>(MockFramework.Unknown, "Unknown"),
 			};
