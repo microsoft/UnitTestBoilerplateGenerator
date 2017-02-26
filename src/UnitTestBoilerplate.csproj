@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="CreateUnitTestBoilerplateViewModel.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="TypeDescriptor.cs" />
     <Compile Include="IBoilerplateSettings.cs" />
     <Compile Include="MockFrameworkAbstraction.cs" />
     <Compile Include="OptionsDialogPage.cs">

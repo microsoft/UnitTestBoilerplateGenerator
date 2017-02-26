@@ -234,6 +234,9 @@ namespace UnitTestBoilerplate
 				this.HandleError("Could not find class namespace.");
 			}
 
+			MockFramework mockFramework = Utilities.FindMockFramework(this.SelectedProject.Project);
+			TestFramework testFramework = Utilities.FindTestFramework(this.SelectedProject.Project);
+
 			// Find property injection types
 			var injectableProperties = new List<InjectableProperty>();
 
@@ -250,7 +253,12 @@ namespace UnitTestBoilerplate
 					{
 						if (attribute.AttributeClass.ToString() == "Microsoft.Practices.Unity.DependencyAttribute")
 						{
-							injectableProperties.Add(new InjectableProperty(property.Name, property.Type.Name, property.Type.ContainingNamespace.ToString()));
+							var injectableProperty = InjectableProperty.TryCreateInjectableProperty(property.Name, property.Type.ToString(), mockFramework);
+							if (injectableProperty != null)
+							{
+								injectableProperties.Add(injectableProperty);
+							}
+							//injectableProperties.Add(new InjectableProperty(property.Name, property.Type.ToString(), mockFramework));
 						}
 					}
 				}
@@ -268,20 +276,7 @@ namespace UnitTestBoilerplate
 
 				foreach (SyntaxNode node in parameterNodes)
 				{
-					SyntaxNode identifierNode = node.ChildNodes().FirstOrDefault(n => n.Kind() == SyntaxKind.IdentifierName);
-					if (identifierNode != null)
-					{
-						SymbolInfo symbolInfo = semanticModel.GetSymbolInfo(identifierNode);
-
-						constructorInjectionTypes.Add(
-							new InjectableType(
-								symbolInfo.Symbol.Name,
-								symbolInfo.Symbol.ContainingNamespace.ToString()));
-					}
-					else
-					{
-						constructorInjectionTypes.Add(null);
-					}
+					constructorInjectionTypes.Add(InjectableType.TryCreateInjectableTypeFromParameterNode(node, semanticModel, mockFramework));
 				}
 			}
 
@@ -304,10 +299,12 @@ namespace UnitTestBoilerplate
 			List<InjectableType> injectedTypes = new List<InjectableType>(injectableProperties);
 			injectedTypes.AddRange(constructorInjectionTypes.Where(t => t != null));
 
+			GenerateMockNames(injectedTypes);
+
 			// Compile information needed to generate the test
 			var context = new TestGenerationContext(
-				Utilities.FindMockFramework(this.SelectedProject.Project),
-				Utilities.FindTestFramework(this.SelectedProject.Project),
+				mockFramework,
+				testFramework,
 				unitTestNamespace,
 				this.className,
 				namespaceDeclarationSyntax.Name.ToString(),
@@ -433,7 +430,12 @@ namespace UnitTestBoilerplate
 			namespaces.AddRange(MockFrameworkAbstraction.GetUsings(context.MockFramework));
 			namespaces.Add(TestFrameworkAbstraction.GetUsing(context.TestFramework));
 			namespaces.Add(context.ClassNamespace);
-			namespaces.AddRange(context.InjectedTypes.Select(t => t.TypeNamespace));
+
+			foreach (InjectableType injectedType in context.InjectedTypes)
+			{
+				namespaces.AddRange(injectedType.TypeNamespaces);
+			}
+
 			namespaces = namespaces.Distinct().ToList();
 			namespaces.Sort(StringComparer.Ordinal);
 
@@ -466,9 +468,7 @@ namespace UnitTestBoilerplate
 			for (int i = 0; i < context.InjectedTypes.Count; i++)
 			{
 				InjectableType injectedType = context.InjectedTypes[i];
-				string line = template
-					.Replace("$InterfaceName$", injectedType.TypeName)
-					.Replace("$InterfaceNameBase$", injectedType.TypeBaseName);
+				string line = ReplaceInterfaceTokens(template, injectedType);
 
 				builder.Append(line);
 
@@ -498,9 +498,7 @@ namespace UnitTestBoilerplate
 					else
 					{
 						string template = StaticBoilerplateSettings.GetTemplate(context.MockFramework, TemplateType.MockObjectReference);
-						mockReferenceStatement = template
-							.Replace("$InterfaceName$", constructorType.TypeName)
-							.Replace("$InterfaceNameBase$", constructorType.TypeBaseName);
+						mockReferenceStatement = ReplaceInterfaceTokens(template, constructorType);
 					}
 
 					builder.Append($"{currentIndent}    {mockReferenceStatement}");
@@ -526,14 +524,44 @@ namespace UnitTestBoilerplate
 				foreach (InjectableProperty property in context.Properties)
 				{
 					string template = StaticBoilerplateSettings.GetTemplate(context.MockFramework, TemplateType.MockObjectReference);
-					string mockReferenceStatement = template
-						.Replace("$InterfaceName$", property.TypeName)
-						.Replace("$InterfaceNameBase$", property.TypeBaseName);
+					string mockReferenceStatement = ReplaceInterfaceTokens(template, property);
 
-					builder.AppendLine($"{property.Name} = {mockReferenceStatement},");
+					builder.AppendLine($"{property.PropertyName} = {mockReferenceStatement},");
 				}
 
 				builder.Append(@"}");
+			}
+		}
+
+		private static string ReplaceInterfaceTokens(string template, InjectableType injectableType)
+		{
+			return template
+				.Replace("$InterfaceName$", injectableType.TypeName)
+				.Replace("$InterfaceNameBase$", injectableType.TypeBaseName)
+				.Replace("$InterfaceType$", injectableType.ToString())
+				.Replace("$InterfaceMockName$", injectableType.MockName);
+		}
+
+		private static void GenerateMockNames(List<InjectableType> injectedTypes)
+		{
+			// Group them by TypeBaseName to see which ones need a more unique name
+			var results = from t in injectedTypes
+						  group t by t.TypeBaseName into g
+						  select new { TypeBaseName = g.Key, Types = g.ToList() };
+
+			foreach (var result in results)
+			{
+				if (result.Types.Count == 1)
+				{
+					result.Types[0].MockName = result.TypeBaseName;
+				}
+				else
+				{
+					foreach (var injectedType in result.Types)
+					{
+						injectedType.MockName = injectedType.LongMockName;
+					}
+				}
 			}
 		}
 
@@ -588,236 +616,6 @@ namespace UnitTestBoilerplate
 		{
 			string shortName = GetShortClassName(className);
 			return shortName.Substring(0, 1).ToLowerInvariant() + shortName.Substring(1);
-		}
-
-		private string GenerateUnitTestContentsOld(
-			string unitTestNamespace,
-			string className,
-			string classNamespace,
-			IList<InjectableProperty> properties,
-			IList<InjectableType> constructorTypes)
-		{
-			TestFramework testFramework = Utilities.FindTestFramework(this.SelectedProject.Project);
-			MockFramework mockFramework = Utilities.FindMockFramework(this.SelectedProject.Project);
-
-			if (mockFramework == MockFramework.Unknown)
-			{
-				mockFramework = MockFramework.Moq;
-			}
-
-			string pascalCaseShortClassName = null;
-			foreach (string suffix in ClassSuffixes)
-			{
-				if (className.EndsWith(suffix))
-				{
-					pascalCaseShortClassName = suffix;
-					break;
-				}
-			}
-
-			if (pascalCaseShortClassName == null)
-			{
-				pascalCaseShortClassName = className;
-			}
-
-			string classVariableName = pascalCaseShortClassName.Substring(0, 1).ToLowerInvariant() + pascalCaseShortClassName.Substring(1);
-
-			List<InjectableType> injectedTypes = new List<InjectableType>(properties);
-			injectedTypes.AddRange(constructorTypes.Where(t => t != null));
-
-			var mockFields = new List<MockField>();
-			foreach (InjectableType injectedType in injectedTypes)
-			{
-				mockFields.Add(
-					new MockField(
-						mockFramework == MockFramework.SimpleStubs ? "stub" + injectedType.TypeBaseName : "mock" + injectedType.TypeBaseName,
-						mockFramework == MockFramework.SimpleStubs ? "Stub" + injectedType.TypeName : injectedType.TypeName));
-			}
-
-			List<string> namespaces = new List<string>();
-			namespaces.AddRange(MockFrameworkAbstraction.GetUsings(mockFramework));
-			namespaces.Add(TestFrameworkAbstraction.GetUsing(testFramework));
-			namespaces.Add(classNamespace);
-			namespaces.AddRange(injectedTypes.Select(t => t.TypeNamespace));
-			namespaces = namespaces.Distinct().ToList();
-			namespaces.Sort(StringComparer.Ordinal);
-
-			StringBuilder builder = new StringBuilder();
-
-			foreach (string ns in namespaces)
-			{
-				builder.AppendLine($"using {ns};");
-			}
-
-			builder.Append(
-				Environment.NewLine +
-				"namespace ");
-
-			builder.Append(unitTestNamespace);
-			builder.Append(
-				Environment.NewLine +
-				"{" + Environment.NewLine +
-				$"[{TestFrameworkAbstraction.GetTestClassAttribute(testFramework)}]" + Environment.NewLine +
-				"public class ");
-			builder.Append(className);
-			builder.Append(
-				"Tests" + Environment.NewLine +
-				"{" + Environment.NewLine);
-			if (mockFramework == MockFramework.Moq)
-			{
-				builder.Append("private MockRepository mockRepository;" + Environment.NewLine);
-
-				if (mockFields.Count > 0)
-				{
-					builder.AppendLine();
-				}
-			}
-
-			foreach (MockField field in mockFields)
-			{
-				if (mockFramework == MockFramework.SimpleStubs)
-				{
-					builder.AppendLine($"private {field.TypeName} {field.Name};");
-				}
-				else
-				{
-					builder.AppendLine($"private Mock<{field.TypeName}> {field.Name};");
-				}
-			}
-
-			builder.Append(
-				Environment.NewLine +
-				$"[{TestFrameworkAbstraction.GetTestInitializeAttribute(testFramework)}]" + Environment.NewLine +
-				"public void TestInitialize()" + Environment.NewLine +
-				"{" + Environment.NewLine);
-
-			if (mockFramework == MockFramework.Moq)
-			{
-				builder.AppendLine("this.mockRepository = new MockRepository(MockBehavior.Strict);");
-
-				if (mockFields.Count > 0)
-				{
-					builder.AppendLine();
-				}
-			}
-
-			foreach (MockField field in mockFields)
-			{
-				string fieldCreationStatement;
-
-				if (mockFramework == MockFramework.SimpleStubs)
-				{
-					fieldCreationStatement = $"new {field.TypeName}()";
-				}
-				else
-				{
-					fieldCreationStatement = $"this.mockRepository.Create<{field.TypeName}>()";
-				}
-
-				builder.AppendLine($"this.{field.Name} = {fieldCreationStatement};");
-			}
-
-			builder.Append(
-				"}" + Environment.NewLine +
-				Environment.NewLine);
-
-			if (mockFramework == MockFramework.Moq)
-			{
-				builder.Append(
-					$"[{TestFrameworkAbstraction.GetTestCleanupAttribute(testFramework)}]" + Environment.NewLine +
-					"public void TestCleanup()" + Environment.NewLine +
-					"{" + Environment.NewLine +
-					"this.mockRepository.VerifyAll();" + Environment.NewLine +
-					"}" + Environment.NewLine +
-					Environment.NewLine);
-			}
-
-			builder.Append(
-				$"[{TestFrameworkAbstraction.GetTestMethodAttribute(testFramework)}]" + Environment.NewLine +
-				"public void TestMethod1()" + Environment.NewLine +
-				"{" + Environment.NewLine +
-				"" + Environment.NewLine +
-				"" + Environment.NewLine);
-
-			builder.AppendLine($"{className} {classVariableName} = this.Create{pascalCaseShortClassName}();");
-			builder.AppendLine("");
-			builder.AppendLine("");
-			builder.AppendLine("}");
-			builder.AppendLine();
-			builder.AppendLine($"private {className} Create{pascalCaseShortClassName}()");
-			builder.AppendLine("{");
-			builder.Append($"return new {className}");
-
-			if (constructorTypes.Count > 0)
-			{
-				builder.AppendLine("(");
-
-				for (int i = 0; i < constructorTypes.Count; i++)
-				{
-					string mockReferenceStatement;
-					InjectableType constructorType = constructorTypes[i];
-					if (constructorType == null)
-					{
-						mockReferenceStatement = "TODO";
-					}
-					else if (mockFramework == MockFramework.SimpleStubs)
-					{
-						mockReferenceStatement = $"this.stub{constructorType.TypeBaseName}";
-					}
-					else
-					{
-						mockReferenceStatement = $"this.mock{constructorType.TypeBaseName}.Object";
-					}
-
-					builder.Append($"    {mockReferenceStatement}");
-
-					if (i < constructorTypes.Count - 1)
-					{
-						builder.AppendLine(",");
-					}
-				}
-
-				builder.Append(")");
-			}
-			else if (properties.Count == 0)
-			{
-				builder.Append("()");
-			}
-
-			if (properties.Count > 0)
-			{
-				builder.AppendLine();
-				builder.AppendLine("{");
-
-				foreach (InjectableProperty property in properties)
-				{
-					string mockReferenceStatement;
-					if (mockFramework == MockFramework.SimpleStubs)
-					{
-						mockReferenceStatement = $"this.stub{property.TypeBaseName}";
-					}
-					else
-					{
-						mockReferenceStatement = $"this.mock{property.TypeBaseName}.Object";
-					}
-
-					builder.AppendLine($"{property.Name} = {mockReferenceStatement},");
-				}
-
-				builder.Append(@"}");
-			}
-
-			builder.AppendLine(";");
-			builder.AppendLine("}");
-			builder.AppendLine("}");
-			builder.AppendLine("}");
-
-			SyntaxTree tree = CSharpSyntaxTree.ParseText(builder.ToString());
-			SyntaxNode formattedNode = Formatter.Format(tree.GetRoot(), CreateUnitTestBoilerplateCommandPackage.VisualStudioWorkspace);
-
-			return formattedNode.ToString();
-
-			//return builder.ToString();
 		}
 
 		private void HandleError(string message)

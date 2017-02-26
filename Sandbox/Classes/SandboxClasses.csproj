@@ -35,12 +35,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AbstractClass.cs" />
+    <Compile Include="Cases\ClassWithGenericInterface.cs" />
     <Compile Include="Cases\ClassWithIntCtorParam.cs" />
     <Compile Include="Cases\ClassWithNonInterfaceCtorParam.cs" />
     <Compile Include="Cases\ConstructorInjectedClassMultiple.cs" />
     <Compile Include="Cases\ConstructorInjectedClassSingle.cs" />
     <Compile Include="Cases\DerivedPropertyInjectedClass.cs" />
     <Compile Include="Cases\SomeService.cs" />
+    <Compile Include="IGenericInterface.cs" />
     <Compile Include="IInterface3.cs" />
     <Compile Include="IInterface4.cs" />
     <Compile Include="Cases\MixedInjectedClassMultiple.cs" />

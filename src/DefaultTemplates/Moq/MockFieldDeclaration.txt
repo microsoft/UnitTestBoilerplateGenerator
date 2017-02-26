@@ -1,1 +1,1 @@
-﻿private Mock<$InterfaceName$> mock$InterfaceNameBase$;
+﻿private Mock<$InterfaceType$> mock$InterfaceMockName$;

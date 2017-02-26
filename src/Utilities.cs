@@ -18,10 +18,7 @@ namespace UnitTestBoilerplate
     {
         public static string GetTypeBaseName(string typeName)
         {
-            if (typeName.Length >= 2 &&
-                typeName.StartsWith("I", StringComparison.Ordinal) &&
-                typeName[1] >= 'A' &&
-                typeName[1] <= 'Z')
+            if (IsInterfaceName(typeName))
             {
                 return typeName.Substring(1);
             }
@@ -29,7 +26,36 @@ namespace UnitTestBoilerplate
             return typeName;
         }
 
-        public static IEnumerable<ProjectItemSummary> GetSelectedFiles(DTE2 dte)
+		/// <summary>
+		/// Gets a component for a longer name given a type component.
+		/// </summary>
+		/// <param name="typeName">The name of a type, this might be an interface or type keyword that came as a generic
+		/// type argument.</param>
+		/// <returns>The PascalCased type name component.</returns>
+		public static string GetTypeNameComponent(string typeName)
+		{
+			if (IsInterfaceName(typeName))
+			{
+				return typeName.Substring(1);
+			}
+
+			if (char.IsLower(typeName[0]))
+			{
+				return typeName.Substring(0, 1).ToUpperInvariant() + typeName.Substring(1);
+			}
+
+			return typeName;
+		}
+
+		private static bool IsInterfaceName(string typeName)
+		{
+			return typeName.Length >= 2 &&
+							typeName.StartsWith("I", StringComparison.Ordinal) &&
+							typeName[1] >= 'A' &&
+							typeName[1] <= 'Z';
+		}
+
+		public static IEnumerable<ProjectItemSummary> GetSelectedFiles(DTE2 dte)
         {
             var items = (Array)dte.ToolWindows.SolutionExplorer.SelectedItems;
 

@@ -1,1 +1,1 @@
-﻿this.sub$InterfaceNameBase$
+﻿this.sub$InterfaceMockName$

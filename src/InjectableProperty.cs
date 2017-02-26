@@ -8,11 +8,21 @@ namespace UnitTestBoilerplate
 {
     public class InjectableProperty : InjectableType
     {
-        public InjectableProperty(string name, string typeName, string typeNamespace) : base(typeName, typeNamespace)
+        private InjectableProperty(string propertyName, string fullTypeString) : base(fullTypeString)
         {
-            this.Name = name;
+            this.PropertyName = propertyName;
         }
 
-        public string Name { get; }
+        public string PropertyName { get; }
+
+		public static InjectableProperty TryCreateInjectableProperty(string propertyName, string fullTypeString, MockFramework mockFramework)
+		{
+			if (!MockFrameworkAbstraction.SupportsGenerics(mockFramework) && fullTypeString.Contains("<"))
+			{
+				return null;
+			}
+
+			return new InjectableProperty(propertyName, fullTypeString);
+		}
     }
 }

@@ -1,1 +1,1 @@
-﻿this.sub$InterfaceNameBase$ = Substitute.For<$InterfaceName$>();
+﻿this.sub$InterfaceMockName$ = Substitute.For<$InterfaceType$>();

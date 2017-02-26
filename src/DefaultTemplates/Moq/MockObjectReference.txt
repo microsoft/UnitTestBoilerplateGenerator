@@ -1,1 +1,1 @@
-﻿this.mock$InterfaceNameBase$.Object
+﻿this.mock$InterfaceMockName$.Object

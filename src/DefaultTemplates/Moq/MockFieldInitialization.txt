@@ -1,1 +1,1 @@
-﻿this.mock$InterfaceNameBase$ = this.mockRepository.Create<$InterfaceName$>();
+﻿this.mock$InterfaceMockName$ = this.mockRepository.Create<$InterfaceType$>();

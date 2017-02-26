@@ -1,1 +1,1 @@
-﻿private $InterfaceName$ sub$InterfaceNameBase$;
+﻿private $InterfaceType$ sub$InterfaceMockName$;

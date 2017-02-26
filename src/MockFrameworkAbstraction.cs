@@ -25,5 +25,15 @@ namespace UnitTestBoilerplate
 					throw new ArgumentOutOfRangeException(nameof(framework));
 			}
 		}
+
+		public static bool SupportsGenerics(MockFramework framework)
+		{
+			if (framework == MockFramework.SimpleStubs)
+			{
+				return false;
+			}
+
+			return true;
+		}
 	}
 }
