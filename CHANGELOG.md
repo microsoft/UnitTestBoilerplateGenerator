@@ -12,6 +12,15 @@ on the official Visual Studio extension gallery.
 - Support for dependency properties from other IoC frameworks
 - Conform to user's current code styles (tabs, `this.` prefix)
 
+## 1.5.2
+**2017-02-26**
+- Added support for mocking generic interfaces.
+
+## 1.5.0
+**2017-01-30**
+- Switched to a template-based system, allowing users to change the generated code from the settings screen.
+- Added support for NSubstitute
+
 ## 1.4.5
 
 **2016-10-23**

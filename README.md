@@ -29,19 +29,20 @@ Right click an item in Solution Explorer and choose "Create Unit Test Boilerplat
 
 This will create a test class in the same relative path as the class in a specified unit test project.
 All the dependencies are mocked and saved as fields which are created fresh for each test via [TestInitialize].
-It also adds a helper method which will construct the class for you and pass in all of the mock dependencies.
-You can then call .Setup() and .Verify() on the mocks in your test methods. It also applies any user-specific
-formatting rules to the generated code.
 
 ![After Screenshot](AfterScreenshot.png)
 
-The mock repository is set up as Strict by default, which means that it expects every call to a mock object
-to have a .Setup() call for it. The [TestCleanup] method will call VerifyAll() for you at the end of every test:
-this ensures that all of the setups in any mock object have been invoked at least once.
+Each mocking framework has its own pattern.
 
-You can also customize the unit test output via templates:
+## Other features
+* Customize the unit test output via templates:
 
 ![Options Screenshot](OptionsScreenshot.png)
+
+* Supports mocking generic interfaces
+* Automatically brings in appropriate using statements
+* Applies any user-specific formatting rules to the generated code
+* Automatically detects which mocking library and test framework you're using
 
 See the [changelog](CHANGELOG.md) for changes and roadmap. If you'd like to see support for other mocking
 frameworks like Rhino Mocks or other IoC frameworks like Ninject, [open an issue](https://github.com/Microsoft/UnitTestBoilerplateGenerator/issues/new).
