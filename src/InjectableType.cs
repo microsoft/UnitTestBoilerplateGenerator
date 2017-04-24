@@ -11,8 +11,8 @@ namespace UnitTestBoilerplate
 	/// <summary>
 	/// Represents a type being injected into a class that we need to create mocks for.
 	/// </summary>
-    public class InjectableType : TypeDescriptor
-    {
+	public class InjectableType : TypeDescriptor
+	{
 		public InjectableType(string fullTypeString)
 			: base(fullTypeString)
 		{

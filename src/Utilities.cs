@@ -14,17 +14,17 @@ using Project = EnvDTE.Project;
 
 namespace UnitTestBoilerplate
 {
-    public static class Utilities
-    {
-        public static string GetTypeBaseName(string typeName)
-        {
-            if (IsInterfaceName(typeName))
-            {
-                return typeName.Substring(1);
-            }
+	public static class Utilities
+	{
+		public static string GetTypeBaseName(string typeName)
+		{
+			if (IsInterfaceName(typeName))
+			{
+				return typeName.Substring(1);
+			}
 
-            return typeName;
-        }
+			return typeName;
+		}
 
 		/// <summary>
 		/// Gets a component for a longer name given a type component.
@@ -56,78 +56,78 @@ namespace UnitTestBoilerplate
 		}
 
 		public static IEnumerable<ProjectItemSummary> GetSelectedFiles(DTE2 dte)
-        {
-            var items = (Array)dte.ToolWindows.SolutionExplorer.SelectedItems;
+		{
+			var items = (Array)dte.ToolWindows.SolutionExplorer.SelectedItems;
 
-            return items.Cast<UIHierarchyItem>().Select(i =>
-            {
-                var projectItem = i.Object as ProjectItem;
-                return new ProjectItemSummary(projectItem.FileNames[1], projectItem.ContainingProject.FileName);
-            });
-        }
+			return items.Cast<UIHierarchyItem>().Select(i =>
+			{
+				var projectItem = i.Object as ProjectItem;
+				return new ProjectItemSummary(projectItem.FileNames[1], projectItem.ContainingProject.FileName);
+			});
+		}
 
-        public static bool TryGetParentSyntax<T>(SyntaxNode syntaxNode, out T result)
-            where T : SyntaxNode
-        {
-            result = null;
+		public static bool TryGetParentSyntax<T>(SyntaxNode syntaxNode, out T result)
+			where T : SyntaxNode
+		{
+			result = null;
 
-            if (syntaxNode == null)
-            {
-                return false;
-            }
+			if (syntaxNode == null)
+			{
+				return false;
+			}
 
-            try
-            {
-                syntaxNode = syntaxNode.Parent;
+			try
+			{
+				syntaxNode = syntaxNode.Parent;
 
-                if (syntaxNode == null)
-                {
-                    return false;
-                }
+				if (syntaxNode == null)
+				{
+					return false;
+				}
 
-                if (syntaxNode.GetType() == typeof(T))
-                {
-                    result = syntaxNode as T;
-                    return true;
-                }
+				if (syntaxNode.GetType() == typeof(T))
+				{
+					result = syntaxNode as T;
+					return true;
+				}
 
-                return TryGetParentSyntax<T>(syntaxNode, out result);
-            }
-            catch
-            {
-                return false;
-            }
-        }
+				return TryGetParentSyntax<T>(syntaxNode, out result);
+			}
+			catch
+			{
+				return false;
+			}
+		}
 
-        public static IList<Project> GetProjects(DTE2 dte)
-        {
-            Projects projects = dte.Solution.Projects;
-            List<Project> list = new List<Project>();
-            var item = projects.GetEnumerator();
-            while (item.MoveNext())
-            {
-                var project = item.Current as Project;
-                if (project == null)
-                {
-                    continue;
-                }
+		public static IList<Project> GetProjects(DTE2 dte)
+		{
+			Projects projects = dte.Solution.Projects;
+			List<Project> list = new List<Project>();
+			var item = projects.GetEnumerator();
+			while (item.MoveNext())
+			{
+				var project = item.Current as Project;
+				if (project == null)
+				{
+					continue;
+				}
 
-                if (project.Kind == ProjectKinds.vsProjectKindSolutionFolder)
-                {
-                    list.AddRange(GetSolutionFolderProjects(project));
-                }
-                else
-                {
-                    list.Add(project);
-                }
-            }
+				if (project.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+				{
+					list.AddRange(GetSolutionFolderProjects(project));
+				}
+				else
+				{
+					list.Add(project);
+				}
+			}
 
-            return list;
-        }
+			return list;
+		}
 
-	    public static TestFramework FindTestFramework(Project project)
-	    {
-	        bool sawVSUsing = false;
+		public static TestFramework FindTestFramework(Project project)
+		{
+			bool sawVSUsing = false;
 
 			IList<string> references = GetProjectReferences(project);
 			foreach (string reference in references)
@@ -138,36 +138,36 @@ namespace UnitTestBoilerplate
 					case "nunit":
 						return TestFramework.NUnit;
 					case "microsoft.visualstudio.qualitytools.unittestframework":
-				        sawVSUsing = true;
-				        break;
+						sawVSUsing = true;
+						break;
 				}
 			}
 
-            // Sometimes there can be an auto-added reference to this library even when NUnit is used.
-            // We only conclude that VS is the framework if we don't see any others.
-	        if (sawVSUsing)
-	        {
-			    return TestFramework.VisualStudio;
-            }
+			// Sometimes there can be an auto-added reference to this library even when NUnit is used.
+			// We only conclude that VS is the framework if we don't see any others.
+			if (sawVSUsing)
+			{
+				return TestFramework.VisualStudio;
+			}
 
 			return TestFramework.Unknown;
-	    }
+		}
 
-	    public static MockFramework FindMockFramework(Project project)
-	    {
+		public static MockFramework FindMockFramework(Project project)
+		{
 			IList<string> references = GetProjectReferences(project);
 			bool hasMoqReference = false;
 			foreach (string reference in references)
 			{
-			    switch (reference.ToLowerInvariant())
-			    {
+				switch (reference.ToLowerInvariant())
+				{
 					case "automoq":
 						return MockFramework.AutoMoq;
 					case "moq":
 						hasMoqReference = true;
 						break;
 					case "etg.simplestubs":
-					    return MockFramework.SimpleStubs;
+						return MockFramework.SimpleStubs;
 					case "nsubstitute":
 						return MockFramework.NSubstitute;
 				}
@@ -181,12 +181,12 @@ namespace UnitTestBoilerplate
 			return MockFramework.Unknown;
 		}
 
-	    private static IList<string> GetProjectReferences(Project project)
-	    {
+		private static IList<string> GetProjectReferences(Project project)
+		{
 			XDocument document = XDocument.Load(project.FileName);
 			XNamespace ns = "http://schemas.microsoft.com/developer/msbuild/2003";
 
-		    var result = new List<string>();
+			var result = new List<string>();
 			foreach (XElement element in document.Descendants(ns + "Reference"))
 			{
 				XAttribute includeAttribute = element.Attribute("Include");
@@ -209,57 +209,57 @@ namespace UnitTestBoilerplate
 				}
 			}
 
-		    string projectJsonPath = Path.Combine(Path.GetDirectoryName(project.FileName), "project.json");
+			string projectJsonPath = Path.Combine(Path.GetDirectoryName(project.FileName), "project.json");
 
-		    if (File.Exists(projectJsonPath))
-		    {
-			    try
-			    {
-				    JObject projectObject = JObject.Parse(File.ReadAllText(projectJsonPath));
-				    var dependenciesObject = projectObject["dependencies"] as JObject;
-				    if (dependenciesObject != null)
-				    {
-					    foreach (var property in dependenciesObject)
-					    {
-						    if (!result.Contains(property.Key))
-						    {
-							    result.Add(property.Key);
-						    }
-					    }
-				    }
-			    }
-			    catch (JsonException exception)
-			    {
-				    throw new InvalidOperationException("Could not parse project.json to search for references.", exception);
-			    }
-		    }
+			if (File.Exists(projectJsonPath))
+			{
+				try
+				{
+					JObject projectObject = JObject.Parse(File.ReadAllText(projectJsonPath));
+					var dependenciesObject = projectObject["dependencies"] as JObject;
+					if (dependenciesObject != null)
+					{
+						foreach (var property in dependenciesObject)
+						{
+							if (!result.Contains(property.Key))
+							{
+								result.Add(property.Key);
+							}
+						}
+					}
+				}
+				catch (JsonException exception)
+				{
+					throw new InvalidOperationException("Could not parse project.json to search for references.", exception);
+				}
+			}
 
 			return result;
 		}
 
-        private static IEnumerable<Project> GetSolutionFolderProjects(Project solutionFolder)
-        {
-            List<Project> list = new List<Project>();
-            for (var i = 1; i <= solutionFolder.ProjectItems.Count; i++)
-            {
-                var subProject = solutionFolder.ProjectItems.Item(i).SubProject;
-                if (subProject == null)
-                {
-                    continue;
-                }
+		private static IEnumerable<Project> GetSolutionFolderProjects(Project solutionFolder)
+		{
+			List<Project> list = new List<Project>();
+			for (var i = 1; i <= solutionFolder.ProjectItems.Count; i++)
+			{
+				var subProject = solutionFolder.ProjectItems.Item(i).SubProject;
+				if (subProject == null)
+				{
+					continue;
+				}
 
-                // If this is another solution folder, do a recursive call, otherwise add
-                if (subProject.Kind == ProjectKinds.vsProjectKindSolutionFolder)
-                {
-                    list.AddRange(GetSolutionFolderProjects(subProject));
-                }
-                else
-                {
-                    list.Add(subProject);
-                }
-            }
+				// If this is another solution folder, do a recursive call, otherwise add
+				if (subProject.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+				{
+					list.AddRange(GetSolutionFolderProjects(subProject));
+				}
+				else
+				{
+					list.Add(subProject);
+				}
+			}
 
-            return list;
-        }
-    }
+			return list;
+		}
+	}
 }
