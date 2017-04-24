@@ -127,6 +127,8 @@ namespace UnitTestBoilerplate
 
 	    public static TestFramework FindTestFramework(Project project)
 	    {
+	        bool sawVSUsing = false;
+
 			IList<string> references = GetProjectReferences(project);
 			foreach (string reference in references)
 			{
@@ -136,9 +138,17 @@ namespace UnitTestBoilerplate
 					case "nunit":
 						return TestFramework.NUnit;
 					case "microsoft.visualstudio.qualitytools.unittestframework":
-						return TestFramework.VisualStudio;
+				        sawVSUsing = true;
+				        break;
 				}
 			}
+
+            // Sometimes there can be an auto-added reference to this library even when NUnit is used.
+            // We only conclude that VS is the framework if we don't see any others.
+	        if (sawVSUsing)
+	        {
+			    return TestFramework.VisualStudio;
+            }
 
 			return TestFramework.Unknown;
 	    }
