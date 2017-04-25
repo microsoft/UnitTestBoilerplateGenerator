@@ -39,21 +39,35 @@ namespace UnitTestBoilerplate
 				return null;
 			}
 
-			return CreateInjectableType(node, semanticModel);
+			SymbolInfo symbolInfo = semanticModel.GetSymbolInfo(node);
+		    var namedSymbol = symbolInfo.Symbol as INamedTypeSymbol;
+		    if (namedSymbol != null && !namedSymbol.IsReferenceType)
+		    {
+				// We can only mock reference types
+				return null;
+		    }
+
+		    return CreateInjectableType(node, semanticModel, symbolInfo);
 		}
 
-		private static InjectableType CreateInjectableType(SyntaxNode node, SemanticModel semanticModel)
+		private static InjectableType CreateInjectableType(SyntaxNode node, SemanticModel semanticModel, SymbolInfo? symbolInfo = null)
 		{
-			SymbolInfo symbolInfo;
 			switch (node.Kind())
 			{
 				case SyntaxKind.IdentifierName:
-					symbolInfo = semanticModel.GetSymbolInfo(node);
+			        if (symbolInfo == null)
+			        {
+						symbolInfo = semanticModel.GetSymbolInfo(node);
+			        }
 
-					return new InjectableType(symbolInfo.Symbol.Name, symbolInfo.Symbol.ContainingNamespace.ToString());
+					return new InjectableType(symbolInfo.Value.Symbol.Name, symbolInfo.Value.Symbol.ContainingNamespace.ToString());
 				case SyntaxKind.GenericName:
-					symbolInfo = semanticModel.GetSymbolInfo(node);
-					var injectableType = new InjectableType(symbolInfo.Symbol.Name, symbolInfo.Symbol.ContainingNamespace.ToString());
+					if (symbolInfo == null)
+					{
+						symbolInfo = semanticModel.GetSymbolInfo(node);
+					}
+
+					var injectableType = new InjectableType(symbolInfo.Value.Symbol.Name, symbolInfo.Value.Symbol.ContainingNamespace.ToString());
 
 					SyntaxNode typeArgumentNode = node.ChildNodes().FirstOrDefault(n => n.Kind() == SyntaxKind.TypeArgumentList);
 					if (typeArgumentNode == null)
