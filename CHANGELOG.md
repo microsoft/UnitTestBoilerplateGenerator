@@ -10,7 +10,13 @@ on the official Visual Studio extension gallery.
 ## Roadmap
 
 - Support for dependency properties from other IoC frameworks
-- Conform to user's current code styles (tabs, `this.` prefix)
+- Add an option for what folder to add the test class to
+
+## 1.5.9
+**2017-04-25**
+- Added support for Ninject and Grace property injection
+- Fixed an issue where we would mis-identify an NUnit project as a Visual Studio Test project
+- We no longer try to make mock objects for unmockable structs like DateTime
 
 ## 1.5.2
 **2017-02-26**

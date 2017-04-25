@@ -5,7 +5,7 @@
     <DisplayName>Unit Test Boilerplate Generator</DisplayName>
     <Description xml:space="preserve">Generates a unit test boilerplate from a given C# class, setting up mocks for all dependencies. Right click an item in Solution Explorer and choose "Create Unit Test Boilerplate" .
 
-Supports Visual Studio Test, NUnit, Moq, NSubstitute, AutoMoq, SimpleStubs and Unity.</Description>
+Supports Visual Studio Test, NUnit, Moq, NSubstitute, AutoMoq, SimpleStubs, Unity, Ninject and Grace.</Description>
     <License>Resources\LICENSE</License>
     <Icon>Resources\PackageIcon-90x90.png</Icon>
     <PreviewImage>Resources\Preview.png</PreviewImage>
