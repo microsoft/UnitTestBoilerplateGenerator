@@ -543,9 +543,15 @@ namespace UnitTestBoilerplate
 		{
 			return template
 				.Replace("$InterfaceName$", injectableType.TypeName)
+				.Replace("$InterfaceNameShort$", GetShortClassName(injectableType.TypeName))
+				.Replace("$InterfaceNameShortLower$", GetShortClassNameLower(injectableType.TypeName))
 				.Replace("$InterfaceNameBase$", injectableType.TypeBaseName)
+				.Replace("$InterfaceNameBaseShort$", GetShortClassName(injectableType.TypeBaseName))
+				.Replace("$InterfaceNameBaseShortLower$", GetShortClassNameLower(injectableType.TypeBaseName))
 				.Replace("$InterfaceType$", injectableType.ToString())
-				.Replace("$InterfaceMockName$", injectableType.MockName);
+				.Replace("$InterfaceMockName$", injectableType.MockName)
+				.Replace("$InterfaceMockNameShort$", GetShortClassName(injectableType.MockName))
+				.Replace("$InterfaceMockNameShortLower$", GetShortClassNameLower(injectableType.MockName));
 		}
 
 		private static void GenerateMockNames(List<InjectableType> injectedTypes)
