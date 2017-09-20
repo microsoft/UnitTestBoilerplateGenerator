@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace UnitTestBoilerplate
 {
-    public class MockField
-    {
-        public MockField(string name, string typeName)
-        {
-            this.Name = name;
-            this.TypeName = typeName;
-        }
+	public class MockField
+	{
+		public MockField(string name, string typeName)
+		{
+			this.Name = name;
+			this.TypeName = typeName;
+		}
 
-        public string Name { get; }
+		public string Name { get; }
 
-        public string TypeName { get; }
-    }
+		public string TypeName { get; }
+	}
 }

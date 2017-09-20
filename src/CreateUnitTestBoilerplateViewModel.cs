@@ -28,6 +28,13 @@ namespace UnitTestBoilerplate
 		private string relativePath;
 		private string className;
 
+		private static readonly HashSet<string> PropertyInjectionAttributeNames = new HashSet<string>
+		{
+			"Microsoft.Practices.Unity.DependencyAttribute",
+			"Ninject.InjectAttribute",
+			"Grace.DependencyInjection.Attributes.ImportAttribute"
+		};
+
 		private static readonly IList<string> ClassSuffixes = new List<string>
 		{
 			"ViewModel",
@@ -251,14 +258,13 @@ namespace UnitTestBoilerplate
 
 					foreach (AttributeData attribute in property.GetAttributes())
 					{
-						if (attribute.AttributeClass.ToString() == "Microsoft.Practices.Unity.DependencyAttribute")
+						if (PropertyInjectionAttributeNames.Contains(attribute.AttributeClass.ToString()))
 						{
 							var injectableProperty = InjectableProperty.TryCreateInjectableProperty(property.Name, property.Type.ToString(), mockFramework);
 							if (injectableProperty != null)
 							{
 								injectableProperties.Add(injectableProperty);
 							}
-							//injectableProperties.Add(new InjectableProperty(property.Name, property.Type.ToString(), mockFramework));
 						}
 					}
 				}

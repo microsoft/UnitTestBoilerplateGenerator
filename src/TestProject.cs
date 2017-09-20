@@ -8,12 +8,12 @@ using EnvDTE;
 
 namespace UnitTestBoilerplate
 {
-    public class TestProject
-    {
-        public string Name { get; set; }
+	public class TestProject
+	{
+		public string Name { get; set; }
 
-        public Project Project { get; set; }
+		public Project Project { get; set; }
 
-        public string ProjectDirectory => Path.GetDirectoryName(this.Project.FileName);
-    }
+		public string ProjectDirectory => Path.GetDirectoryName(this.Project.FileName);
+	}
 }

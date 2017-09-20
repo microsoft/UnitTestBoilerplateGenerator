@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace UnitBoilerplate.Sandbox.Classes.Cases
 {
-	public class ClassWithIntCtorParam
+	public class ClassWithOddCtorParams
 	{
-		public ClassWithIntCtorParam(int test)
+		public ClassWithOddCtorParams(int test, DateTime date)
 		{
 		}
 	}

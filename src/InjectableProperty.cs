@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace UnitTestBoilerplate
 {
-    public class InjectableProperty : InjectableType
-    {
-        private InjectableProperty(string propertyName, string fullTypeString) : base(fullTypeString)
-        {
-            this.PropertyName = propertyName;
-        }
+	public class InjectableProperty : InjectableType
+	{
+		private InjectableProperty(string propertyName, string fullTypeString) : base(fullTypeString)
+		{
+			this.PropertyName = propertyName;
+		}
 
-        public string PropertyName { get; }
+		public string PropertyName { get; }
 
 		public static InjectableProperty TryCreateInjectableProperty(string propertyName, string fullTypeString, MockFramework mockFramework)
 		{
@@ -24,5 +24,5 @@ namespace UnitTestBoilerplate
 
 			return new InjectableProperty(propertyName, fullTypeString);
 		}
-    }
+	}
 }

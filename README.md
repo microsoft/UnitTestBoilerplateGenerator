@@ -21,7 +21,7 @@ Mock frameworks supported:
 
 Dependency injection modes supported:
 * Constructor injection
-* Property injection via Unity
+* Property injection via Unity, Ninject or Grace
 
 Right click an item in Solution Explorer and choose "Create Unit Test Boilerplate" .
 
@@ -45,7 +45,7 @@ Each mocking framework has its own pattern.
 * Automatically detects which mocking library and test framework you're using
 
 See the [changelog](CHANGELOG.md) for changes and roadmap. If you'd like to see support for other mocking
-frameworks like Rhino Mocks or other IoC frameworks like Ninject, [open an issue](https://github.com/Microsoft/UnitTestBoilerplateGenerator/issues/new).
+frameworks like Rhino Mocks or other IoC frameworks, [open an issue](https://github.com/Microsoft/UnitTestBoilerplateGenerator/issues/new).
 
 ## Contribute
 Check out the [contribution guidelines](CONTRIBUTING.md)
