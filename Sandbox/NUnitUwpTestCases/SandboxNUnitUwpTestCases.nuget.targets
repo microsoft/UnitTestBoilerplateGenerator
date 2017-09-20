@@ -1,18 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
-    <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
-    <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">D:\docs\projects\UnitTestBoilerplateGenerator\Sandbox\NUnitUwpTestCases\project.lock.json</ProjectAssetsFile>
-    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
-    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\RandomEngy\.nuget\packages\</NuGetPackageFolders>
-    <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">ProjectJson</NuGetProjectStyle>
-    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">4.0.0-rc3-2215</NuGetToolVersion>
-  </PropertyGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <Import Project="$(NuGetPackageRoot)etg.simplestubs\2.3.0\build\Etg.SimpleStubs.targets" Condition="Exists('$(NuGetPackageRoot)etg.simplestubs\2.3.0\build\Etg.SimpleStubs.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-x86\1.7.0\build\Microsoft.Net.Native.SharedLibrary-x86.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-x86\1.7.0\build\Microsoft.Net.Native.SharedLibrary-x86.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-x64\1.7.0\build\Microsoft.Net.Native.SharedLibrary-x64.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-x64\1.7.0\build\Microsoft.Net.Native.SharedLibrary-x64.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-arm\1.7.0\build\Microsoft.Net.Native.SharedLibrary-arm.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-arm\1.7.0\build\Microsoft.Net.Native.SharedLibrary-arm.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.native.compiler\1.7.0\build\Microsoft.Net.Native.Compiler.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.net.native.compiler\1.7.0\build\Microsoft.Net.Native.Compiler.targets')" />
+    <Import Project="$(NuGetPackageRoot)etg.simplestubs\2.3.4\build\Etg.SimpleStubs.targets" Condition="Exists('$(NuGetPackageRoot)etg.simplestubs\2.3.4\build\Etg.SimpleStubs.targets')" />
   </ImportGroup>
 </Project>

@@ -176,6 +176,7 @@ namespace UnitTestBoilerplate
 			XDocument document = XDocument.Load(project.FileName);
 			XNamespace ns = "http://schemas.microsoft.com/developer/msbuild/2003";
 
+			// Check normal references in project file
 		    var result = new List<string>();
 			foreach (XElement element in document.Descendants(ns + "Reference"))
 			{
@@ -199,7 +200,18 @@ namespace UnitTestBoilerplate
 				}
 			}
 
-		    string projectJsonPath = Path.Combine(Path.GetDirectoryName(project.FileName), "project.json");
+			// Check package references in project file
+		    foreach (XElement element in document.Descendants("PackageReference"))
+		    {
+				XAttribute includeAttribute = element.Attribute("Include");
+			    if (includeAttribute != null)
+			    {
+					result.Add(includeAttribute.Value);
+			    }
+			}
+
+			// Check package references in project.json
+			string projectJsonPath = Path.Combine(Path.GetDirectoryName(project.FileName), "project.json");
 
 		    if (File.Exists(projectJsonPath))
 		    {

@@ -3,5 +3,6 @@
     ],
     "IgnoredInterfaces": [
     ],
-	"StubInternalInterfaces": false
+    "StubInternalInterfaces": false,
+    "DefaultMockBehavior": "Loose"
 }
