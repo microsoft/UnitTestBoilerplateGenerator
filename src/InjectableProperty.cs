@@ -17,7 +17,7 @@ namespace UnitTestBoilerplate
 
 		public static InjectableProperty TryCreateInjectableProperty(string propertyName, string fullTypeString, MockFramework mockFramework)
 		{
-			if (!MockFrameworkAbstraction.SupportsGenerics(mockFramework) && fullTypeString.Contains("<"))
+			if (!mockFramework.SupportsGenerics && fullTypeString.Contains("<"))
 			{
 				return null;
 			}

@@ -14,16 +14,9 @@ namespace UnitTestBoilerplate
 
 		public OptionsDialogViewModel()
 		{
-			this.MockFrameworkChoices = new List<ComboChoice<MockFramework>>
-			{
-				new ComboChoice<MockFramework>(MockFramework.Moq, "Moq"),
-				new ComboChoice<MockFramework>(MockFramework.AutoMoq, "AutoMoq"),
-				new ComboChoice<MockFramework>(MockFramework.NSubstitute, "NSubstitute"),
-				new ComboChoice<MockFramework>(MockFramework.SimpleStubs, "SimpleStubs"),
-				new ComboChoice<MockFramework>(MockFramework.Unknown, "Unknown"),
-			};
+			this.MockFrameworkChoices = MockFrameworks.List;
 
-			this.selectedMockFramework = this.MockFrameworkChoices.First(c => c.Value == MockFramework.Moq);
+			this.selectedMockFramework = MockFrameworks.Default;
 		}
 
 		public void Initialize()
@@ -45,10 +38,10 @@ namespace UnitTestBoilerplate
 			}
 		}
 
-		public IList<ComboChoice<MockFramework>> MockFrameworkChoices { get; }
+		public IList<MockFramework> MockFrameworkChoices { get; }
 
-		private ComboChoice<MockFramework> selectedMockFramework;
-		public ComboChoice<MockFramework> SelectedMockFramework
+		private MockFramework selectedMockFramework;
+		public MockFramework SelectedMockFramework
 		{
 			get { return this.selectedMockFramework; }
 
@@ -79,12 +72,12 @@ namespace UnitTestBoilerplate
 		{
 			get
 			{
-				return this.GetTemplate(this.SelectedMockFramework.Value, TemplateType.File);
+				return this.GetTemplate(this.SelectedMockFramework, TemplateType.File);
 			}
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedMockFramework.Value, TemplateType.File, value);
+				this.SaveTemplateToDialogHolding(this.SelectedMockFramework, TemplateType.File, value);
 				this.RaisePropertyChanged();
 				this.RaisePropertyChanged(nameof(this.MockFieldDeclarationTemplateVisible));
 				this.RaisePropertyChanged(nameof(this.MockFieldInitializationTemplateVisible));
@@ -94,11 +87,11 @@ namespace UnitTestBoilerplate
 
 		public string MockFieldDeclarationTemplate
 		{
-			get { return this.GetTemplate(this.SelectedMockFramework.Value, TemplateType.MockFieldDeclaration); }
+			get { return this.GetTemplate(this.SelectedMockFramework, TemplateType.MockFieldDeclaration); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedMockFramework.Value, TemplateType.MockFieldDeclaration, value);
+				this.SaveTemplateToDialogHolding(this.SelectedMockFramework, TemplateType.MockFieldDeclaration, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -110,11 +103,11 @@ namespace UnitTestBoilerplate
 
 		public string MockFieldInitializationTemplate
 		{
-			get { return this.GetTemplate(this.SelectedMockFramework.Value, TemplateType.MockFieldInitialization); }
+			get { return this.GetTemplate(this.SelectedMockFramework, TemplateType.MockFieldInitialization); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedMockFramework.Value, TemplateType.MockFieldInitialization, value);
+				this.SaveTemplateToDialogHolding(this.SelectedMockFramework, TemplateType.MockFieldInitialization, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -126,11 +119,11 @@ namespace UnitTestBoilerplate
 
 		public string MockObjectReferenceTemplate
 		{
-			get { return this.GetTemplate(this.SelectedMockFramework.Value, TemplateType.MockObjectReference); }
+			get { return this.GetTemplate(this.SelectedMockFramework, TemplateType.MockObjectReference); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedMockFramework.Value, TemplateType.MockObjectReference, value);
+				this.SaveTemplateToDialogHolding(this.SelectedMockFramework, TemplateType.MockObjectReference, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -148,7 +141,7 @@ namespace UnitTestBoilerplate
 				return this.resetCommand ?? (this.resetCommand = new RelayCommand(
 					() =>
 					{
-						MockFramework mockFramework = this.SelectedMockFramework.Value;
+						MockFramework mockFramework = this.SelectedMockFramework;
 
 						this.FileTemplate = StaticBoilerplateSettings.GetDefaultTemplate(mockFramework, TemplateType.File);
 						this.MockFieldDeclarationTemplate = StaticBoilerplateSettings.GetDefaultTemplate(mockFramework, TemplateType.MockFieldDeclaration);
@@ -188,7 +181,7 @@ namespace UnitTestBoilerplate
 
 		private static string GetDictionaryKey(MockFramework mockFramework, TemplateType templateType)
 		{
-			return $"{mockFramework}_{templateType}";
+			return $"{mockFramework.Name}_{templateType}";
 		}
 	}
 }

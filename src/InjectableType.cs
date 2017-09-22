@@ -34,7 +34,7 @@ namespace UnitTestBoilerplate
 				return null;
 			}
 
-			if (nodeKind == SyntaxKind.GenericName && !MockFrameworkAbstraction.SupportsGenerics(mockFramework))
+			if (nodeKind == SyntaxKind.GenericName && !mockFramework.SupportsGenerics)
 			{
 				return null;
 			}

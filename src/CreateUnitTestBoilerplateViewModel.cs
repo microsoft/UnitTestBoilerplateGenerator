@@ -101,12 +101,12 @@ namespace UnitTestBoilerplate
 			{
 				this.selectedProject = this.TestProjects[0];
 			}
-		}
 
-		private IBoilerplateSettings GetSettings()
-		{
-			var componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
-			return componentModel.DefaultExportProvider.GetExportedValue<IBoilerplateSettings>();
+			this.TestFrameworkChoices = TestFrameworks.List;
+			this.MockFrameworkChoices = MockFrameworks.List;
+
+			// Populate selected test/mock frameworks based on selected project
+			this.UpdateSelectedFrameworks();
 		}
 
 		public ICreateUnitTestBoilerplateView View { get; set; }
@@ -114,11 +114,33 @@ namespace UnitTestBoilerplate
 		public List<TestProject> TestProjects { get; }
 
 		private TestProject selectedProject;
-
 		public TestProject SelectedProject
 		{
 			get { return this.selectedProject; }
-			set { this.Set(ref this.selectedProject, value); }
+			set
+			{
+				this.Set(ref this.selectedProject, value);
+				this.UpdateSelectedFrameworks();
+			}
+		}
+
+		public IList<TestFramework> TestFrameworkChoices { get; }
+
+		private TestFramework selectedTestFramework;
+		public TestFramework SelectedTestFramework
+		{
+			get { return this.selectedTestFramework; }
+			set { this.Set(ref this.selectedTestFramework, value); }
+		}
+
+		public IList<MockFramework> MockFrameworkChoices { get; }
+
+		private MockFramework selectedMockFramework;
+
+		public MockFramework SelectedMockFramework
+		{
+			get { return this.selectedMockFramework; }
+			set { this.Set(ref this.selectedMockFramework, value); }
 		}
 
 		private RelayCommand createUnitTestCommand;
@@ -160,6 +182,20 @@ namespace UnitTestBoilerplate
 							MessageBox.Show(exception.ToString());
 						}
 					}));
+			}
+		}
+
+		private void UpdateSelectedFrameworks()
+		{
+			if (this.selectedProject == null)
+			{
+				this.SelectedTestFramework = TestFrameworks.Default;
+				this.SelectedMockFramework = MockFrameworks.Default;
+			}
+			else
+			{
+				this.SelectedTestFramework = Utilities.FindTestFramework(this.selectedProject.Project);
+				this.SelectedMockFramework = Utilities.FindMockFramework(this.selectedProject.Project);
 			}
 		}
 
@@ -230,7 +266,7 @@ namespace UnitTestBoilerplate
 			}
 
 			SyntaxToken classIdentifierToken = firstClassDeclaration.ChildTokens().FirstOrDefault(n => n.Kind() == SyntaxKind.IdentifierToken);
-			if (classIdentifierToken == null)
+			if (classIdentifierToken == default(SyntaxToken))
 			{
 				this.HandleError("Could not find class identifier.");
 			}
@@ -241,8 +277,8 @@ namespace UnitTestBoilerplate
 				this.HandleError("Could not find class namespace.");
 			}
 
-			MockFramework mockFramework = Utilities.FindMockFramework(this.SelectedProject.Project);
-			TestFramework testFramework = Utilities.FindTestFramework(this.SelectedProject.Project);
+			TestFramework testFramework = this.SelectedTestFramework;
+			MockFramework mockFramework = this.SelectedMockFramework;
 
 			// Find property injection types
 			var injectableProperties = new List<InjectableProperty>();
@@ -398,16 +434,16 @@ namespace UnitTestBoilerplate
 								builder.Append(GetShortClassNameLower(context.ClassName));
 								break;
 							case "TestClassAttribute":
-								builder.Append(TestFrameworkAbstraction.GetTestClassAttribute(testFramework));
+								builder.Append(testFramework.TestClassAttribute);
 								break;
 							case "TestInitializeAttribute":
-								builder.Append(TestFrameworkAbstraction.GetTestInitializeAttribute(testFramework));
+								builder.Append(testFramework.TestInitializeAttribute);
 								break;
 							case "TestCleanupAttribute":
-								builder.Append(TestFrameworkAbstraction.GetTestCleanupAttribute(testFramework));
+								builder.Append(testFramework.TestCleanupAttribute);
 								break;
 							case "TestMethodAttribute":
-								builder.Append(TestFrameworkAbstraction.GetTestMethodAttribute(testFramework));
+								builder.Append(testFramework.TestMethodAttribute);
 								break;
 							default:
 								// We didn't recognize it, just pass through.
@@ -433,8 +469,8 @@ namespace UnitTestBoilerplate
 		private static void WriteUsings(StringBuilder builder, TestGenerationContext context)
 		{
 			List<string> namespaces = new List<string>();
-			namespaces.AddRange(MockFrameworkAbstraction.GetUsings(context.MockFramework));
-			namespaces.Add(TestFrameworkAbstraction.GetUsing(context.TestFramework));
+			namespaces.AddRange(context.MockFramework.UsingNamespaces);
+			namespaces.Add(context.TestFramework.UsingNamespace);
 			namespaces.Add(context.ClassNamespace);
 
 			foreach (InjectableType injectedType in context.InjectedTypes)

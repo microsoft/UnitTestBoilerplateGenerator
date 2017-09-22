@@ -127,58 +127,56 @@ namespace UnitTestBoilerplate
 
 		public static TestFramework FindTestFramework(Project project)
 		{
-			bool sawVSUsing = false;
+			var matchingFrameworks = new List<TestFramework>();
 
 			IList<string> references = GetProjectReferences(project);
 			foreach (string reference in references)
 			{
-				switch (reference.ToLowerInvariant())
+				foreach (TestFramework framework in TestFrameworks.List)
 				{
-					case "nunit.framework":
-					case "nunit":
-						return TestFramework.NUnit;
-					case "microsoft.visualstudio.qualitytools.unittestframework":
-						sawVSUsing = true;
-						break;
+					foreach (string detectionReference in framework.DetectionReferenceMatches)
+					{
+						if (string.Compare(detectionReference, reference, StringComparison.OrdinalIgnoreCase) == 0 && !matchingFrameworks.Contains(framework))
+						{
+							matchingFrameworks.Add(framework);
+						}
+					}
 				}
 			}
 
-			// Sometimes there can be an auto-added reference to this library even when NUnit is used.
-			// We only conclude that VS is the framework if we don't see any others.
-			if (sawVSUsing)
+			if (matchingFrameworks.Count == 0)
 			{
-				return TestFramework.VisualStudio;
+				return TestFrameworks.Default;
 			}
 
-			return TestFramework.Unknown;
+			return matchingFrameworks.OrderBy(f => f.DetectionRank).First();
 		}
 
 		public static MockFramework FindMockFramework(Project project)
 		{
+			var matchingFrameworks = new List<MockFramework>();
+
 			IList<string> references = GetProjectReferences(project);
-			bool hasMoqReference = false;
 			foreach (string reference in references)
 			{
-				switch (reference.ToLowerInvariant())
+				foreach (MockFramework framework in MockFrameworks.List)
 				{
-					case "automoq":
-						return MockFramework.AutoMoq;
-					case "moq":
-						hasMoqReference = true;
-						break;
-					case "etg.simplestubs":
-						return MockFramework.SimpleStubs;
-					case "nsubstitute":
-						return MockFramework.NSubstitute;
+					foreach (string detectionReference in framework.DetectionReferenceMatches)
+					{
+						if (string.Compare(detectionReference, reference, StringComparison.OrdinalIgnoreCase) == 0 && !matchingFrameworks.Contains(framework))
+						{
+							matchingFrameworks.Add(framework);
+						}
+					}
 				}
 			}
 
-			if (hasMoqReference)
+			if (matchingFrameworks.Count == 0)
 			{
-				return MockFramework.Moq;
+				return MockFrameworks.Default;
 			}
 
-			return MockFramework.Unknown;
+			return matchingFrameworks.OrderBy(f => f.DetectionRank).First();
 		}
 
 		private static IList<string> GetProjectReferences(Project project)
