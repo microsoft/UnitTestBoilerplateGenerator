@@ -14,8 +14,10 @@ namespace UnitTestBoilerplate
 
 		public OptionsDialogViewModel()
 		{
+			this.TestFrameworkChoices = TestFrameworks.List;
 			this.MockFrameworkChoices = MockFrameworks.List;
 
+			this.selectedTestFramework = TestFrameworks.Default;
 			this.selectedMockFramework = MockFrameworks.Default;
 		}
 
@@ -31,10 +33,30 @@ namespace UnitTestBoilerplate
 			{
 				string[] keyParts = pair.Key.Split('_');
 
-				string mockFrameworkString = keyParts[0];
-				string templateTypeString = keyParts[1];
+				string testFrameworkString = keyParts[0];
+				string mockFrameworkString = keyParts[1];
+				string templateTypeString = keyParts[2];
 
-				StaticBoilerplateSettings.SetTemplate(mockFrameworkString, templateTypeString, pair.Value);
+				StaticBoilerplateSettings.SetTemplate(testFrameworkString, mockFrameworkString, templateTypeString, pair.Value);
+			}
+		}
+
+		public IList<TestFramework> TestFrameworkChoices { get; }
+
+		private TestFramework selectedTestFramework;
+		public TestFramework SelectedTestFramework
+		{
+			get { return this.selectedTestFramework; }
+
+			set
+			{
+				if (value == null)
+				{
+					return;
+				}
+
+				this.Set(ref this.selectedTestFramework, value);
+				this.RaiseAllChanged();
 			}
 		}
 
@@ -72,12 +94,12 @@ namespace UnitTestBoilerplate
 		{
 			get
 			{
-				return this.GetTemplate(this.SelectedMockFramework, TemplateType.File);
+				return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.File);
 			}
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedMockFramework, TemplateType.File, value);
+				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.File, value);
 				this.RaisePropertyChanged();
 				this.RaisePropertyChanged(nameof(this.MockFieldDeclarationTemplateVisible));
 				this.RaisePropertyChanged(nameof(this.MockFieldInitializationTemplateVisible));
@@ -87,11 +109,11 @@ namespace UnitTestBoilerplate
 
 		public string MockFieldDeclarationTemplate
 		{
-			get { return this.GetTemplate(this.SelectedMockFramework, TemplateType.MockFieldDeclaration); }
+			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockFieldDeclaration); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedMockFramework, TemplateType.MockFieldDeclaration, value);
+				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockFieldDeclaration, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -103,11 +125,11 @@ namespace UnitTestBoilerplate
 
 		public string MockFieldInitializationTemplate
 		{
-			get { return this.GetTemplate(this.SelectedMockFramework, TemplateType.MockFieldInitialization); }
+			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockFieldInitialization); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedMockFramework, TemplateType.MockFieldInitialization, value);
+				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockFieldInitialization, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -119,11 +141,11 @@ namespace UnitTestBoilerplate
 
 		public string MockObjectReferenceTemplate
 		{
-			get { return this.GetTemplate(this.SelectedMockFramework, TemplateType.MockObjectReference); }
+			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockObjectReference); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedMockFramework, TemplateType.MockObjectReference, value);
+				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockObjectReference, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -141,12 +163,13 @@ namespace UnitTestBoilerplate
 				return this.resetCommand ?? (this.resetCommand = new RelayCommand(
 					() =>
 					{
+						TestFramework testFramework = this.SelectedTestFramework;
 						MockFramework mockFramework = this.SelectedMockFramework;
 
-						this.FileTemplate = StaticBoilerplateSettings.GetDefaultTemplate(mockFramework, TemplateType.File);
-						this.MockFieldDeclarationTemplate = StaticBoilerplateSettings.GetDefaultTemplate(mockFramework, TemplateType.MockFieldDeclaration);
-						this.MockFieldInitializationTemplate = StaticBoilerplateSettings.GetDefaultTemplate(mockFramework, TemplateType.MockFieldInitialization);
-						this.MockObjectReferenceTemplate = StaticBoilerplateSettings.GetDefaultTemplate(mockFramework, TemplateType.MockObjectReference);
+						this.FileTemplate = new DefaultTemplateGenerator().Get(null, mockFramework);
+						this.MockFieldDeclarationTemplate = mockFramework.MockFieldDeclarationCode;
+						this.MockFieldInitializationTemplate = mockFramework.MockFieldInitializationCode;
+						this.MockObjectReferenceTemplate = mockFramework.MockObjectReferenceCode;
 					}));
 			}
 		}
@@ -154,34 +177,36 @@ namespace UnitTestBoilerplate
 		/// <summary>
 		/// Gets the working copy of the template on the options dialog.
 		/// </summary>
+		/// <param name="testFramework">The test framework the template applies to.</param>
 		/// <param name="mockFramework">The mock framework the template applies to.</param>
 		/// <param name="templateType">The template type.</param>
 		/// <returns>The working copy of the template on the options dialog.</returns>
-		private string GetTemplate(MockFramework mockFramework, TemplateType templateType)
+		private string GetTemplate(TestFramework testFramework, MockFramework mockFramework, TemplateType templateType)
 		{
 			string template;
-			if (this.templateHoldingDictionary.TryGetValue(GetDictionaryKey(mockFramework, templateType), out template))
+			if (this.templateHoldingDictionary.TryGetValue(GetDictionaryKey(testFramework, mockFramework, templateType), out template))
 			{
 				return template;
 			}
 
-			return StaticBoilerplateSettings.GetTemplate(mockFramework, templateType);
+			return StaticBoilerplateSettings.GetTemplate(testFramework, mockFramework, templateType);
 		}
 
 		/// <summary>
 		/// Saves the template to the dialog holding area. It will take effect when Apply() is called.
 		/// </summary>
+		/// <param name="testFramework">The test framework the template applies to.</param>
 		/// <param name="mockFramework">The mock framework the template applies to.</param>
 		/// <param name="templateType">The template type.</param>
 		/// <param name="template">The template to save.</param>
-		private void SaveTemplateToDialogHolding(MockFramework mockFramework, TemplateType templateType, string template)
+		private void SaveTemplateToDialogHolding(TestFramework testFramework, MockFramework mockFramework, TemplateType templateType, string template)
 		{
-			this.templateHoldingDictionary[GetDictionaryKey(mockFramework, templateType)] = template;
+			this.templateHoldingDictionary[GetDictionaryKey(testFramework, mockFramework, templateType)] = template;
 		}
 
-		private static string GetDictionaryKey(MockFramework mockFramework, TemplateType templateType)
+		private static string GetDictionaryKey(TestFramework testFramework, MockFramework mockFramework, TemplateType templateType)
 		{
-			return $"{mockFramework.Name}_{templateType}";
+			return $"{testFramework.Name}_{mockFramework.Name}_{templateType}";
 		}
 	}
 }

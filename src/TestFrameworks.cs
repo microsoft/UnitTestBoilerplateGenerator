@@ -20,7 +20,9 @@ namespace UnitTestBoilerplate
 					testClassAttribute: "TestClass",
 					testMethodAttribute: "TestMethod",
 					testInitializeAttribute: "TestInitialize",
-					testCleanupAttribute: "TestCleanup"),
+					testCleanupAttribute: "TestCleanup",
+					testInitializeStyle: TestInitializeStyle.AttributedMethod,
+					testCleanupStyle: TestCleanupStyle.AttributedMethod),
 
 				new TestFramework(
 					name: "NUnit",
@@ -30,12 +32,19 @@ namespace UnitTestBoilerplate
 					testClassAttribute: "TestFixture",
 					testMethodAttribute: "Test",
 					testInitializeAttribute: "SetUp",
-					testCleanupAttribute: "TearDown"),
+					testCleanupAttribute: "TearDown",
+					testInitializeStyle: TestInitializeStyle.AttributedMethod,
+					testCleanupStyle: TestCleanupStyle.AttributedMethod),
 			};
 		}
 
 		public static IList<TestFramework> List { get; }
 
 		public static TestFramework Default => List[0];
+
+		public static TestFramework Get(string name)
+		{
+			return List.First(f => f.Name == name);
+		}
 	}
 }

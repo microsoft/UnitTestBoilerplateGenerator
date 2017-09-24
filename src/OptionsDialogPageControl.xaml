@@ -16,6 +16,12 @@
         <Style x:Key="LineTextBox" TargetType="TextBox">
             <Setter Property="Margin" Value="0 2 0 0" />
         </Style>
+        <Style x:Key="FrameworkCombo" TargetType="ComboBox">
+            <Setter Property="Margin" Value="6 0 0 0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="DisplayMemberPath" Value="Name" />
+            <Setter Property="MinWidth" Value="120" />
+        </Style>
     </UserControl.Resources>
     <ScrollViewer>
         <StackPanel Orientation="Vertical">
@@ -24,15 +30,40 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Mock Framework:" />
-                    <ComboBox
-                        Margin="6 0 0 0"
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="4" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="0"
                         VerticalAlignment="Center"
-                        DisplayMemberPath="Name"
+                        Text="Test Framework:" />
+                    <ComboBox
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        ItemsSource="{Binding TestFrameworkChoices}"
+                        SelectedItem="{Binding SelectedTestFramework}"
+                        Style="{StaticResource FrameworkCombo}" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="Mock Framework:" />
+                    <ComboBox
+                        Grid.Row="2"
+                        Grid.Column="1"
                         ItemsSource="{Binding MockFrameworkChoices}"
-                        SelectedItem="{Binding SelectedMockFramework}" />
-                </StackPanel>
+                        SelectedItem="{Binding SelectedMockFramework}"
+                        Style="{StaticResource FrameworkCombo}" />
+                </Grid>
                 <Button
                     Grid.Column="1"
                     Padding="10 2"

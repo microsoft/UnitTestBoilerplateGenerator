@@ -8,5 +8,6 @@ namespace UnitBoilerplate.Sandbox.Classes
 {
     public interface ISomeInterface
     {
+	    void DoAThing();
     }
 }

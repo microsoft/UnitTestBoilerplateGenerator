@@ -75,6 +75,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DefaultTemplateGenerator.cs" />
+    <Compile Include="StringUtilities.cs" />
+    <Compile Include="TestCleanupStyle.cs" />
+    <Compile Include="TestedObjectCreationStyle.cs" />
     <Compile Include="ComboChoice.cs" />
     <Compile Include="CreateUnitTestBoilerplateCommand.cs" />
     <Compile Include="CreateUnitTestBoilerplateCommandPackage.cs" />
@@ -87,6 +91,7 @@
     <Compile Include="MockFrameworks.cs" />
     <Compile Include="TestFramework.cs" />
     <Compile Include="TestFrameworks.cs" />
+    <Compile Include="TestInitializeStyle.cs" />
     <Compile Include="TypeDescriptor.cs" />
     <Compile Include="OptionsDialogPage.cs">
       <SubType>Component</SubType>
@@ -123,19 +128,6 @@
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
     </VSCTCompile>
-    <EmbeddedResource Include="DefaultTemplates\Moq\MockFieldDeclaration.txt" />
-    <EmbeddedResource Include="DefaultTemplates\Moq\MockFieldInitialization.txt" />
-    <EmbeddedResource Include="DefaultTemplates\Moq\File.txt" />
-    <EmbeddedResource Include="DefaultTemplates\Moq\MockObjectReference.txt" />
-    <EmbeddedResource Include="DefaultTemplates\SimpleStubs\MockFieldDeclaration.txt" />
-    <EmbeddedResource Include="DefaultTemplates\SimpleStubs\File.txt" />
-    <EmbeddedResource Include="DefaultTemplates\SimpleStubs\MockFieldInitialization.txt" />
-    <EmbeddedResource Include="DefaultTemplates\SimpleStubs\MockObjectReference.txt" />
-    <EmbeddedResource Include="DefaultTemplates\AutoMoq\File.txt" />
-    <EmbeddedResource Include="DefaultTemplates\NSubstitute\File.txt" />
-    <EmbeddedResource Include="DefaultTemplates\NSubstitute\MockFieldDeclaration.txt" />
-    <EmbeddedResource Include="DefaultTemplates\NSubstitute\MockFieldInitialization.txt" />
-    <EmbeddedResource Include="DefaultTemplates\NSubstitute\MockObjectReference.txt" />
     <Content Include="index.html" />
     <Content Include="Resources\CreateUnitTestBoilerplateCommand.png" />
     <Content Include="Resources\CreateUnitTestBoilerplateCommandPackage.ico" />

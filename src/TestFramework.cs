@@ -14,8 +14,10 @@ namespace UnitTestBoilerplate
 			int detectionRank,
 			string usingString, 
 			string testClassAttribute, 
-			string testMethodAttribute, 
+			string testMethodAttribute,
+			TestInitializeStyle testInitializeStyle,
 			string testInitializeAttribute, 
+			TestCleanupStyle testCleanupStyle,
 			string testCleanupAttribute)
 	    {
 		    this.Name = name;
@@ -24,7 +26,9 @@ namespace UnitTestBoilerplate
 			this.UsingNamespace = usingString;
 		    this.TestClassAttribute = testClassAttribute;
 			this.TestMethodAttribute = testMethodAttribute;
+			this.TestInitializeStyle = testInitializeStyle;
 			this.TestInitializeAttribute = testInitializeAttribute;
+			this.TestCleanupStyle = testCleanupStyle;
 			this.TestCleanupAttribute = testCleanupAttribute;
 		}
 
@@ -42,11 +46,18 @@ namespace UnitTestBoilerplate
 
 		public string UsingNamespace { get; }
 
+		/// <summary>
+		/// The attribute to apply to the test class, or null if the test framework does not use a test class attribute.
+		/// </summary>
 		public string TestClassAttribute { get; }
 
 		public string TestMethodAttribute { get; }
 
+		public TestInitializeStyle TestInitializeStyle { get; }
+
 		public string TestInitializeAttribute { get; }
+
+		public TestCleanupStyle TestCleanupStyle { get; }
 
 		public string TestCleanupAttribute { get; }
 	}

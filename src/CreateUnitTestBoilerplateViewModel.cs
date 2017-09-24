@@ -362,105 +362,45 @@ namespace UnitTestBoilerplate
 			TestFramework testFramework = context.TestFramework;
 			MockFramework mockFramework = context.MockFramework;
 
-			string pascalCaseShortClassName = null;
-			foreach (string suffix in ClassSuffixes)
-			{
-				if (className.EndsWith(suffix))
+			string fileTemplate = StaticBoilerplateSettings.GetTemplate(testFramework, mockFramework, TemplateType.File);
+			string filledTemplate = StringUtilities.ReplaceTokens(
+				fileTemplate,
+				(tokenName, propertyIndex, builder) =>
 				{
-					pascalCaseShortClassName = suffix;
-					break;
-				}
-			}
-
-			if (pascalCaseShortClassName == null)
-			{
-				pascalCaseShortClassName = className;
-			}
-
-			string classVariableName = pascalCaseShortClassName.Substring(0, 1).ToLowerInvariant() + pascalCaseShortClassName.Substring(1);
-
-			string fileTemplate = StaticBoilerplateSettings.GetTemplate(mockFramework, TemplateType.File);
-			var builder = new StringBuilder();
-
-			for (int i = 0; i < fileTemplate.Length; i++)
-			{
-				char c = fileTemplate[i];
-				if (c == '$')
-				{
-					int endIndex = -1;
-					for (int j = i + 1; j < fileTemplate.Length; j++)
+					switch (tokenName)
 					{
-						if (fileTemplate[j] == '$')
-						{
-							endIndex = j;
+						case "UsingStatements":
+							WriteUsings(builder, context);
 							break;
-						}
+						case "Namespace":
+							builder.Append(context.UnitTestNamespace);
+							break;
+						case "MockFieldDeclarations":
+							WriteMockFieldDeclarations(builder, context);
+							break;
+						case "MockFieldInitializations":
+							WriteMockFieldInitializations(builder, context);
+							break;
+						case "ExplicitConstructor":
+							WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex));
+							break;
+						case "ClassName":
+							builder.Append(context.ClassName);
+							break;
+						case "ClassNameShort":
+							builder.Append(GetShortClassName(context.ClassName));
+							break;
+						case "ClassNameShortLower":
+							builder.Append(GetShortClassNameLower(context.ClassName));
+							break;
+						default:
+							// We didn't recognize it, just pass through.
+							builder.Append($"${tokenName}$");
+							break;
 					}
+				});
 
-					if (endIndex < 0)
-					{
-						// We couldn't find the end index for the replacement property name. Continue.
-						builder.Append(c);
-					}
-					else
-					{
-						// Calculate values on demand from switch statement. Some are preset values, some need a bit of calc like base name,
-						// some are dependent on the test framework (attributes), some need to pull down other templates and loop through mock fields
-						string propertyName = fileTemplate.Substring(i + 1, endIndex - i - 1);
-						switch (propertyName)
-						{
-							case "UsingStatements":
-								WriteUsings(builder, context);
-								break;
-							case "Namespace":
-								builder.Append(context.UnitTestNamespace);
-								break;
-							case "MockFieldDeclarations":
-								WriteMockFieldDeclarations(builder, context);
-								break;
-							case "MockFieldInitializations":
-								WriteMockFieldInitializations(builder, context);
-								break;
-							case "ExplicitConstructor":
-								WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, i));
-								break;
-							case "ClassName":
-								builder.Append(context.ClassName);
-								break;
-							case "ClassNameShort":
-								builder.Append(GetShortClassName(context.ClassName));
-								break;
-							case "ClassNameShortLower":
-								builder.Append(GetShortClassNameLower(context.ClassName));
-								break;
-							case "TestClassAttribute":
-								builder.Append(testFramework.TestClassAttribute);
-								break;
-							case "TestInitializeAttribute":
-								builder.Append(testFramework.TestInitializeAttribute);
-								break;
-							case "TestCleanupAttribute":
-								builder.Append(testFramework.TestCleanupAttribute);
-								break;
-							case "TestMethodAttribute":
-								builder.Append(testFramework.TestMethodAttribute);
-								break;
-							default:
-								// We didn't recognize it, just pass through.
-								builder.Append($"${propertyName}$");
-								break;
-						}
-
-						i = endIndex;
-					}
-				}
-				else
-				{
-					builder.Append(c);
-				}
-			}
-
-			SyntaxTree tree = CSharpSyntaxTree.ParseText(builder.ToString());
+			SyntaxTree tree = CSharpSyntaxTree.ParseText(filledTemplate);
 			SyntaxNode formattedNode = Formatter.Format(tree.GetRoot(), CreateUnitTestBoilerplateCommandPackage.VisualStudioWorkspace);
 
 			return formattedNode.ToString();
@@ -494,13 +434,13 @@ namespace UnitTestBoilerplate
 
 		private static void WriteMockFieldDeclarations(StringBuilder builder, TestGenerationContext context)
 		{
-			string template = StaticBoilerplateSettings.GetTemplate(context.MockFramework, TemplateType.MockFieldDeclaration);
+			string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldDeclaration);
 			WriteFieldLines(builder, context, template);
 		}
 
 		private static void WriteMockFieldInitializations(StringBuilder builder, TestGenerationContext context)
 		{
-			string template = StaticBoilerplateSettings.GetTemplate(context.MockFramework, TemplateType.MockFieldInitialization);
+			string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldInitialization);
 			WriteFieldLines(builder, context, template);
 		}
 
@@ -539,7 +479,7 @@ namespace UnitTestBoilerplate
 					}
 					else
 					{
-						string template = StaticBoilerplateSettings.GetTemplate(context.MockFramework, TemplateType.MockObjectReference);
+						string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
 						mockReferenceStatement = ReplaceInterfaceTokens(template, constructorType);
 					}
 
@@ -565,7 +505,7 @@ namespace UnitTestBoilerplate
 
 				foreach (InjectableProperty property in context.Properties)
 				{
-					string template = StaticBoilerplateSettings.GetTemplate(context.MockFramework, TemplateType.MockObjectReference);
+					string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
 					string mockReferenceStatement = ReplaceInterfaceTokens(template, property);
 
 					builder.AppendLine($"{property.PropertyName} = {mockReferenceStatement},");
