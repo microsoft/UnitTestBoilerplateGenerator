@@ -44,7 +44,7 @@ namespace UnitTestBoilerplate
 	[Guid(CreateUnitTestBoilerplateCommandPackage.PackageGuidString)]
 	[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
 	[ProvideProfile(typeof(OptionsDialogPage), "Unit Test Boilerplate Generator", "Unit Test Boilerplate Generator Settings", 106, 107, true, DescriptionResourceID = 108)]
-	[ProvideOptionPage(typeof(OptionsDialogPage), "Unit Test Boilerplate Generator", "Templates", 101, 106, supportsAutomation: true)]
+	[ProvideOptionPage(typeof(OptionsDialogPage), "Unit Test Boilerplate Generator", "Templates", 101, 109, supportsAutomation: true)]
 	public sealed class CreateUnitTestBoilerplateCommandPackage : Package
 	{
 		/// <summary>

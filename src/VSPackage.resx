@@ -126,6 +126,9 @@
   <data name="108" xml:space="preserve">
     <value>Unit Test Boilerplate Generator settings.</value>
   </data>
+  <data name="109" xml:space="preserve">
+    <value>Templates</value>
+  </data>
   <data name="110" xml:space="preserve">
     <value>CreateUnitTestBoilerplateCommand Extension</value>
   </data>
