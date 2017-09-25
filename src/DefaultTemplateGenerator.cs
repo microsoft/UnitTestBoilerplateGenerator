@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitTestBoilerplate.Model;
 
 namespace UnitTestBoilerplate
 {
@@ -152,6 +153,7 @@ namespace UnitTestBoilerplate
 			this.AppendLineIndented(); // Separator
 
 			this.AppendLineIndented("// Assert");
+			this.AppendLineIndented(); // Blank line for users to put in their own assert code
 
 			this.indentLevel--;
 			this.AppendLineIndented("}");

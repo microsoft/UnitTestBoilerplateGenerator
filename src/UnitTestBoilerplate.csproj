@@ -76,40 +76,41 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DefaultTemplateGenerator.cs" />
-    <Compile Include="StringUtilities.cs" />
-    <Compile Include="TestCleanupStyle.cs" />
-    <Compile Include="TestedObjectCreationStyle.cs" />
-    <Compile Include="ComboChoice.cs" />
+    <Compile Include="Utilities\StringUtilities.cs" />
+    <Compile Include="Model\TestCleanupStyle.cs" />
+    <Compile Include="Model\TestedObjectCreationStyle.cs" />
+    <Compile Include="Model\ComboChoice.cs" />
     <Compile Include="CreateUnitTestBoilerplateCommand.cs" />
     <Compile Include="CreateUnitTestBoilerplateCommandPackage.cs" />
-    <Compile Include="CreateUnitTestBoilerplateDialog.xaml.cs">
+    <Compile Include="Utilities\SolutionUtilities.cs" />
+    <Compile Include="Utilities\TypeUtilities.cs" />
+    <Compile Include="View\CreateUnitTestBoilerplateDialog.xaml.cs">
       <DependentUpon>CreateUnitTestBoilerplateDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CreateUnitTestBoilerplateViewModel.cs" />
+    <Compile Include="ViewModel\CreateUnitTestBoilerplateViewModel.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="MockFramework.cs" />
-    <Compile Include="MockFrameworks.cs" />
-    <Compile Include="TestFramework.cs" />
-    <Compile Include="TestFrameworks.cs" />
-    <Compile Include="TestInitializeStyle.cs" />
-    <Compile Include="TypeDescriptor.cs" />
-    <Compile Include="OptionsDialogPage.cs">
+    <Compile Include="Model\MockFramework.cs" />
+    <Compile Include="Model\MockFrameworks.cs" />
+    <Compile Include="Model\TestFramework.cs" />
+    <Compile Include="Model\TestFrameworks.cs" />
+    <Compile Include="Model\TestInitializeStyle.cs" />
+    <Compile Include="Model\TypeDescriptor.cs" />
+    <Compile Include="View\OptionsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OptionsDialogPageControl.xaml.cs">
+    <Compile Include="View\OptionsDialogPageControl.xaml.cs">
       <DependentUpon>OptionsDialogPageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OptionsDialogViewModel.cs" />
+    <Compile Include="ViewModel\OptionsDialogViewModel.cs" />
     <Compile Include="StaticBoilerplateSettings.cs" />
-    <Compile Include="TemplateType.cs" />
-    <Compile Include="InjectableType.cs" />
-    <Compile Include="InjectableProperty.cs" />
-    <Compile Include="MockField.cs" />
-    <Compile Include="ProjectItemSummary.cs" />
+    <Compile Include="Model\TemplateType.cs" />
+    <Compile Include="Model\InjectableType.cs" />
+    <Compile Include="Model\InjectableProperty.cs" />
+    <Compile Include="Model\MockField.cs" />
+    <Compile Include="Model\ProjectItemSummary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestGenerationContext.cs" />
-    <Compile Include="TestProject.cs" />
-    <Compile Include="Utilities.cs" />
+    <Compile Include="Model\TestGenerationContext.cs" />
+    <Compile Include="Model\TestProject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -419,11 +420,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="CreateUnitTestBoilerplateDialog.xaml">
+    <Page Include="View\CreateUnitTestBoilerplateDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="OptionsDialogPageControl.xaml">
+    <Page Include="View\OptionsDialogPageControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

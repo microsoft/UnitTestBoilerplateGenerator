@@ -1,12 +1,9 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.Collections.Generic;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnitTestBoilerplate.Model;
 
-namespace UnitTestBoilerplate
+namespace UnitTestBoilerplate.ViewModel
 {
 	public class OptionsDialogViewModel : ViewModelBase
 	{
@@ -166,7 +163,7 @@ namespace UnitTestBoilerplate
 						TestFramework testFramework = this.SelectedTestFramework;
 						MockFramework mockFramework = this.SelectedMockFramework;
 
-						this.FileTemplate = new DefaultTemplateGenerator().Get(null, mockFramework);
+						this.FileTemplate = new DefaultTemplateGenerator().Get(testFramework, mockFramework);
 						this.MockFieldDeclarationTemplate = mockFramework.MockFieldDeclarationCode;
 						this.MockFieldInitializationTemplate = mockFramework.MockFieldInitializationCode;
 						this.MockObjectReferenceTemplate = mockFramework.MockObjectReferenceCode;

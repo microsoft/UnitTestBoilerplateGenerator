@@ -9,7 +9,7 @@ using System.Windows;
 using System.ComponentModel;
 using Microsoft.VisualStudio.ComponentModelHost;
 
-namespace UnitTestBoilerplate
+namespace UnitTestBoilerplate.View
 {
 	[Guid("5d7016f4-8aa2-4b43-85f9-1145814471ba")]
 	public class OptionsDialogPage : UIElementDialogPage
@@ -37,11 +37,5 @@ namespace UnitTestBoilerplate
 
 			base.OnApply(args);
 		}
-
-		//private IBoilerplateSettings GetSettings()
-  //      {
-  //          var componentModel = (IComponentModel)(Site.GetService(typeof(SComponentModel)));
-  //          return componentModel.DefaultExportProvider.GetExportedValue<IBoilerplateSettings>();
-  //      }
 	}
 }

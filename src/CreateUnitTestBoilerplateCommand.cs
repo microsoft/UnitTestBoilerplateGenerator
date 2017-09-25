@@ -17,6 +17,8 @@ using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
 using Microsoft.VisualStudio.ComponentModelHost;
+using UnitTestBoilerplate.Utilities;
+using UnitTestBoilerplate.View;
 
 namespace UnitTestBoilerplate
 {
@@ -62,7 +64,7 @@ namespace UnitTestBoilerplate
 				var menuItem = new OleMenuCommand(this.MenuItemCallback, menuCommandId);
 				menuItem.BeforeQueryStatus += (sender, args) =>
 				{
-					menuItem.Visible = Utilities.GetSelectedFiles(dte).Any(file => file.FilePath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase));
+					menuItem.Visible = SolutionUtilities.GetSelectedFiles(dte).Any(file => file != null && file.FilePath != null && file.FilePath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase));
 				};
 				//var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandId);
 				commandService.AddCommand(menuItem);

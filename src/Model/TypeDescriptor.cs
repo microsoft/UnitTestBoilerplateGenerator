@@ -1,11 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace UnitTestBoilerplate
+namespace UnitTestBoilerplate.Model
 {
 	public class TypeDescriptor
 	{
@@ -78,30 +75,6 @@ namespace UnitTestBoilerplate
 					this.SetNameAndNamespaceFromFullName(currentTypeName);
 				}
 			}
-
-			//string fullNameWithoutGenerics;
-			//if (fullTypeName.Contains("<"))
-			//{
-			//	int leftAngleIndex = fullTypeName.IndexOf("<");
-			//	int rightAngleIndex = fullTypeName.IndexOf(">");
-
-			//	if (rightAngleIndex < 0)
-			//	{
-			//		throw new ArgumentException("Could not find closing angle bracket for type name " + fullTypeName);
-			//	}
-
-			//	fullNameWithoutGenerics = fullTypeName.Substring(0, leftAngleIndex);
-
-
-			//}
-			//else
-			//{
-			//	fullNameWithoutGenerics = fullTypeName;
-			//}
-
-			//int lastDotIndex = fullNameWithoutGenerics.LastIndexOf(".");
-			//this.Name = fullNameWithoutGenerics.Substring(lastDotIndex + 1);
-			//this.Namespace = fullNameWithoutGenerics.Substring(0, lastDotIndex);
 		}
 
 		private static void SetTypeName(string fullTypeName, Stack<TypeDescriptor> descriptorStack, StringBuilder currentTypeNameBuilder)

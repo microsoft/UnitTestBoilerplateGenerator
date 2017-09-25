@@ -12,15 +12,14 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+using UnitTestBoilerplate.Model;
+using UnitTestBoilerplate.Utilities;
 using Project = EnvDTE.Project;
 using Window = EnvDTE.Window;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.CodeAnalysis.Formatting;
-using System.Reflection;
 
-namespace UnitTestBoilerplate
+namespace UnitTestBoilerplate.ViewModel
 {
 	public class CreateUnitTestBoilerplateViewModel : ViewModelBase
 	{
@@ -50,7 +49,7 @@ namespace UnitTestBoilerplate
 
 
 			this.TestProjects = new List<TestProject>();
-			IList<Project> allProjects = Utilities.GetProjects(this.dte);
+			IList<Project> allProjects = SolutionUtilities.GetProjects(this.dte);
 
 
 			string lastSelectedProject = StaticBoilerplateSettings.GetLastSelectedProject(this.dte.Solution.FileName);
@@ -153,7 +152,7 @@ namespace UnitTestBoilerplate
 					{
 						try
 						{
-							IEnumerable<ProjectItemSummary> selectedFiles = Utilities.GetSelectedFiles(this.dte);
+							IEnumerable<ProjectItemSummary> selectedFiles = SolutionUtilities.GetSelectedFiles(this.dte);
 							var createdItems = new List<ProjectItem>();
 							foreach (ProjectItemSummary selectedFile in selectedFiles)
 							{
@@ -194,8 +193,8 @@ namespace UnitTestBoilerplate
 			}
 			else
 			{
-				this.SelectedTestFramework = Utilities.FindTestFramework(this.selectedProject.Project);
-				this.SelectedMockFramework = Utilities.FindMockFramework(this.selectedProject.Project);
+				this.SelectedTestFramework = SolutionUtilities.FindTestFramework(this.selectedProject.Project);
+				this.SelectedMockFramework = SolutionUtilities.FindMockFramework(this.selectedProject.Project);
 			}
 		}
 
@@ -210,9 +209,9 @@ namespace UnitTestBoilerplate
 			}
 
 			this.relativePath = selectedFileDirectory.Substring(projectDirectory.Length);
-			if (relativePath.StartsWith("\\", StringComparison.Ordinal))
+			if (this.relativePath.StartsWith("\\", StringComparison.Ordinal))
 			{
-				relativePath = relativePath.Substring(1);
+				this.relativePath = this.relativePath.Substring(1);
 			}
 
 			string unitTestContents = await this.GenerateUnitTestContentsFromFileAsync(selectedFile.FilePath);
@@ -272,7 +271,7 @@ namespace UnitTestBoilerplate
 			}
 
 			NamespaceDeclarationSyntax namespaceDeclarationSyntax = null;
-			if (!Utilities.TryGetParentSyntax(firstClassDeclaration, out namespaceDeclarationSyntax))
+			if (!TypeUtilities.TryGetParentSyntax(firstClassDeclaration, out namespaceDeclarationSyntax))
 			{
 				this.HandleError("Could not find class namespace.");
 			}

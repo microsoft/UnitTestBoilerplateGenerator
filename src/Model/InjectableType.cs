@@ -1,12 +1,12 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using UnitTestBoilerplate.Utilities;
 
-namespace UnitTestBoilerplate
+namespace UnitTestBoilerplate.Model
 {
 	/// <summary>
 	/// Represents a type being injected into a class that we need to create mocks for.
@@ -88,7 +88,7 @@ namespace UnitTestBoilerplate
 			}
 		}
 
-		public string TypeBaseName => Utilities.GetTypeBaseName(this.TypeName);
+		public string TypeBaseName => TypeUtilities.GetTypeBaseName(this.TypeName);
 
 		public string LongMockName
 		{
@@ -102,7 +102,7 @@ namespace UnitTestBoilerplate
 
 		private static void AddComponentsToMockName(StringBuilder builder, TypeDescriptor typeDescriptor)
 		{
-			builder.Append(Utilities.GetTypeNameComponent(typeDescriptor.TypeName));
+			builder.Append(TypeUtilities.GetTypeNameComponent(typeDescriptor.TypeName));
 
 			foreach (TypeDescriptor genericArgumentTypeDescriptor in typeDescriptor.GenericTypeArguments)
 			{

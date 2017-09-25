@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnitTestBoilerplate
+﻿namespace UnitTestBoilerplate.Model
 {
 	/// <summary>
 	/// Determines how code that runs before every test is executed.
