@@ -412,6 +412,11 @@ namespace UnitTestBoilerplate.ViewModel
 			namespaces.Add(context.TestFramework.UsingNamespace);
 			namespaces.Add(context.ClassNamespace);
 
+			if (context.TestFramework.TestCleanupStyle == TestCleanupStyle.Disposable)
+			{
+				namespaces.Add("System");
+			}
+
 			foreach (InjectableType injectedType in context.InjectedTypes)
 			{
 				namespaces.AddRange(injectedType.TypeNamespaces);

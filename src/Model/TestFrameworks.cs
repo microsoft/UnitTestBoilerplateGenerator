@@ -32,6 +32,18 @@ namespace UnitTestBoilerplate.Model
 					testCleanupAttribute: "TearDown",
 					testInitializeStyle: TestInitializeStyle.AttributedMethod,
 					testCleanupStyle: TestCleanupStyle.AttributedMethod),
+
+				new TestFramework(
+					name: "xUnit",
+					detectionReferenceMatches: new List<string> { "xunit" },
+					detectionRank: 0,
+					usingString: "Xunit",
+					testClassAttribute: null,
+					testMethodAttribute: "Fact",
+					testInitializeAttribute: null,
+					testCleanupAttribute: null,
+					testInitializeStyle: TestInitializeStyle.Constructor,
+					testCleanupStyle: TestCleanupStyle.Disposable),
 			};
 		}
 
