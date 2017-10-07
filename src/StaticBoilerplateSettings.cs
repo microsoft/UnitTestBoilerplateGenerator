@@ -163,7 +163,7 @@ namespace UnitTestBoilerplate
 
 			if (Store.PropertyExists(CollectionPath, templateSettingKey))
 			{
-				return Store.GetString(CollectionPath, GetTemplateSettingsKey(testFramework, mockFramework, templateType));
+				return Store.GetString(CollectionPath, templateSettingKey);
 			}
 
 			switch (templateType)
