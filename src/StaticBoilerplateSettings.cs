@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using UnitTestBoilerplate.BasicModels;
 using UnitTestBoilerplate.Model;
 using UnitTestBoilerplate.Utilities;
 
@@ -16,7 +17,9 @@ namespace UnitTestBoilerplate
 {
 	public static class StaticBoilerplateSettings
 	{
-		private const string CollectionPath = "UnitTestBoilerplateGenerator";
+		private const string CollectionPath = @"ApplicationPrivateSettings\UnitTestBoilerplate\View\OptionsDialogPage";
+
+		private const string CollectionPathV0 = "UnitTestBoilerplateGenerator";
 
 		private const string TestProjectsKey = "TestProjectsDictionary";
 
@@ -35,6 +38,10 @@ namespace UnitTestBoilerplate
 			Store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
 			Store.CreateCollection(CollectionPath);
 
+			Store.SetString(CollectionPath, "TestHam", "what");
+
+			string what = Store.GetString(CollectionPath, "TestHam");
+
 			// Setting upgrade if needed
 			if (Store.PropertyExists(CollectionPath, VersionKey))
 			{
@@ -46,7 +53,7 @@ namespace UnitTestBoilerplate
 			}
 			else
 			{
-				if (Store.PropertyExists(CollectionPath, TestProjectsKey))
+				if (Store.PropertyExists(CollectionPathV0, TestProjectsKey))
 				{
 					// We are upgrading from an old version (v0), as we didn't have version tracked, but had a test projects dictionary
 
@@ -60,14 +67,14 @@ namespace UnitTestBoilerplate
 						{
 							string templateKey = $"Template_{mockFrameworkName}_{templateType}";
 
-							if (Store.PropertyExists(CollectionPath, templateKey))
+							if (Store.PropertyExists(CollectionPathV0, templateKey))
 							{
-								string oldTemplate = Store.GetString(CollectionPath, templateKey);
+								string oldTemplate = Store.GetString(CollectionPathV0, templateKey);
 
 								CreateEntryForTestFramework(oldTemplate, templateType, TestFrameworks.Get("VisualStudio"), mockFramework);
 								CreateEntryForTestFramework(oldTemplate, templateType, TestFrameworks.Get("NUnit"), mockFramework);
 
-								Store.DeleteProperty(CollectionPath, templateKey);
+								Store.DeleteProperty(CollectionPathV0, templateKey);
 							}
 						}
 					}
@@ -163,7 +170,7 @@ namespace UnitTestBoilerplate
 
 			if (Store.PropertyExists(CollectionPath, templateSettingKey))
 			{
-				return Store.GetString(CollectionPath, GetTemplateSettingsKey(testFramework, mockFramework, templateType));
+				return Store.GetString(CollectionPath, templateSettingKey);
 			}
 
 			switch (templateType)
@@ -211,7 +218,8 @@ namespace UnitTestBoilerplate
 
 		private static string GetTemplateSettingsKey(string testFrameworkString, string mockFrameworkString, string templateTypeString)
 		{
-			return $"Template_{testFrameworkString}_{mockFrameworkString}_{templateTypeString}";
+			string candidateKey = $"Template_{testFrameworkString}_{mockFrameworkString}_{templateTypeString}";
+			return candidateKey.Replace("VisualStudio", "VS");
 		}
 	}
 }

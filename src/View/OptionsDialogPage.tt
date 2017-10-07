@@ -1,0 +1,65 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="$(TargetDir)UnitTestBoilerplate.BasicModels.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="UnitTestBoilerplate.BasicModels" #>
+<#@ output extension=".cs" #>
+
+using Microsoft.VisualStudio.Shell;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.ComponentModel;
+
+namespace UnitTestBoilerplate.View
+{
+	[Guid("5d7016f4-8aa2-4b43-85f9-1145814471ba")]
+	public class OptionsDialogPage : UIElementDialogPage
+	{
+		private OptionsDialogPageControl optionsDialogControl;
+
+		protected override UIElement Child
+        {
+            get { return this.optionsDialogControl ?? (this.optionsDialogControl = new OptionsDialogPageControl()); }
+        }
+
+		protected override void OnActivate(CancelEventArgs e)
+		{
+			base.OnActivate(e);
+
+			this.optionsDialogControl.ViewModel.Initialize();
+		}
+
+		protected override void OnApply(PageApplyEventArgs args)
+		{
+			if (args.ApplyBehavior == ApplyKind.Apply)
+			{
+				this.optionsDialogControl.ViewModel.Apply();
+			}
+
+			base.OnApply(args);
+		}
+
+		// These are needed for VS setting import/export to work.
+
+		public int Version { get; set; }
+
+<#
+
+foreach (MockFramework mockFramework in MockFrameworks.List)
+{
+	foreach (TestFramework testFramework in TestFrameworks.List)
+	{
+		foreach (TemplateType templateType in Enum.GetValues(typeof(TemplateType)))
+		{
+#>
+		public string Template_<#= testFramework.Name #>_<#= mockFramework.Name #>_<#= templateType.ToString() #> { get; set; }
+<#
+		}
+	}
+}
+
+#>
+	}
+}

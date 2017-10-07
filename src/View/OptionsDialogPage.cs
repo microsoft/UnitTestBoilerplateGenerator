@@ -1,13 +1,8 @@
-﻿using Microsoft.VisualStudio.Shell;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
+using Microsoft.VisualStudio.Shell;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.ComponentModel;
-using Microsoft.VisualStudio.ComponentModelHost;
 
 namespace UnitTestBoilerplate.View
 {
@@ -37,5 +32,42 @@ namespace UnitTestBoilerplate.View
 
 			base.OnApply(args);
 		}
+
+		// These are needed for VS setting import/export to work.
+
+		public int Version { get; set; }
+
+		public string Template_VisualStudio_Moq_File { get; set; }
+		public string Template_VisualStudio_Moq_MockFieldDeclaration { get; set; }
+		public string Template_VisualStudio_Moq_MockFieldInitialization { get; set; }
+		public string Template_VisualStudio_Moq_MockObjectReference { get; set; }
+		public string Template_NUnit_Moq_File { get; set; }
+		public string Template_NUnit_Moq_MockFieldDeclaration { get; set; }
+		public string Template_NUnit_Moq_MockFieldInitialization { get; set; }
+		public string Template_NUnit_Moq_MockObjectReference { get; set; }
+		public string Template_VisualStudio_AutoMoq_File { get; set; }
+		public string Template_VisualStudio_AutoMoq_MockFieldDeclaration { get; set; }
+		public string Template_VisualStudio_AutoMoq_MockFieldInitialization { get; set; }
+		public string Template_VisualStudio_AutoMoq_MockObjectReference { get; set; }
+		public string Template_NUnit_AutoMoq_File { get; set; }
+		public string Template_NUnit_AutoMoq_MockFieldDeclaration { get; set; }
+		public string Template_NUnit_AutoMoq_MockFieldInitialization { get; set; }
+		public string Template_NUnit_AutoMoq_MockObjectReference { get; set; }
+		public string Template_VisualStudio_SimpleStubs_File { get; set; }
+		public string Template_VisualStudio_SimpleStubs_MockFieldDeclaration { get; set; }
+		public string Template_VisualStudio_SimpleStubs_MockFieldInitialization { get; set; }
+		public string Template_VisualStudio_SimpleStubs_MockObjectReference { get; set; }
+		public string Template_NUnit_SimpleStubs_File { get; set; }
+		public string Template_NUnit_SimpleStubs_MockFieldDeclaration { get; set; }
+		public string Template_NUnit_SimpleStubs_MockFieldInitialization { get; set; }
+		public string Template_NUnit_SimpleStubs_MockObjectReference { get; set; }
+		public string Template_VisualStudio_NSubstitute_File { get; set; }
+		public string Template_VisualStudio_NSubstitute_MockFieldDeclaration { get; set; }
+		public string Template_VisualStudio_NSubstitute_MockFieldInitialization { get; set; }
+		public string Template_VisualStudio_NSubstitute_MockObjectReference { get; set; }
+		public string Template_NUnit_NSubstitute_File { get; set; }
+		public string Template_NUnit_NSubstitute_MockFieldDeclaration { get; set; }
+		public string Template_NUnit_NSubstitute_MockFieldInitialization { get; set; }
+		public string Template_NUnit_NSubstitute_MockObjectReference { get; set; }
 	}
 }

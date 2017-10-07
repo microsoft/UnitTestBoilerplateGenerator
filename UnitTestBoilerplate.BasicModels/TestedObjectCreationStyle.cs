@@ -1,4 +1,4 @@
-﻿namespace UnitTestBoilerplate.Model
+﻿namespace UnitTestBoilerplate.BasicModels
 {
 	/// <summary>
 	/// How the boilerplate will create the object to be tested.

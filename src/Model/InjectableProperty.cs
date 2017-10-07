@@ -1,4 +1,6 @@
-﻿namespace UnitTestBoilerplate.Model
+﻿using UnitTestBoilerplate.BasicModels;
+
+namespace UnitTestBoilerplate.Model
 {
 	public class InjectableProperty : InjectableType
 	{

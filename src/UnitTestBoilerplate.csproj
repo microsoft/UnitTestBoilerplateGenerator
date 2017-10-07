@@ -77,8 +77,6 @@
   <ItemGroup>
     <Compile Include="DefaultTemplateGenerator.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
-    <Compile Include="Model\TestCleanupStyle.cs" />
-    <Compile Include="Model\TestedObjectCreationStyle.cs" />
     <Compile Include="Model\ComboChoice.cs" />
     <Compile Include="CreateUnitTestBoilerplateCommand.cs" />
     <Compile Include="CreateUnitTestBoilerplateCommandPackage.cs" />
@@ -89,13 +87,11 @@
     </Compile>
     <Compile Include="ViewModel\CreateUnitTestBoilerplateViewModel.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Model\MockFramework.cs" />
-    <Compile Include="Model\MockFrameworks.cs" />
-    <Compile Include="Model\TestFramework.cs" />
-    <Compile Include="Model\TestFrameworks.cs" />
-    <Compile Include="Model\TestInitializeStyle.cs" />
     <Compile Include="Model\TypeDescriptor.cs" />
     <Compile Include="View\OptionsDialogPage.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OptionsDialogPage.tt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\OptionsDialogPageControl.xaml.cs">
@@ -103,7 +99,6 @@
     </Compile>
     <Compile Include="ViewModel\OptionsDialogViewModel.cs" />
     <Compile Include="StaticBoilerplateSettings.cs" />
-    <Compile Include="Model\TemplateType.cs" />
     <Compile Include="Model\InjectableType.cs" />
     <Compile Include="Model\InjectableProperty.cs" />
     <Compile Include="Model\MockField.cs" />
@@ -113,6 +108,10 @@
     <Compile Include="Model\TestProject.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="View\OptionsDialogPage.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>OptionsDialogPage.cs</LastGenOutput>
+    </Content>
     <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
@@ -444,6 +443,15 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UnitTestBoilerplate.BasicModels\UnitTestBoilerplate.BasicModels.csproj">
+      <Project>{01764feb-fba9-41ab-b8d5-4f3fea19a2e2}</Project>
+      <Name>UnitTestBoilerplate.BasicModels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

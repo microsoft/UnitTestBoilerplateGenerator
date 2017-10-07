@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace UnitTestBoilerplate.Model
+namespace UnitTestBoilerplate.BasicModels
 {
 	public static class MockFrameworks
 	{

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using UnitTestBoilerplate.BasicModels;
 using UnitTestBoilerplate.Model;
 
 namespace UnitTestBoilerplate.ViewModel

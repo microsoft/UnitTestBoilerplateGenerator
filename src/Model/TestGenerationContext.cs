@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnitTestBoilerplate.BasicModels;
 
 namespace UnitTestBoilerplate.Model
 {

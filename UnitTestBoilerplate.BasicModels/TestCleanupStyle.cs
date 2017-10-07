@@ -1,4 +1,4 @@
-﻿namespace UnitTestBoilerplate.Model
+﻿namespace UnitTestBoilerplate.BasicModels
 {
 	/// <summary>
 	/// Determines how code that runs after every test is executed.

@@ -1,4 +1,4 @@
-﻿namespace UnitTestBoilerplate.Model
+﻿namespace UnitTestBoilerplate.BasicModels
 {
 	public enum TemplateType
 	{

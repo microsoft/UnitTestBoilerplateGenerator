@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UnitTestBoilerplate.Model
+namespace UnitTestBoilerplate.BasicModels
 {
 	/// <summary>
 	/// Defines a mock framework.

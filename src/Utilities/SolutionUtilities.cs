@@ -9,6 +9,7 @@ using EnvDTE;
 using EnvDTE80;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnitTestBoilerplate.BasicModels;
 using UnitTestBoilerplate.Model;
 
 namespace UnitTestBoilerplate.Utilities

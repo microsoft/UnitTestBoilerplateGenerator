@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UnitTestBoilerplate.Model
+namespace UnitTestBoilerplate.BasicModels
 {
     public class TestFramework
     {

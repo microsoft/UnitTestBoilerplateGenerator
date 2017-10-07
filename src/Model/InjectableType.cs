@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using UnitTestBoilerplate.BasicModels;
 using UnitTestBoilerplate.Utilities;
 
 namespace UnitTestBoilerplate.Model

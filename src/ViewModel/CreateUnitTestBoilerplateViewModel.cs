@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.VisualStudio.Shell;
+using UnitTestBoilerplate.BasicModels;
 using UnitTestBoilerplate.Model;
 using UnitTestBoilerplate.Utilities;
 using Project = EnvDTE.Project;
