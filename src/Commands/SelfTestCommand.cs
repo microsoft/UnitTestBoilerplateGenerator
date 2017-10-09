@@ -38,7 +38,12 @@ namespace UnitTestBoilerplate.Commands
 		/// <param name="package">Owner package, not null.</param>
 		private SelfTestCommand(Package package)
 		{
-			this.package = package ?? throw new ArgumentNullException(nameof(package));
+			if (package == null)
+			{
+				throw new ArgumentNullException(nameof(package));
+			}
+
+			this.package = package;
 
 			OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 			if (commandService != null)

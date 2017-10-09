@@ -49,7 +49,12 @@ namespace UnitTestBoilerplate.Commands
 		/// <param name="package">Owner package, not null.</param>
 		private CreateUnitTestBoilerplateCommand(Package package)
 		{
-			this.package = package ?? throw new ArgumentNullException(nameof(package));
+			if (package == null)
+			{
+				throw new ArgumentNullException(nameof(package));
+			}
+
+			this.package = package;
 
 			DTE2 dte = (DTE2)this.ServiceProvider.GetService(typeof(DTE));
 			OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
