@@ -20,7 +20,7 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using UnitTestBoilerplate.Utilities;
 using UnitTestBoilerplate.View;
 
-namespace UnitTestBoilerplate
+namespace UnitTestBoilerplate.Commands
 {
 	/// <summary>
 	/// Command handler
@@ -66,7 +66,7 @@ namespace UnitTestBoilerplate
 				{
 					menuItem.Visible = SolutionUtilities.GetSelectedFiles(dte).Any(file => file != null && file.FilePath != null && file.FilePath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase));
 				};
-				//var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandId);
+				
 				commandService.AddCommand(menuItem);
 			}
 		}

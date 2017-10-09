@@ -15,15 +15,17 @@ namespace UnitTestBoilerplate.Utilities
 {
 	public static class SolutionUtilities
 	{
-		public static IEnumerable<ProjectItemSummary> GetSelectedFiles(DTE2 dte)
+		public static IList<ProjectItemSummary> GetSelectedFiles(DTE2 dte)
 		{
 			var items = (Array)dte.ToolWindows.SolutionExplorer.SelectedItems;
 
-			return items.Cast<UIHierarchyItem>().Select(i =>
-			{
-				var projectItem = i.Object as ProjectItem;
-				return new ProjectItemSummary(projectItem.FileNames[1], projectItem.ContainingProject.FileName);
-			});
+			return items.Cast<UIHierarchyItem>()
+				.Select(i =>
+				{
+					var projectItem = i.Object as ProjectItem;
+					return new ProjectItemSummary(projectItem);
+				})
+				.ToList();
 		}
 
 		public static IList<Project> GetProjects(DTE2 dte)

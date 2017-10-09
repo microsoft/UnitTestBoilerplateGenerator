@@ -1,4 +1,6 @@
-﻿namespace UnitTestBoilerplate.Model
+﻿using EnvDTE;
+
+namespace UnitTestBoilerplate.Model
 {
 	public class ProjectItemSummary
 	{
@@ -6,6 +8,12 @@
 		{
 			this.FilePath = filePath;
 			this.ProjectFilePath = projectFilePath;
+		}
+
+		public ProjectItemSummary(ProjectItem projectItem)
+		{
+			this.FilePath = projectItem.FileNames[1];
+			this.ProjectFilePath = projectItem.ContainingProject.FileName;
 		}
 
 		public string FilePath { get; }

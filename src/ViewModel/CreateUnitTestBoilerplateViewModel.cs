@@ -152,11 +152,11 @@ namespace UnitTestBoilerplate.ViewModel
 					{
 						try
 						{
-							IEnumerable<ProjectItemSummary> selectedFiles = SolutionUtilities.GetSelectedFiles(this.dte);
+							IList<ProjectItemSummary> selectedFiles = SolutionUtilities.GetSelectedFiles(this.dte);
 							var createdItems = new List<ProjectItem>();
 							foreach (ProjectItemSummary selectedFile in selectedFiles)
 							{
-								createdItems.Add(await this.GenerateUnitTestFromProjectItemSummaryAsync(selectedFile));
+								createdItems.Add(await this.GenerateUnitTestFromProjectItemSummaryAsync(selectedFile, openFile: selectedFiles.Count == 1));
 							}
 
 							bool focusSet = false;
@@ -198,7 +198,7 @@ namespace UnitTestBoilerplate.ViewModel
 			}
 		}
 
-		private async Task<ProjectItem> GenerateUnitTestFromProjectItemSummaryAsync(ProjectItemSummary selectedFile)
+		internal async Task<ProjectItem> GenerateUnitTestFromProjectItemSummaryAsync(ProjectItemSummary selectedFile, bool openFile)
 		{
 			string projectDirectory = Path.GetDirectoryName(selectedFile.ProjectFilePath);
 			string selectedFileDirectory = Path.GetDirectoryName(selectedFile.FilePath);
@@ -233,7 +233,11 @@ namespace UnitTestBoilerplate.ViewModel
 
 			// Add the file to project
 			ProjectItem testItem = this.SelectedProject.Project.ProjectItems.AddFromFile(testPath);
-			testItem.ExpandView();
+
+			if (openFile)
+			{
+				testItem.ExpandView();
+			}
 
 			return testItem;
 		}

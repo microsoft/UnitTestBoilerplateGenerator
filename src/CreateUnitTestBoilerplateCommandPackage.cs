@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
+using UnitTestBoilerplate.Commands;
 using UnitTestBoilerplate.View;
 
 namespace UnitTestBoilerplate
@@ -72,6 +73,10 @@ namespace UnitTestBoilerplate
 		protected override void Initialize()
 		{
 			CreateUnitTestBoilerplateCommand.Initialize(this);
+#if DEBUG
+			SelfTestCommand.Initialize(this);
+			SelfTestCleanCommand.Initialize(this);
+#endif
 			base.Initialize();
 
 			var componentModel = (IComponentModel)this.GetService(typeof(SComponentModel));
