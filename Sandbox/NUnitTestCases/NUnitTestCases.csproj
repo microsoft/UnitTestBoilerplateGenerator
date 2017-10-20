@@ -7,8 +7,8 @@
     <ProjectGuid>{AE1C5BDB-E071-4953-8ECC-123A0E296B24}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnitBoilerplate.Sandbox.NUnitTestCases</RootNamespace>
-    <AssemblyName>UnitBoilerplate.Sandbox.NUnitTestCases</AssemblyName>
+    <RootNamespace>NUnitTestCases</RootNamespace>
+    <AssemblyName>NUnitTestCases</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Classes\SandboxClasses.csproj">
+    <ProjectReference Include="..\Classes\Classes.csproj">
       <Project>{c858ab02-55a4-4f5a-950f-6f403912777f}</Project>
-      <Name>SandboxClasses</Name>
+      <Name>Classes</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

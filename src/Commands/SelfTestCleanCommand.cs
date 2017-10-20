@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
+using UnitTestBoilerplate.Services;
 using UnitTestBoilerplate.View;
 
 namespace UnitTestBoilerplate.Commands
@@ -90,7 +91,7 @@ namespace UnitTestBoilerplate.Commands
 		/// <param name="e">Event args.</param>
 		private void MenuItemCallback(object sender, EventArgs e)
 		{
-			var createTestService = new CreateTestService();
+			var createTestService = new SelfTestService();
 			createTestService.Clean(save: true);
 		}
 	}

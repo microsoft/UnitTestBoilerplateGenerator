@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Classes\SandboxClasses.csproj" />
+    <ProjectReference Include="..\Classes\Classes.csproj" />
   </ItemGroup>
 
 </Project>

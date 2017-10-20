@@ -2325,7 +2325,7 @@
           }
         }
       },
-      "SandboxClasses/1.0.0": {
+      "Classes/1.0.0": {
         "type": "project"
       }
     },
@@ -4742,7 +4742,7 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "SandboxClasses/1.0.0": {
+      "Classes/1.0.0": {
         "type": "project"
       }
     },
@@ -7195,7 +7195,7 @@
           "runtimes/aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "SandboxClasses/1.0.0": {
+      "Classes/1.0.0": {
         "type": "project"
       }
     },
@@ -9621,7 +9621,7 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "SandboxClasses/1.0.0": {
+      "Classes/1.0.0": {
         "type": "project"
       }
     },
@@ -12083,7 +12083,7 @@
           "runtimes/aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "SandboxClasses/1.0.0": {
+      "Classes/1.0.0": {
         "type": "project"
       }
     },
@@ -14509,7 +14509,7 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "SandboxClasses/1.0.0": {
+      "Classes/1.0.0": {
         "type": "project"
       }
     },
@@ -16971,7 +16971,7 @@
           "runtimes/aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "SandboxClasses/1.0.0": {
+      "Classes/1.0.0": {
         "type": "project"
       }
     }
@@ -25415,10 +25415,10 @@
         "system.xml.xmlserializer.nuspec"
       ]
     },
-    "SandboxClasses/1.0.0": {
+    "Classes/1.0.0": {
       "type": "project",
-      "path": "../Classes/SandboxClasses.csproj",
-      "msbuildProject": "../Classes/SandboxClasses.csproj"
+      "path": "../Classes/Classes.csproj",
+      "msbuildProject": "../Classes/Classes.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -25434,9 +25434,9 @@
   },
   "project": {
     "restore": {
-      "projectUniqueName": "D:\\docs\\projects\\UnitTestBoilerplateGenerator\\Sandbox\\NUnitUwpTestCases\\SandboxNUnitUwpTestCases.csproj",
-      "projectName": "SandboxNUnitUwpTestCases",
-      "projectPath": "D:\\docs\\projects\\UnitTestBoilerplateGenerator\\Sandbox\\NUnitUwpTestCases\\SandboxNUnitUwpTestCases.csproj",
+      "projectUniqueName": "D:\\docs\\projects\\UnitTestBoilerplateGenerator\\Sandbox\\NUnitUwpTestCases\\NUnitUwpTestCases.csproj",
+      "projectName": "NUnitUwpTestCases",
+      "projectPath": "D:\\docs\\projects\\UnitTestBoilerplateGenerator\\Sandbox\\NUnitUwpTestCases\\NUnitUwpTestCases.csproj",
       "projectJsonPath": "D:\\docs\\projects\\UnitTestBoilerplateGenerator\\Sandbox\\NUnitUwpTestCases\\project.json",
       "packagesPath": "C:\\Users\\RandomEngy\\.nuget\\packages\\",
       "outputPath": "D:\\docs\\projects\\UnitTestBoilerplateGenerator\\Sandbox\\NUnitUwpTestCases\\obj\\",
@@ -25454,8 +25454,8 @@
       "frameworks": {
         "uap10.0.10586": {
           "projectReferences": {
-            "D:\\docs\\projects\\UnitTestBoilerplateGenerator\\Sandbox\\Classes\\SandboxClasses.csproj": {
-              "projectPath": "D:\\docs\\projects\\UnitTestBoilerplateGenerator\\Sandbox\\Classes\\SandboxClasses.csproj"
+            "D:\\docs\\projects\\UnitTestBoilerplateGenerator\\Sandbox\\Classes\\Classes.csproj": {
+              "projectPath": "D:\\docs\\projects\\UnitTestBoilerplateGenerator\\Sandbox\\Classes\\Classes.csproj"
             }
           }
         }

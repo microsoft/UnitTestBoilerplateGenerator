@@ -94,18 +94,6 @@ namespace UnitTestBoilerplate.Commands
 		{
 			var dialog = new SelfTestDialog();
 			dialog.ShowModal();
-
-			//string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-			//string title = "Command1";
-
-			//// Show a message box to prove we were here
-			//VsShellUtilities.ShowMessageBox(
-			//	this.ServiceProvider,
-			//	message,
-			//	title,
-			//	OLEMSGICON.OLEMSGICON_INFO,
-			//	OLEMSGBUTTON.OLEMSGBUTTON_OK,
-			//	OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
 		}
 	}
 }
