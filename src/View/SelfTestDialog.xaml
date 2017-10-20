@@ -42,7 +42,7 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 FontSize="20"
-                Text="{Binding RelativeFilePath}" />
+                Text="{Binding FailureTitle}" />
 
             <TextBlock
                 Grid.Row="1"
@@ -105,6 +105,7 @@
                         Style="{StaticResource NormalButton}" />
                     <Button
                         Margin="15 0 0 0"
+                        Command="{Binding AcceptCommand}"
                         Content="Accept Actual"
                         Style="{StaticResource NormalButton}" />
                 </StackPanel>

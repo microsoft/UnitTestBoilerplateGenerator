@@ -176,6 +176,13 @@ namespace UnitTestBoilerplate.Utilities
 			return matchingFrameworks.OrderBy(f => f.DetectionRank).First();
 		}
 
+		public static string GetSelfTestDirectoryFromSandbox(DTE2 dte)
+		{
+			string solutionDirectory = Path.GetDirectoryName(dte.Solution.FileName);
+			string rootDirectory = Path.GetDirectoryName(solutionDirectory);
+			return Path.Combine(rootDirectory, "SelfTestFiles");
+		}
+
 		private static IEnumerable<Project> GetSolutionFolderProjects(Project solutionFolder)
 		{
 			List<Project> list = new List<Project>();

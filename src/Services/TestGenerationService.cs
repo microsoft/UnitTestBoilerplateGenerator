@@ -70,6 +70,40 @@ namespace UnitTestBoilerplate.Services
 			return testPath;
 		}
 
+		public async Task GenerateUnitTestFileAsync(
+			ProjectItemSummary selectedFile,
+			string targetFilePath,
+			string targetProjectNamespace,
+			TestFramework testFramework,
+			MockFramework mockFramework)
+		{
+			string sourceProjectDirectory = Path.GetDirectoryName(selectedFile.ProjectFilePath);
+			string selectedFileDirectory = Path.GetDirectoryName(selectedFile.FilePath);
+
+			if (sourceProjectDirectory == null || selectedFileDirectory == null || !selectedFileDirectory.StartsWith(sourceProjectDirectory, StringComparison.OrdinalIgnoreCase))
+			{
+				throw new InvalidOperationException("Error with selected file paths.");
+			}
+
+			TestGenerationContext context = await this.CollectTestGenerationContextAsync(selectedFile, targetProjectNamespace, testFramework, mockFramework);
+
+			string unitTestContents = this.GenerateUnitTestContents(context);
+
+			string testFolder = Path.GetDirectoryName(targetFilePath);
+
+			if (File.Exists(targetFilePath))
+			{
+				throw new InvalidOperationException("Test file already exists.");
+			}
+
+			if (!Directory.Exists(testFolder))
+			{
+				Directory.CreateDirectory(testFolder);
+			}
+
+			File.WriteAllText(targetFilePath, unitTestContents);
+		}
+
 		public string GetRelativePath(ProjectItemSummary selectedFile)
 		{
 			string projectDirectory = Path.GetDirectoryName(selectedFile.ProjectFilePath);
@@ -89,7 +123,11 @@ namespace UnitTestBoilerplate.Services
 			return relativePath;
 		}
 
-		private async Task<TestGenerationContext> CollectTestGenerationContextAsync(ProjectItemSummary selectedFile, EnvDTE.Project targetProject, TestFramework testFramework, MockFramework mockFramework)
+		private async Task<TestGenerationContext> CollectTestGenerationContextAsync(
+			ProjectItemSummary selectedFile, 
+			string targetProjectNamespace, 
+			TestFramework testFramework,
+			MockFramework mockFramework)
 		{
 			Microsoft.CodeAnalysis.Solution solution = CreateUnitTestBoilerplateCommandPackage.VisualStudioWorkspace.CurrentSolution;
 			DocumentId documentId = solution.GetDocumentIdsWithFilePath(selectedFile.FilePath).FirstOrDefault();
@@ -170,17 +208,16 @@ namespace UnitTestBoilerplate.Services
 			}
 
 			string unitTestNamespace;
-			string defaultNamespace = targetProject.Properties.Item("DefaultNamespace").Value as string;
 
 			string relativePath = this.GetRelativePath(selectedFile);
 
 			if (string.IsNullOrEmpty(relativePath))
 			{
-				unitTestNamespace = defaultNamespace;
+				unitTestNamespace = targetProjectNamespace;
 			}
 			else
 			{
-				List<string> defaultNamespaceParts = defaultNamespace.Split('.').ToList();
+				List<string> defaultNamespaceParts = targetProjectNamespace.Split('.').ToList();
 				List<string> unitTestNamespaceParts = new List<string>(defaultNamespaceParts);
 				unitTestNamespaceParts.AddRange(relativePath.Split('\\'));
 
@@ -202,6 +239,12 @@ namespace UnitTestBoilerplate.Services
 				injectableProperties,
 				constructorInjectionTypes,
 				injectedTypes);
+		}
+
+		private async Task<TestGenerationContext> CollectTestGenerationContextAsync(ProjectItemSummary selectedFile, EnvDTE.Project targetProject, TestFramework testFramework, MockFramework mockFramework)
+		{
+			string targetProjectNamespace = targetProject.Properties.Item("DefaultNamespace").Value as string;
+			return await this.CollectTestGenerationContextAsync(selectedFile, targetProjectNamespace, testFramework, mockFramework);
 		}
 
 		private string GenerateUnitTestContents(TestGenerationContext context)

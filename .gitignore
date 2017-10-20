@@ -21,3 +21,6 @@ x64/
 *.ncrunchsolution
 *.ncrunchproject
 _NCrunch_WebCompiler
+
+# Self-test results
+/SelfTestFiles/Actual

@@ -81,6 +81,11 @@
     <Compile Include="Model\SelfTestFileFailure.cs" />
     <Compile Include="Services\SelfTestService.cs" />
     <Compile Include="Commands\SelfTestCleanCommand.cs" />
+	<Compile Include="Model\SelfTestDetectionResult.cs" />
+    <Compile Include="Model\SelfTestDetectionsResult.cs" />
+    <Compile Include="Model\SelfTestInputCombination.cs" />
+    <Compile Include="Model\SelfTestFileComparesResult.cs" />
+    <Compile Include="Model\SelfTestRunResult.cs" />
     <Compile Include="View\SelfTestDialog.xaml.cs">
       <DependentUpon>SelfTestDialog.xaml</DependentUpon>
     </Compile>

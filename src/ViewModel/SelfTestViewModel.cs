@@ -24,15 +24,18 @@ namespace UnitTestBoilerplate.ViewModel
 	public class SelfTestViewModel : ViewModelBase
 	{
 		private readonly DTE2 dte;
-		private IList<Project> projects;
-
+		private IList<Project> targetProjects;
+		private Project classesProject;
+		private SelfTestRunResult runResult;
 		private IList<SelfTestFileFailure> failures;
 
 		public SelfTestViewModel()
 		{
 			this.dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
-			this.projects = SolutionUtilities.GetProjects(this.dte);
-			this.status = "Hello";
+			IList<Project> allProjects = SolutionUtilities.GetProjects(this.dte);
+
+			this.targetProjects = allProjects.Where(p => p.Name.EndsWith("TestCases", StringComparison.Ordinal)).ToList();
+			this.classesProject = allProjects.Single(p => p.Name == "Classes");
 
 			this.InitializeAsync();
 		}
@@ -51,11 +54,11 @@ namespace UnitTestBoilerplate.ViewModel
 			set { this.Set(ref this.status, value); }
 		}
 
-		private string relativeFilePath;
-		public string RelativeFilePath
+		private string failureTitle;
+		public string FailureTitle
 		{
-			get { return this.relativeFilePath; }
-			set { this.Set(ref this.relativeFilePath, value); }
+			get { return this.failureTitle; }
+			set { this.Set(ref this.failureTitle, value); }
 		}
 
 		private string expectedText;
@@ -91,17 +94,22 @@ namespace UnitTestBoilerplate.ViewModel
 
 		private void RefreshUI()
 		{
+			if (this.runResult == null)
+			{
+				return;
+			}
+
 			this.UpdateFailedStatusText();
-			this.SucceededStatusText = this.succeededCount + " succeeded";
+			this.SucceededStatusText = $"{this.runResult.DetectionsSucceededCount}/{this.runResult.TotalDetectionsCount} detections succeeded | {this.succeededCount} files succeeded";
 			this.PreviousCommand.RaiseCanExecuteChanged();
 			this.NextCommand.RaiseCanExecuteChanged();
 			this.AcceptCommand.RaiseCanExecuteChanged();
 
-			if (this.failures.Count > 0)
+			if (this.failures != null && this.failures.Count > 0)
 			{
 				SelfTestFileFailure failure = this.failures[this.FailureIndex];
 
-				this.RelativeFilePath = failure.RelativeFilePath;
+				this.FailureTitle = Path.GetFileName(failure.ActualFilePath);
 				this.expectedText = failure.ExpectedContents;
 				this.actualText = failure.ActualContents;
 			}
@@ -180,7 +188,8 @@ namespace UnitTestBoilerplate.ViewModel
 
 						if (this.failures.Count == 0)
 						{
-							// Succeeded UI
+							this.ShowSuccess();
+							return;
 						}
 						else if (this.FailureIndex >= this.failures.Count)
 						{
@@ -198,73 +207,25 @@ namespace UnitTestBoilerplate.ViewModel
 
 		private async Task InitializeAsync()
 		{
-			var createTestService = new SelfTestService();
+			this.Status = "Running tests...";
 
-			createTestService.Clean(this.projects);
+			var selfTestService = new SelfTestService();
+			this.runResult = await selfTestService.RunTestsAsync(this.dte, this.classesProject, this.targetProjects);
 
-			await createTestService.GenerateTestFilesAsync(this.projects);
-
-			string solutionDirectory = Path.GetDirectoryName(this.dte.Solution.FileName);
-			string expectedResultsDirectory = Path.Combine(solutionDirectory, "SelfTestExpectedResults");
-
-			// Go over all "*TestCases" folders in actual results folder, dig into "Cases" directory
-			int totalFiles = 0;
-			this.succeededCount = 0;
-
-			this.failures = new List<SelfTestFileFailure>();
-
-			var resultsInfo = new DirectoryInfo(solutionDirectory);
-			foreach (DirectoryInfo projectDirectoryInfo in resultsInfo.GetDirectories("*TestCases"))
+			// For now just display the first detection failure
+			if (this.runResult.DetectionFailures.Count > 0)
 			{
-				DirectoryInfo casesDirectoryInfo = new DirectoryInfo(Path.Combine(projectDirectoryInfo.FullName, "Cases"));
-
-				foreach (FileInfo actualResultFileInfo in casesDirectoryInfo.GetFiles())
-				{
-					totalFiles++;
-
-					string actualFileContents = File.ReadAllText(actualResultFileInfo.FullName);
-					string relativeFilePath = Path.Combine(projectDirectoryInfo.Name, "Cases", actualResultFileInfo.Name);
-
-					string expectedFilePath = Path.Combine(expectedResultsDirectory, relativeFilePath);
-					if (File.Exists(expectedFilePath))
-					{
-						string expectedFileContents = File.ReadAllText(expectedFilePath);
-
-						if (expectedFileContents == actualFileContents)
-						{
-							this.succeededCount++;
-						}
-						else
-						{
-							this.failures.Add(new SelfTestFileFailure
-							{
-								RelativeFilePath = relativeFilePath,
-								ExpectedFilePath = expectedFilePath,
-								ActualFilePath = actualResultFileInfo.FullName,
-								ExpectedContents = expectedFileContents,
-								ActualContents = actualFileContents
-							});
-						}
-					}
-					else
-					{
-						// Expected file does not exist
-						this.failures.Add(new SelfTestFileFailure
-						{
-							RelativeFilePath = relativeFilePath,
-							ExpectedFilePath = expectedFilePath,
-							ActualFilePath = actualResultFileInfo.FullName,
-							ExpectedContents = null,
-							ActualContents = actualFileContents
-						});
-					}
-				}
+				this.Status = this.runResult.DetectionFailures[0];
+				return;
 			}
+
+			this.failures = new List<SelfTestFileFailure>(this.runResult.FileFailures);
+
+			this.succeededCount = this.runResult.FilesSucceededCount;
 
 			if (this.failures.Count == 0)
 			{
 				this.ShowSuccess();
-				return;
 			}
 			else
 			{

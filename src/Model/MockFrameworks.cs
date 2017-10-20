@@ -5,12 +5,17 @@ namespace UnitTestBoilerplate.Model
 {
 	public static class MockFrameworks
 	{
+		public const string MoqName = "Moq";
+		public const string AutoMoqName = "AutoMoq";
+		public const string SimpleStubsName = "SimpleStubs";
+		public const string NSubstituteName = "NSubstitute";
+
 		static MockFrameworks()
 		{
 			List = new List<MockFramework>
 			{
 				new MockFramework(
-					name: "Moq",
+					name: MoqName,
 					detectionReferenceMatches: new List<string> { "Moq" },
 					detectionRank: 1,
 					usingNamespaces: new List<string> { "Moq" },
@@ -26,7 +31,7 @@ namespace UnitTestBoilerplate.Model
 					testedObjectCreationCode: null,
 					mockObjectReferenceCode: "this.mock$InterfaceMockName$.Object"),
 				new MockFramework(
-					name: "AutoMoq",
+					name: AutoMoqName,
 					detectionReferenceMatches: new List<string> { "AutoMoq" },
 					detectionRank: 0,
 					usingNamespaces: new List<string> { "AutoMoq", "Moq" },
@@ -42,7 +47,7 @@ namespace UnitTestBoilerplate.Model
 					testedObjectCreationCode: "var $ClassNameShortLower$ = mocker.Create<$ClassName$>();",
 					mockObjectReferenceCode: null),
 				new MockFramework(
-					name: "SimpleStubs",
+					name: SimpleStubsName,
 					detectionReferenceMatches: new List<string> { "Etg.SimpleStubs" },
 					detectionRank: 1,
 					usingNamespaces: new List<string>(),
@@ -58,7 +63,7 @@ namespace UnitTestBoilerplate.Model
 					testedObjectCreationCode: null,
 					mockObjectReferenceCode: "this.stub$InterfaceNameBase$"),
 				new MockFramework(
-					name: "NSubstitute",
+					name: NSubstituteName,
 					detectionReferenceMatches: new List<string> { "NSubstitute" },
 					detectionRank: 1,
 					usingNamespaces: new List<string> { "NSubstitute" },

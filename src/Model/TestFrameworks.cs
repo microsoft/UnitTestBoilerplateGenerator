@@ -5,12 +5,16 @@ namespace UnitTestBoilerplate.Model
 {
 	public static class TestFrameworks
 	{
+		public const string VisualStudioName = "VisualStudio";
+		public const string NUnitName = "NUnit";
+		public const string XUnitName = "xUnit";
+
 		static TestFrameworks()
 		{
 			List = new List<TestFramework>
 			{
 				new TestFramework(
-					name: "VisualStudio",
+					name: VisualStudioName,
 					detectionReferenceMatches: new List<string> { "Microsoft.VisualStudio.QualityTools.UnitTestFramework" },
 					detectionRank: 1,
 					usingString: "Microsoft.VisualStudio.TestTools.UnitTesting",
@@ -22,7 +26,7 @@ namespace UnitTestBoilerplate.Model
 					testCleanupStyle: TestCleanupStyle.AttributedMethod),
 
 				new TestFramework(
-					name: "NUnit",
+					name: NUnitName,
 					detectionReferenceMatches: new List<string> { "NUnit", "NUnit.Framework" },
 					detectionRank: 0,
 					usingString: "NUnit.Framework",
@@ -34,7 +38,7 @@ namespace UnitTestBoilerplate.Model
 					testCleanupStyle: TestCleanupStyle.AttributedMethod),
 
 				new TestFramework(
-					name: "xUnit",
+					name: XUnitName,
 					detectionReferenceMatches: new List<string> { "xunit" },
 					detectionRank: 0,
 					usingString: "Xunit",
