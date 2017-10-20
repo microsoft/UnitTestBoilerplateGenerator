@@ -12,6 +12,16 @@ on the official Visual Studio extension gallery.
 - Support for dependency properties from other IoC frameworks
 - Add an option for what folder to add the test class to
 
+## 1.6.0
+**2017-10-20**
+- Added support for the xUnit test framework
+- Changed templates to be test framework specific as well as mock framework specific. Default templates are now generated dynamically.
+
+## 1.5.12
+**2017-09-24**
+- Fixed framework detection for .NET Core projects
+- Added ability to change the test and mock frameworks before generating the test
+
 ## 1.5.10
 **2017-04-25**
 - Added support for Ninject and Grace property injection

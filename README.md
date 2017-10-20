@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/7ecfxkoe7sj4nw5h?svg=true)](https://ci.appveyor.com/project/RandomEngy/unittestboilerplategenerator)
 
-Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/f3f3b2a7-cefe-4ffe-add1-9740ae117252)
+Download this extension from the [VS Marketplace](https://marketplace.visualstudio.com/items?itemName=RandomEngy.UnitTestBoilerplateGenerator)
 or get the [CI build](http://vsixgallery.com/extension/UnitTestBoilerplate.RandomEngy.ca0bb824-eb5a-41a8-ab39-3b81f03ba3fe/).
 
 ---------------------------------------
@@ -12,6 +12,7 @@ Generates a unit test boilerplate from a given C# class, setting up mocks for al
 Test frameworks supported:
 * Visual Studio
 * NUnit
+* xUnit
 
 Mock frameworks supported:
 * Moq
@@ -20,7 +21,7 @@ Mock frameworks supported:
 * SimpleStubs
 
 Dependency injection modes supported:
-* Constructor injection
+* Constructor injection via any IoC framework
 * Property injection via Unity, Ninject or Grace
 
 Right click an item in Solution Explorer and choose "Create Unit Test Boilerplate" .
