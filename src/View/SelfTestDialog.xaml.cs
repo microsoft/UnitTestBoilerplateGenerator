@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -27,6 +28,14 @@ namespace UnitTestBoilerplate.View
 			this.InitializeComponent();
 
 			this.DataContext = new SelfTestViewModel();
+		}
+
+		private void ScrollChanged(object sender, ScrollChangedEventArgs e)
+		{
+			var scrollViewerToUpdate = sender == this.beforeDiff ?  this.afterDiff : this.beforeDiff;
+
+			scrollViewerToUpdate.ScrollToVerticalOffset(e.VerticalOffset);
+			scrollViewerToUpdate.ScrollToHorizontalOffset(e.HorizontalOffset);
 		}
 	}
 }

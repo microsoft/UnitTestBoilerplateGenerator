@@ -2,19 +2,113 @@
     x:Class="UnitTestBoilerplate.View.SelfTestDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:UnitTestBoilerplate.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:UnitTestBoilerplate.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
-    d:DesignHeight="300"
-    d:DesignWidth="300"
+    xmlns:viewModel="clr-namespace:UnitTestBoilerplate.ViewModel"
+    d:DesignHeight="500"
+    d:DesignWidth="600"
     mc:Ignorable="d">
-    <Grid>
+    <platformUi:DialogWindow.Resources>
+        <Style x:Key="NormalButton" TargetType="Button">
+            <Setter Property="Padding" Value="10 6" />
+        </Style>
+        <converters:VisibilityConverter x:Key="VisibilityConverter" />
+        <converters:VisibilityConverter x:Key="InverseVisibilityConverter" Inverse="True" />
+    </platformUi:DialogWindow.Resources>
+    <Grid Margin="10">
         <TextBlock
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             FontSize="30"
-            Text="{Binding Status}" />
-        <Grid />
+            Text="{Binding Status}"
+            Visibility="{Binding ShowingDiff, Converter={StaticResource InverseVisibilityConverter}}" />
+        <Grid Visibility="{Binding ShowingDiff, Converter={StaticResource VisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="6" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                FontSize="20"
+                Text="{Binding RelativeFilePath}" />
+
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="0"
+                Text="Expected" />
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="2"
+                Text="Actual" />
+
+            <RichTextBox
+                x:Name="beforeDiff"
+                Grid.Row="2"
+                Grid.Column="0"
+                viewModel:SideBySideDiffModelVisualizer.ExpectedText="{Binding Diff}"
+                AcceptsReturn="True"
+                FontFamily="Consolas"
+                IsReadOnly="True"
+                ScrollViewer.ScrollChanged="ScrollChanged"
+                VerticalScrollBarVisibility="Visible" />
+
+            <RichTextBox
+                x:Name="afterDiff"
+                Grid.Row="2"
+                Grid.Column="2"
+                viewModel:SideBySideDiffModelVisualizer.ActualText="{Binding Diff}"
+                AcceptsReturn="True"
+                FontFamily="Consolas"
+                IsReadOnly="True"
+                ScrollViewer.ScrollChanged="ScrollChanged"
+                VerticalScrollBarVisibility="Visible" />
+
+            <Grid
+                Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Margin="0 6 0 0">
+                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Foreground="Green"
+                        Text="{Binding SucceededStatusText}" />
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Foreground="Red"
+                        Text="{Binding FailedStatusText}" />
+                    <Button
+                        Margin="10 0 0 0"
+                        Command="{Binding PreviousCommand}"
+                        Content="&lt; Prev"
+                        Style="{StaticResource NormalButton}" />
+                    <Button
+                        Margin="6 0 0 0"
+                        Command="{Binding NextCommand}"
+                        Content="Next &gt;"
+                        Style="{StaticResource NormalButton}" />
+                    <Button
+                        Margin="15 0 0 0"
+                        Content="Accept Actual"
+                        Style="{StaticResource NormalButton}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </platformUi:DialogWindow>

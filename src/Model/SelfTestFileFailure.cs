@@ -8,6 +8,8 @@ namespace UnitTestBoilerplate.Model
 {
 	public class SelfTestFileFailure
 	{
+		public string RelativeFilePath { get; set; }
+
 		public string ExpectedFilePath { get; set; }
 
 		public string ActualFilePath { get; set; }

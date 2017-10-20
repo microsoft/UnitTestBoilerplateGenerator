@@ -4,9 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using DiffPlex;
+using DiffPlex.DiffBuilder;
+using DiffPlex.DiffBuilder.Model;
 using EnvDTE;
 using EnvDTE80;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using Microsoft.VisualStudio.Shell;
 using UnitTestBoilerplate.Commands;
 using UnitTestBoilerplate.Model;
@@ -32,6 +37,13 @@ namespace UnitTestBoilerplate.ViewModel
 			this.InitializeAsync();
 		}
 
+		private bool showingDiff;
+		public bool ShowingDiff
+		{
+			get { return this.showingDiff; }
+			set { this.Set(ref this.showingDiff, value); }
+		}
+
 		private string status;
 		public string Status
 		{
@@ -39,7 +51,150 @@ namespace UnitTestBoilerplate.ViewModel
 			set { this.Set(ref this.status, value); }
 		}
 
+		private string relativeFilePath;
+		public string RelativeFilePath
+		{
+			get { return this.relativeFilePath; }
+			set { this.Set(ref this.relativeFilePath, value); }
+		}
+
+		private string expectedText;
+		public string ExpectedText
+		{
+			get { return this.expectedText; }
+			set { this.expectedText = value; Compare(); }
+		}
+
+		private string actualText;
+		public string ActualText
+		{
+			get { return this.actualText; }
+			set { this.actualText = value; Compare(); }
+		}
+
+		public SideBySideDiffModel Diff { get; private set; }
+
 		private int failureIndex;
+		public int FailureIndex
+		{
+			get { return this.failureIndex; }
+			set
+			{
+				if (this.Set(ref this.failureIndex, value))
+				{
+					this.RefreshUI();
+				}
+			}
+		}
+
+		private int succeededCount;
+
+		private void RefreshUI()
+		{
+			this.UpdateFailedStatusText();
+			this.SucceededStatusText = this.succeededCount + " succeeded";
+			this.PreviousCommand.RaiseCanExecuteChanged();
+			this.NextCommand.RaiseCanExecuteChanged();
+			this.AcceptCommand.RaiseCanExecuteChanged();
+
+			if (this.failures.Count > 0)
+			{
+				SelfTestFileFailure failure = this.failures[this.FailureIndex];
+
+				this.RelativeFilePath = failure.RelativeFilePath;
+				this.expectedText = failure.ExpectedContents;
+				this.actualText = failure.ActualContents;
+			}
+
+			this.Compare();
+		}
+
+		private void UpdateFailedStatusText()
+		{
+			this.FailedStatusText = (this.FailureIndex + 1) + "/" + this.failures.Count + " failed";
+		}
+
+		private string failedStatusText;
+		public string FailedStatusText
+		{
+			get { return this.failedStatusText; }
+			set { this.Set(ref this.failedStatusText, value); }
+		}
+
+		private string succeededStatusText;
+		public string SucceededStatusText
+		{
+			get { return this.succeededStatusText; }
+			set { this.Set(ref this.succeededStatusText, value); }
+		}
+
+		private RelayCommand previousCommand;
+		public RelayCommand PreviousCommand
+		{
+			get
+			{
+				return this.previousCommand ?? (this.previousCommand = new RelayCommand(
+					() =>
+					{
+						this.FailureIndex--;
+					},
+					() =>
+					{
+						return this.failures != null && this.FailureIndex > 0;
+					}));
+			}
+		}
+
+		private RelayCommand nextCommand;
+		public RelayCommand NextCommand
+		{
+			get
+			{
+				return this.nextCommand ?? (this.nextCommand = new RelayCommand(
+					() =>
+					{
+						this.FailureIndex++;
+					},
+					() =>
+					{
+						return this.failures != null && this.FailureIndex < this.failures.Count - 1;
+					}));
+			}
+		}
+
+		private RelayCommand acceptCommand;
+		public RelayCommand AcceptCommand
+		{
+			get
+			{
+				return this.acceptCommand ?? (this.acceptCommand = new RelayCommand(
+					() =>
+					{
+						// Copy file to accepted
+						SelfTestFileFailure failure = this.failures[this.FailureIndex];
+						File.Copy(failure.ActualFilePath, failure.ExpectedFilePath, overwrite: true);
+
+						this.succeededCount++;
+
+						this.failures.RemoveAt(this.FailureIndex);
+
+						if (this.failures.Count == 0)
+						{
+							// Succeeded UI
+						}
+						else if (this.FailureIndex >= this.failures.Count)
+						{
+							this.failureIndex--;
+						}
+
+						this.RefreshUI();
+					},
+					() =>
+					{
+						return this.failures != null && this.failures.Count > 0;
+					}));
+			}
+		}
 
 		private async Task InitializeAsync()
 		{
@@ -54,7 +209,7 @@ namespace UnitTestBoilerplate.ViewModel
 
 			// Go over all "*TestCases" folders in actual results folder, dig into "Cases" directory
 			int totalFiles = 0;
-			int succeededFiles = 0;
+			this.succeededCount = 0;
 
 			this.failures = new List<SelfTestFileFailure>();
 
@@ -68,20 +223,22 @@ namespace UnitTestBoilerplate.ViewModel
 					totalFiles++;
 
 					string actualFileContents = File.ReadAllText(actualResultFileInfo.FullName);
+					string relativeFilePath = Path.Combine(projectDirectoryInfo.Name, "Cases", actualResultFileInfo.Name);
 
-					string expectedFilePath = Path.Combine(expectedResultsDirectory, projectDirectoryInfo.Name, "Cases", actualResultFileInfo.Name);
+					string expectedFilePath = Path.Combine(expectedResultsDirectory, relativeFilePath);
 					if (File.Exists(expectedFilePath))
 					{
 						string expectedFileContents = File.ReadAllText(expectedFilePath);
 
 						if (expectedFileContents == actualFileContents)
 						{
-							succeededFiles++;
+							this.succeededCount++;
 						}
 						else
 						{
 							this.failures.Add(new SelfTestFileFailure
 							{
+								RelativeFilePath = relativeFilePath,
 								ExpectedFilePath = expectedFilePath,
 								ActualFilePath = actualResultFileInfo.FullName,
 								ExpectedContents = expectedFileContents,
@@ -94,6 +251,7 @@ namespace UnitTestBoilerplate.ViewModel
 						// Expected file does not exist
 						this.failures.Add(new SelfTestFileFailure
 						{
+							RelativeFilePath = relativeFilePath,
 							ExpectedFilePath = expectedFilePath,
 							ActualFilePath = actualResultFileInfo.FullName,
 							ExpectedContents = null,
@@ -105,12 +263,27 @@ namespace UnitTestBoilerplate.ViewModel
 
 			if (this.failures.Count == 0)
 			{
-				// Succeeded UI
-
+				this.ShowSuccess();
 				return;
 			}
+			else
+			{
+				this.ShowingDiff = true;
+				this.RefreshUI();
+			}
+		}
 
+		private void ShowSuccess()
+		{
+			this.ShowingDiff = false;
+			this.Status = "All tests succeeded.";
+		}
 
+		private void Compare()
+		{
+			var diffBuilder = new SideBySideDiffBuilder(new Differ());
+			this.Diff = diffBuilder.BuildDiffModel(this.ExpectedText ?? string.Empty, this.ActualText ?? string.Empty);
+			this.RaisePropertyChanged(nameof(this.Diff));
 		}
 	}
 }

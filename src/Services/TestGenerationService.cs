@@ -28,7 +28,8 @@ namespace UnitTestBoilerplate.Services
 			"Service",
 			"Provider",
 			"Factory",
-			"Manager"
+			"Manager",
+			"Component"
 		};
 
 		public async Task<string> GenerateUnitTestFileAsync(
