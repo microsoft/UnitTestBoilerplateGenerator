@@ -237,7 +237,7 @@ namespace UnitTestBoilerplate.ViewModel
 		private void ShowSuccess()
 		{
 			this.ShowingDiff = false;
-			this.Status = "All tests succeeded.";
+			this.Status = $"{this.runResult.DetectionsSucceededCount}/{this.runResult.TotalDetectionsCount} detections succeeded | {this.succeededCount}/{this.runResult.TotalFilesCount} test files succeeded";
 		}
 
 		private void Compare()

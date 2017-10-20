@@ -216,6 +216,8 @@ namespace UnitTestBoilerplate.Services
 			var actualFilesDirectoryInfo = new DirectoryInfo(actualFilesDirectory);
 			foreach (FileInfo actualFileInfo in actualFilesDirectoryInfo.GetFiles())
 			{
+				totalFiles++;
+
 				string actualFilePath = actualFileInfo.FullName;
 				string expectedFilePath = Path.Combine(expectedFilesDirectory, actualFileInfo.Name);
 
