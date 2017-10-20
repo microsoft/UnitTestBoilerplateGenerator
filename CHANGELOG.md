@@ -12,7 +12,7 @@ on the official Visual Studio extension gallery.
 - Support for dependency properties from other IoC frameworks
 - Add an option for what folder to add the test class to
 
-## 1.6.0
+## 1.6.1
 **2017-10-20**
 - Added support for the xUnit test framework
 - Changed templates to be test framework specific as well as mock framework specific. Default templates are now generated dynamically.

@@ -9,7 +9,7 @@ Supports Visual Studio Test, NUnit, xUnit and many mock frameworks.</Description
         <License>Resources\LICENSE</License>
         <Icon>Resources\PackageIcon-90x90.png</Icon>
         <PreviewImage>Resources\Preview.png</PreviewImage>
-        <Tags>Unit Testing, unity, dependency injection, MOQ, SimpleStubs, NUnit, C#, Ninject, Grace</Tags>
+        <Tags>Unit Testing, unity, dependency injection, NSubstitute, MOQ, AutoMoq, SimpleStubs, NUnit, xUnit, C#, Ninject, Grace</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,16.0)" />
