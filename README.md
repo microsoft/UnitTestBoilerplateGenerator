@@ -19,6 +19,7 @@ Mock frameworks supported:
 * AutoMoq
 * NSubstitute
 * SimpleStubs
+* Rhino Mocks
 
 Dependency injection modes supported:
 * Constructor injection via any IoC framework
@@ -46,7 +47,7 @@ Each mocking framework has its own pattern.
 * Automatically detects which mocking library and test framework you're using
 
 See the [changelog](CHANGELOG.md) for changes and roadmap. If you'd like to see support for other mocking
-frameworks like Rhino Mocks or other IoC frameworks, [open an issue](https://github.com/Microsoft/UnitTestBoilerplateGenerator/issues/new).
+frameworks or other IoC frameworks, [open an issue](https://github.com/Microsoft/UnitTestBoilerplateGenerator/issues/new).
 
 ## Contribute
 Check out the [contribution guidelines](CONTRIBUTING.md)

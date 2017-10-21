@@ -12,6 +12,10 @@ on the official Visual Studio extension gallery.
 - Support for dependency properties from other IoC frameworks
 - Add an option for what folder to add the test class to
 
+## 1.6.2
+**2017-10-21**
+- Added support for Rhino Mocks
+
 ## 1.6.1
 **2017-10-20**
 - Added support for the xUnit test framework

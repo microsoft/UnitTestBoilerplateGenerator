@@ -24,11 +24,13 @@ namespace UnitTestBoilerplate.Services
 			{ "NetCoreNSubstituteTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName) },
 			{ "NetCoreNUnitTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.MoqName) },
 			{ "NetCoreSimpleStubsTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName) },
+			{ "NetCoreVSRhinoMocksTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName) },
 			{ "NoFrameworkTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
 			{ "NSubstituteTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName) },
 			{ "NUnitTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.MoqName) },
 			{ "NUnitUwpTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.SimpleStubsName) },
 			{ "SimpleStubsTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName) },
+			{ "VSRhinoMocksTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName) },
 			{ "VSTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
 			{ "XUnitMoqTestCases", new SelfTestDetectionResult(TestFrameworks.XUnitName, MockFrameworks.MoqName) },
 		};

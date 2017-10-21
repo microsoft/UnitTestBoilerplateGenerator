@@ -9,6 +9,7 @@ namespace UnitTestBoilerplate.Model
 		public const string AutoMoqName = "AutoMoq";
 		public const string SimpleStubsName = "SimpleStubs";
 		public const string NSubstituteName = "NSubstitute";
+		public const string RhinoMocksName = "Rhino Mocks";
 
 		static MockFrameworks()
 		{
@@ -78,6 +79,22 @@ namespace UnitTestBoilerplate.Model
 					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod, 
 					testedObjectCreationCode: null,
 					mockObjectReferenceCode: "this.sub$InterfaceMockName$"),
+				new MockFramework(
+					name: RhinoMocksName,
+					detectionReferenceMatches: new List<string> { "Rhino.Mocks", "RhinoMocks" },
+					detectionRank: 1,
+					usingNamespaces: new List<string> { "Rhino.Mocks" },
+					supportsGenerics: true,
+					classStartCode: null,
+					hasMockFields: true,
+					initializeStartCode: null,
+					mockFieldDeclarationCode: "private $InterfaceType$ stub$InterfaceMockName$;",
+					mockFieldInitializationCode: "this.stub$InterfaceMockName$ = MockRepository.GenerateStub<$InterfaceType$>();",
+					testCleanupCode: null,
+					testArrangeCode: null,
+					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod,
+					testedObjectCreationCode: null,
+					mockObjectReferenceCode: "this.stub$InterfaceMockName$"),
 			};
 		}
 
