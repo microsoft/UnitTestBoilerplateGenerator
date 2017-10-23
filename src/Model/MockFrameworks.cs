@@ -45,7 +45,7 @@ namespace UnitTestBoilerplate.Model
 					testCleanupCode: null,
 					testArrangeCode: "var mocker = new AutoMoqer();",
 					testedObjectCreationStyle: TestedObjectCreationStyle.DirectCode, 
-					testedObjectCreationCode: "var $ClassNameShortLower$ = mocker.Create<$ClassName$>();",
+					testedObjectCreationCode: "var $ClassNameShort.CamelCase$ = mocker.Create<$ClassName$>();",
 					mockObjectReferenceCode: null),
 				new MockFramework(
 					name: SimpleStubsName,

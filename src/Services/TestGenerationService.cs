@@ -229,7 +229,6 @@ namespace UnitTestBoilerplate.Services
 
 			GenerateMockNames(injectedTypes);
 
-			// Compile information needed to generate the test
 			return new TestGenerationContext(
 				mockFramework,
 				testFramework,
@@ -281,6 +280,7 @@ namespace UnitTestBoilerplate.Services
 							builder.Append(GetShortClassName(context.ClassName));
 							break;
 						case "ClassNameShortLower":
+							// Legacy, new syntax is ClassNameShort.CamelCase
 							builder.Append(GetShortClassNameLower(context.ClassName));
 							break;
 						default:
@@ -412,11 +412,34 @@ namespace UnitTestBoilerplate.Services
 
 		private static string ReplaceInterfaceTokens(string template, InjectableType injectableType)
 		{
-			return template
-				.Replace("$InterfaceName$", injectableType.TypeName)
-				.Replace("$InterfaceNameBase$", injectableType.TypeBaseName)
-				.Replace("$InterfaceType$", injectableType.ToString())
-				.Replace("$InterfaceMockName$", injectableType.MockName);
+			return StringUtilities.ReplaceTokens(
+				template,
+				(tokenName, propertyIndex, builder) =>
+				{
+					switch (tokenName)
+					{
+						case "InterfaceName":
+							builder.Append(injectableType.TypeName);
+							break;
+
+						case "InterfaceNameBase":
+							builder.Append(injectableType.TypeBaseName);
+							break;
+
+						case "InterfaceType":
+							builder.Append(injectableType.ToString());
+							break;
+
+						case "InterfaceMockName":
+							builder.Append(injectableType.MockName);
+							break;
+
+						default:
+							// We didn't recognize it, just pass through.
+							builder.Append($"${tokenName}$");
+							break;
+					}
+				});
 		}
 
 

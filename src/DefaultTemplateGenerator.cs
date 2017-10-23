@@ -138,7 +138,7 @@ namespace UnitTestBoilerplate
 			switch (mockFramework.TestedObjectCreationStyle)
 			{
 				case TestedObjectCreationStyle.HelperMethod:
-					this.AppendLineIndented("$ClassName$ $ClassNameShortLower$ = this.Create$ClassNameShort$();");
+					this.AppendLineIndented("$ClassName$ $ClassNameShort.CamelCase$ = this.Create$ClassNameShort$();");
 
 					break;
 				case TestedObjectCreationStyle.DirectCode:

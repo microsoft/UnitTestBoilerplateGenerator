@@ -12,6 +12,10 @@ on the official Visual Studio extension gallery.
 - Support for dependency properties from other IoC frameworks
 - Add an option for what folder to add the test class to
 
+## 1.6.3
+**2017-10-22**
+- Added support for the "CamelCase" token modifier. For instance $ClassName.CamelCase$ will give a camelCased version of the tested class name.
+
 ## 1.6.2
 **2017-10-21**
 - Added support for Rhino Mocks

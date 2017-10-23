@@ -33,8 +33,30 @@ namespace UnitTestBoilerplate.Utilities
 					{
 						// Calculate values on demand from switch statement. Some are preset values, some need a bit of calc like base name,
 						// some are dependent on the test framework (attributes), some need to pull down other templates and loop through mock fields
-						string tokenName = template.Substring(i + 1, endIndex - i - 1);
-						tokenReplacementAction(tokenName, i, builder);
+						string tokenText = template.Substring(i + 1, endIndex - i - 1);
+
+						int periodIndex = tokenText.IndexOf(".", StringComparison.Ordinal);
+						if (periodIndex > 0)
+						{
+							string modifier = tokenText.Substring(periodIndex + 1);
+							string tokenName = tokenText.Substring(0, periodIndex);
+
+							switch (modifier)
+							{
+								case "CamelCase":
+									RunCamelCaseReplacement(tokenName, tokenReplacementAction, i, builder);
+									break;
+
+								default:
+									// Ignore the modifier
+									tokenReplacementAction(tokenText, i, builder);
+									break;
+							}
+						}
+						else
+						{
+							tokenReplacementAction(tokenText, i, builder);
+						}
 
 						i = endIndex;
 					}
@@ -46,6 +68,16 @@ namespace UnitTestBoilerplate.Utilities
 			}
 
 			return builder.ToString();
+		}
+
+		private static void RunCamelCaseReplacement(string tokenName, Action<string, int, StringBuilder> tokenReplacementAction, int propertyIndex, StringBuilder builder)
+		{
+			var tokenValueBuilder = new StringBuilder();
+
+			tokenReplacementAction(tokenName, propertyIndex, tokenValueBuilder);
+			string tokenValue = tokenValueBuilder.ToString();
+
+			builder.Append(tokenValue.Substring(0, 1).ToLowerInvariant() + tokenValue.Substring(1));
 		}
 	}
 }
