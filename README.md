@@ -41,6 +41,8 @@ Each mocking framework has its own pattern.
 
 ![Options Screenshot](OptionsScreenshot.png)
 
+[Supported format tokens documentation](https://github.com/Microsoft/UnitTestBoilerplateGenerator/wiki/Custom-Format-Tokens)
+
 * Supports mocking generic interfaces
 * Automatically brings in appropriate using statements
 * Applies any user-specific formatting rules to the generated code
