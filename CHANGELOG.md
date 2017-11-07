@@ -5,6 +5,10 @@
 
 # Changelog
 
+## 1.6.6
+**2017-11-07**
+- Fixed issue where leading comments in template were dropped.
+
 ## 1.6.4
 **2017-10-22**
 - Added support for the "CamelCase" token modifier. For instance $ClassName.CamelCase$ will give a camelCased version of the tested class name.
