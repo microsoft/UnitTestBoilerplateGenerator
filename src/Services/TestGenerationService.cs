@@ -13,7 +13,7 @@ using UnitTestBoilerplate.Utilities;
 
 namespace UnitTestBoilerplate.Services
 {
-	public class TestGenerationService
+    public class TestGenerationService
 	{
 		private static readonly HashSet<string> PropertyInjectionAttributeNames = new HashSet<string>
 		{
@@ -293,7 +293,7 @@ namespace UnitTestBoilerplate.Services
 			SyntaxTree tree = CSharpSyntaxTree.ParseText(filledTemplate);
 			SyntaxNode formattedNode = Formatter.Format(tree.GetRoot(), CreateUnitTestBoilerplateCommandPackage.VisualStudioWorkspace);
 
-			return formattedNode.ToString();
+			return formattedNode.ToFullString();
 		}
 
 		private static void WriteUsings(StringBuilder builder, TestGenerationContext context)
