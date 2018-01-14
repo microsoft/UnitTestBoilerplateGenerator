@@ -256,37 +256,9 @@ namespace UnitTestBoilerplate.Services
 				fileTemplate,
 				(tokenName, propertyIndex, builder) =>
 				{
-					switch (tokenName)
+					if (!WriteGlobalToken(tokenName, propertyIndex, builder, context, fileTemplate))
 					{
-						case "UsingStatements":
-							WriteUsings(builder, context);
-							break;
-						case "Namespace":
-							builder.Append(context.UnitTestNamespace);
-							break;
-						case "MockFieldDeclarations":
-							WriteMockFieldDeclarations(builder, context);
-							break;
-						case "MockFieldInitializations":
-							WriteMockFieldInitializations(builder, context);
-							break;
-						case "ExplicitConstructor":
-							WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex));
-							break;
-						case "ClassName":
-							builder.Append(context.ClassName);
-							break;
-						case "ClassNameShort":
-							builder.Append(GetShortClassName(context.ClassName));
-							break;
-						case "ClassNameShortLower":
-							// Legacy, new syntax is ClassNameShort.CamelCase
-							builder.Append(GetShortClassNameLower(context.ClassName));
-							break;
-						default:
-							// We didn't recognize it, just pass through.
-							builder.Append($"${tokenName}$");
-							break;
+						WriteTokenPassthrough(tokenName, builder);
 					}
 				});
 
@@ -294,6 +266,102 @@ namespace UnitTestBoilerplate.Services
 			SyntaxNode formattedNode = Formatter.Format(tree.GetRoot(), CreateUnitTestBoilerplateCommandPackage.VisualStudioWorkspace);
 
 			return formattedNode.ToFullString();
+		}
+
+		private static string ReplaceInterfaceTokens(string template, InjectableType injectableType, TestGenerationContext context, string fileTemplate)
+		{
+			return StringUtilities.ReplaceTokens(
+				template,
+				(tokenName, propertyIndex, builder) =>
+				{
+					if (WriteInterfaceToken(injectableType, tokenName, builder))
+					{
+						return;
+					}
+
+					if (WriteGlobalToken(tokenName, propertyIndex, builder, context, fileTemplate))
+					{
+						return;
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
+				});
+		}
+
+		private static bool WriteGlobalToken(string tokenName, int propertyIndex, StringBuilder builder, TestGenerationContext context, string fileTemplate)
+		{
+			switch (tokenName)
+			{
+				case "UsingStatements":
+					WriteUsings(builder, context);
+					break;
+
+				case "Namespace":
+					builder.Append(context.UnitTestNamespace);
+					break;
+
+				case "MockFieldDeclarations":
+					WriteMockFieldDeclarations(builder, context, fileTemplate);
+					break;
+
+				case "MockFieldInitializations":
+					WriteMockFieldInitializations(builder, context, fileTemplate);
+					break;
+
+				case "ExplicitConstructor":
+					WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex), fileTemplate);
+					break;
+
+				case "ClassName":
+					builder.Append(context.ClassName);
+					break;
+
+				case "ClassNameShort":
+					builder.Append(GetShortClassName(context.ClassName));
+					break;
+
+				case "ClassNameShortLower":
+					// Legacy, new syntax is ClassNameShort.CamelCase
+					builder.Append(GetShortClassNameLower(context.ClassName));
+					break;
+
+				default:
+					return false;
+			}
+
+			return true;
+		}
+
+		private static bool WriteInterfaceToken(InjectableType injectableType, string tokenName, StringBuilder builder)
+		{
+			switch (tokenName)
+			{
+				case "InterfaceName":
+					builder.Append(injectableType.TypeName);
+					break;
+
+				case "InterfaceNameBase":
+					builder.Append(injectableType.TypeBaseName);
+					break;
+
+				case "InterfaceType":
+					builder.Append(injectableType.ToString());
+					break;
+
+				case "InterfaceMockName":
+					builder.Append(injectableType.MockName);
+					break;
+
+				default:
+					return false;
+			}
+
+			return true;
+		}
+
+		private static void WriteTokenPassthrough(string tokenName, StringBuilder builder)
+		{
+			builder.Append($"${tokenName}$");
 		}
 
 		private static void WriteUsings(StringBuilder builder, TestGenerationContext context)
@@ -327,25 +395,25 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
-		private static void WriteMockFieldDeclarations(StringBuilder builder, TestGenerationContext context)
+		private static void WriteMockFieldDeclarations(StringBuilder builder, TestGenerationContext context, string fileTemplate)
 		{
 			string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldDeclaration);
-			WriteFieldLines(builder, context, template);
+			WriteFieldLines(builder, context, template, fileTemplate);
 		}
 
-		private static void WriteMockFieldInitializations(StringBuilder builder, TestGenerationContext context)
+		private static void WriteMockFieldInitializations(StringBuilder builder, TestGenerationContext context, string fileTemplate)
 		{
 			string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldInitialization);
-			WriteFieldLines(builder, context, template);
+			WriteFieldLines(builder, context, template, fileTemplate);
 		}
 
 		// Works for both field declarations and initializations.
-		private static void WriteFieldLines(StringBuilder builder, TestGenerationContext context, string template)
+		private static void WriteFieldLines(StringBuilder builder, TestGenerationContext context, string template, string fileTemplate)
 		{
 			for (int i = 0; i < context.InjectedTypes.Count; i++)
 			{
 				InjectableType injectedType = context.InjectedTypes[i];
-				string line = ReplaceInterfaceTokens(template, injectedType);
+				string line = ReplaceInterfaceTokens(template, injectedType, context, fileTemplate);
 
 				builder.Append(line);
 
@@ -356,7 +424,7 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
-		private static void WriteExplicitConstructor(StringBuilder builder, TestGenerationContext context, string currentIndent)
+		private static void WriteExplicitConstructor(StringBuilder builder, TestGenerationContext context, string currentIndent, string fileTemplate)
 		{
 			builder.Append($"new {context.ClassName}");
 
@@ -375,7 +443,7 @@ namespace UnitTestBoilerplate.Services
 					else
 					{
 						string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
-						mockReferenceStatement = ReplaceInterfaceTokens(template, constructorType);
+						mockReferenceStatement = ReplaceInterfaceTokens(template, constructorType, context, fileTemplate);
 					}
 
 					builder.Append($"{currentIndent}    {mockReferenceStatement}");
@@ -401,45 +469,13 @@ namespace UnitTestBoilerplate.Services
 				foreach (InjectableProperty property in context.Properties)
 				{
 					string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
-					string mockReferenceStatement = ReplaceInterfaceTokens(template, property);
+					string mockReferenceStatement = ReplaceInterfaceTokens(template, property, context, fileTemplate);
 
 					builder.AppendLine($"{property.PropertyName} = {mockReferenceStatement},");
 				}
 
 				builder.Append(@"}");
 			}
-		}
-
-		private static string ReplaceInterfaceTokens(string template, InjectableType injectableType)
-		{
-			return StringUtilities.ReplaceTokens(
-				template,
-				(tokenName, propertyIndex, builder) =>
-				{
-					switch (tokenName)
-					{
-						case "InterfaceName":
-							builder.Append(injectableType.TypeName);
-							break;
-
-						case "InterfaceNameBase":
-							builder.Append(injectableType.TypeBaseName);
-							break;
-
-						case "InterfaceType":
-							builder.Append(injectableType.ToString());
-							break;
-
-						case "InterfaceMockName":
-							builder.Append(injectableType.MockName);
-							break;
-
-						default:
-							// We didn't recognize it, just pass through.
-							builder.Append($"${tokenName}$");
-							break;
-					}
-				});
 		}
 
 

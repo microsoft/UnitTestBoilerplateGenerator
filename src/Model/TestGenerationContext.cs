@@ -2,6 +2,9 @@
 
 namespace UnitTestBoilerplate.Model
 {
+	/// <summary>
+	/// Holds all the data required to generate the test file. Includes information about the class to generate tests for, and the unit test project the test will be added to.
+	/// </summary>
 	public class TestGenerationContext
 	{
 		public TestGenerationContext(
