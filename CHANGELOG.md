@@ -5,6 +5,10 @@
 
 # Changelog
 
+## 1.6.9
+**2018-1-14**
+- Interface template fields now support tokens that formerly only worked in the main template.
+
 ## 1.6.6
 **2017-11-07**
 - Fixed issue where leading comments in template were dropped.
