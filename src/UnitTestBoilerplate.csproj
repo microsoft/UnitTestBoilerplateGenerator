@@ -63,7 +63,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DeployExtension>True</DeployExtension>
-	<Prefer32Bit>false</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -73,7 +73,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-	<Prefer32Bit>false</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Compile Include="ViewModel\SelfTestViewModel.cs" />
@@ -95,6 +95,7 @@
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="DefaultTemplateGenerator.cs" />
     <Compile Include="Services\TestGenerationService.cs" />
+    <Compile Include="Utilities\FileUtilities.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
     <Compile Include="Model\TestCleanupStyle.cs" />
     <Compile Include="Model\TestedObjectCreationStyle.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="CreateUnitTestBoilerplateCommandPackage.cs" />
     <Compile Include="Utilities\SolutionUtilities.cs" />
     <Compile Include="Utilities\TypeUtilities.cs" />
+    <Compile Include="ViewModel\FileLocationOptionsDialogViewModel.cs" />
     <Compile Include="View\CreateUnitTestBoilerplateDialog.xaml.cs">
       <DependentUpon>CreateUnitTestBoilerplateDialog.xaml</DependentUpon>
     </Compile>
@@ -114,13 +116,13 @@
     <Compile Include="Model\TestFrameworks.cs" />
     <Compile Include="Model\TestInitializeStyle.cs" />
     <Compile Include="Model\TypeDescriptor.cs" />
-    <Compile Include="View\OptionsDialogPage.cs">
+    <Compile Include="View\FileContentsOptionsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\OptionsDialogPageControl.xaml.cs">
-      <DependentUpon>OptionsDialogPageControl.xaml</DependentUpon>
+    <Compile Include="View\FileContentsOptionsDialogPageControl.xaml.cs">
+      <DependentUpon>FileContentsOptionsDialogPageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\OptionsDialogViewModel.cs" />
+    <Compile Include="ViewModel\FileContentsOptionsDialogViewModel.cs" />
     <Compile Include="StaticBoilerplateSettings.cs" />
     <Compile Include="Model\TemplateType.cs" />
     <Compile Include="Model\InjectableType.cs" />
@@ -130,6 +132,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\TestGenerationContext.cs" />
     <Compile Include="Model\TestProject.cs" />
+    <Compile Include="View\FileLocationOptionsDialogPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="View\FileLocationOptionsDialogPageControl.xaml.cs">
+      <DependentUpon>FileLocationOptionsDialogPageControl.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -486,7 +494,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\OptionsDialogPageControl.xaml">
+    <Page Include="View\FileContentsOptionsDialogPageControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FileLocationOptionsDialogPageControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\XamlResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

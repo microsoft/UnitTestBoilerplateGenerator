@@ -9,15 +9,15 @@ namespace UnitTestBoilerplate.View
 	/// <summary>
 	/// Interaction logic for OptionsDialogPageControl.xaml
 	/// </summary>
-	public partial class OptionsDialogPageControl : UserControl
+	public partial class FileContentsOptionsDialogPageControl : UserControl
 	{
-		public OptionsDialogViewModel ViewModel { get; }
+		public FileContentsOptionsDialogViewModel ViewModel { get; }
 
-		public OptionsDialogPageControl()
+		public FileContentsOptionsDialogPageControl()
 		{
 			this.InitializeComponent();
 
-			this.ViewModel = new OptionsDialogViewModel();
+			this.ViewModel = new FileContentsOptionsDialogViewModel();
 			this.DataContext = this.ViewModel;
 
 			this.fileTemplateTextBox.AddHandler(UIElementDialogPage.DialogKeyPendingEvent, new RoutedEventHandler(this.OnDialogKeyPendingEvent));

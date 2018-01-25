@@ -53,7 +53,22 @@ namespace UnitTestBoilerplate.Services
 			string unitTestContents = this.GenerateUnitTestContents(context);
 
 			string testFolder = Path.Combine(Path.GetDirectoryName(targetProject.FullName), relativePath);
-			string testPath = Path.Combine(testFolder, context.ClassName + "Tests.cs");
+
+			string testFileNameBase = StringUtilities.ReplaceTokens(
+				StaticBoilerplateSettings.FileNameTemplate,
+				(tokenName, propertyIndex, builder) =>
+				{
+					if (WriteGlobalToken(tokenName, builder, context))
+					{
+						return;
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
+				});
+
+			testFileNameBase = FileUtilities.CleanFileName(testFileNameBase);
+
+			string testPath = Path.Combine(testFolder, testFileNameBase + ".cs");
 
 			if (File.Exists(testPath))
 			{
@@ -256,10 +271,17 @@ namespace UnitTestBoilerplate.Services
 				fileTemplate,
 				(tokenName, propertyIndex, builder) =>
 				{
-					if (!WriteGlobalToken(tokenName, propertyIndex, builder, context, fileTemplate))
+					if (WriteGlobalToken(tokenName, builder, context))
 					{
-						WriteTokenPassthrough(tokenName, builder);
+						return;
 					}
+
+					if (WriteContentToken(tokenName, propertyIndex, builder, context, fileTemplate))
+					{
+						return;
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
 				});
 
 			SyntaxTree tree = CSharpSyntaxTree.ParseText(filledTemplate);
@@ -268,18 +290,18 @@ namespace UnitTestBoilerplate.Services
 			return formattedNode.ToFullString();
 		}
 
-		private static string ReplaceInterfaceTokens(string template, InjectableType injectableType, TestGenerationContext context, string fileTemplate)
+		private static string ReplaceInterfaceTokens(string template, InjectableType injectableType, TestGenerationContext context)
 		{
 			return StringUtilities.ReplaceTokens(
 				template,
 				(tokenName, propertyIndex, builder) =>
 				{
-					if (WriteInterfaceToken(injectableType, tokenName, builder))
+					if (WriteGlobalToken(tokenName, builder, context))
 					{
 						return;
 					}
 
-					if (WriteGlobalToken(tokenName, propertyIndex, builder, context, fileTemplate))
+					if (WriteInterfaceContentToken(injectableType, tokenName, builder))
 					{
 						return;
 					}
@@ -288,28 +310,12 @@ namespace UnitTestBoilerplate.Services
 				});
 		}
 
-		private static bool WriteGlobalToken(string tokenName, int propertyIndex, StringBuilder builder, TestGenerationContext context, string fileTemplate)
+		private static bool WriteGlobalToken(string tokenName, StringBuilder builder, TestGenerationContext context)
 		{
 			switch (tokenName)
 			{
-				case "UsingStatements":
-					WriteUsings(builder, context);
-					break;
-
 				case "Namespace":
 					builder.Append(context.UnitTestNamespace);
-					break;
-
-				case "MockFieldDeclarations":
-					WriteMockFieldDeclarations(builder, context, fileTemplate);
-					break;
-
-				case "MockFieldInitializations":
-					WriteMockFieldInitializations(builder, context, fileTemplate);
-					break;
-
-				case "ExplicitConstructor":
-					WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex), fileTemplate);
 					break;
 
 				case "ClassName":
@@ -332,7 +338,34 @@ namespace UnitTestBoilerplate.Services
 			return true;
 		}
 
-		private static bool WriteInterfaceToken(InjectableType injectableType, string tokenName, StringBuilder builder)
+		private static bool WriteContentToken(string tokenName, int propertyIndex, StringBuilder builder, TestGenerationContext context, string fileTemplate)
+		{
+			switch (tokenName)
+			{
+				case "UsingStatements":
+					WriteUsings(builder, context);
+					break;
+
+				case "MockFieldDeclarations":
+					WriteMockFieldDeclarations(builder, context);
+					break;
+
+				case "MockFieldInitializations":
+					WriteMockFieldInitializations(builder, context);
+					break;
+
+				case "ExplicitConstructor":
+					WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex));
+					break;
+
+				default:
+					return false;
+			}
+
+			return true;
+		}
+
+		private static bool WriteInterfaceContentToken(InjectableType injectableType, string tokenName, StringBuilder builder)
 		{
 			switch (tokenName)
 			{
@@ -395,25 +428,25 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
-		private static void WriteMockFieldDeclarations(StringBuilder builder, TestGenerationContext context, string fileTemplate)
+		private static void WriteMockFieldDeclarations(StringBuilder builder, TestGenerationContext context)
 		{
 			string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldDeclaration);
-			WriteFieldLines(builder, context, template, fileTemplate);
+			WriteFieldLines(builder, context, template);
 		}
 
-		private static void WriteMockFieldInitializations(StringBuilder builder, TestGenerationContext context, string fileTemplate)
+		private static void WriteMockFieldInitializations(StringBuilder builder, TestGenerationContext context)
 		{
 			string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldInitialization);
-			WriteFieldLines(builder, context, template, fileTemplate);
+			WriteFieldLines(builder, context, template);
 		}
 
 		// Works for both field declarations and initializations.
-		private static void WriteFieldLines(StringBuilder builder, TestGenerationContext context, string template, string fileTemplate)
+		private static void WriteFieldLines(StringBuilder builder, TestGenerationContext context, string template)
 		{
 			for (int i = 0; i < context.InjectedTypes.Count; i++)
 			{
 				InjectableType injectedType = context.InjectedTypes[i];
-				string line = ReplaceInterfaceTokens(template, injectedType, context, fileTemplate);
+				string line = ReplaceInterfaceTokens(template, injectedType, context);
 
 				builder.Append(line);
 
@@ -424,7 +457,7 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
-		private static void WriteExplicitConstructor(StringBuilder builder, TestGenerationContext context, string currentIndent, string fileTemplate)
+		private static void WriteExplicitConstructor(StringBuilder builder, TestGenerationContext context, string currentIndent)
 		{
 			builder.Append($"new {context.ClassName}");
 
@@ -443,7 +476,7 @@ namespace UnitTestBoilerplate.Services
 					else
 					{
 						string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
-						mockReferenceStatement = ReplaceInterfaceTokens(template, constructorType, context, fileTemplate);
+						mockReferenceStatement = ReplaceInterfaceTokens(template, constructorType, context);
 					}
 
 					builder.Append($"{currentIndent}    {mockReferenceStatement}");
@@ -469,7 +502,7 @@ namespace UnitTestBoilerplate.Services
 				foreach (InjectableProperty property in context.Properties)
 				{
 					string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
-					string mockReferenceStatement = ReplaceInterfaceTokens(template, property, context, fileTemplate);
+					string mockReferenceStatement = ReplaceInterfaceTokens(template, property, context);
 
 					builder.AppendLine($"{property.PropertyName} = {mockReferenceStatement},");
 				}

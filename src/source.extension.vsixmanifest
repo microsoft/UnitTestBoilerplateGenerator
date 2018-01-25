@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="UnitTestBoilerplate.RandomEngy.ca0bb824-eb5a-41a8-ab39-3b81f03ba3fe" Version="1.6" Language="en-US" Publisher="David Rickard" />
+        <Identity Id="UnitTestBoilerplate.RandomEngy.ca0bb824-eb5a-41a8-ab39-3b81f03ba3fe" Version="1.7" Language="en-US" Publisher="David Rickard" />
         <DisplayName>Unit Test Boilerplate Generator</DisplayName>
         <Description xml:space="preserve">Generates a unit test boilerplate from a given C# class, setting up mocks for all dependencies. Right click an item in Solution Explorer and choose "Create Unit Test Boilerplate" .
 

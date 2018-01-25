@@ -20,6 +20,8 @@ namespace UnitTestBoilerplate
 
 		private const string TestProjectsKey = "TestProjectsDictionary";
 
+		private const string FileNameTemplateKey = "FileNameTemplate";
+
 		private const int LatestVersion = 1;
 
 		private const string VersionKey = "Version";
@@ -155,6 +157,28 @@ namespace UnitTestBoilerplate
 			}
 
 			return null;
+		}
+
+		public static string FileNameTemplate
+		{
+			get
+			{
+				if (Store.PropertyExists(CollectionPath, FileNameTemplateKey))
+				{
+					string fileNameTemplate = Store.GetString(CollectionPath, FileNameTemplateKey);
+					if (!string.IsNullOrWhiteSpace(fileNameTemplate))
+					{
+						return fileNameTemplate;
+					}
+				}
+
+				return "$ClassName$Tests";
+			}
+
+			set
+			{
+				Store.SetString(CollectionPath, FileNameTemplateKey, value);
+			}
 		}
 
 		public static string GetTemplate(TestFramework testFramework, MockFramework mockFramework, TemplateType templateType)

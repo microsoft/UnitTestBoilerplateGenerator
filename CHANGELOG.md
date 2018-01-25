@@ -5,8 +5,12 @@
 
 # Changelog
 
+## 1.7.0
+**2018-01-24**
+- Added ability to set the test file name format in settings.
+
 ## 1.6.9
-**2018-1-14**
+**2018-01-14**
 - Interface template fields now support tokens that formerly only worked in the main template.
 
 ## 1.6.6
@@ -73,6 +77,5 @@
 
 ## 1.0
 **2016-08-25**
-
 - Initial release
 - Support for Moq, constructor injection and Unity dependency injection

@@ -5,11 +5,11 @@ using UnitTestBoilerplate.Model;
 
 namespace UnitTestBoilerplate.ViewModel
 {
-	public class OptionsDialogViewModel : ViewModelBase
+	public class FileContentsOptionsDialogViewModel : ViewModelBase
 	{
 		private Dictionary<string, string> templateHoldingDictionary = new Dictionary<string, string>();
 
-		public OptionsDialogViewModel()
+		public FileContentsOptionsDialogViewModel()
 		{
 			this.TestFrameworkChoices = TestFrameworks.List;
 			this.MockFrameworkChoices = MockFrameworks.List;

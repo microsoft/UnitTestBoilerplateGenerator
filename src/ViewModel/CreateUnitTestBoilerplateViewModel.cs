@@ -26,8 +26,6 @@ namespace UnitTestBoilerplate.ViewModel
 	public class CreateUnitTestBoilerplateViewModel : ViewModelBase
 	{
 		private readonly DTE2 dte;
-		private string relativePath;
-		private string className;
 
 		public CreateUnitTestBoilerplateViewModel()
 		{
