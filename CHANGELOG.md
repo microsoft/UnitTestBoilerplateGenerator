@@ -5,6 +5,10 @@
 
 # Changelog
 
+## 1.7.1
+**2018-02-11**
+- Fixed crash issue on Visual Studio 2015 due to missing DLL.
+
 ## 1.7.0
 **2018-01-24**
 - Added ability to set the test file name format in settings.
