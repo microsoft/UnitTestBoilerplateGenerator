@@ -254,6 +254,9 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\ThirdPartyLicenses.txt">
+      <Link>Resources\ThirdPartyLicenses.txt</Link>
+    </Content>
     <Content Include="index.html" />
     <Content Include="Resources\CreateUnitTestBoilerplateCommand.png" />
     <Content Include="Resources\CreateUnitTestBoilerplateCommandPackage.ico" />
