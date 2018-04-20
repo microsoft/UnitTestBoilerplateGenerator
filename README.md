@@ -37,7 +37,7 @@ All the dependencies are mocked and saved as fields which are created fresh for 
 Each mocking framework has its own pattern.
 
 ## Other features
-* Customize the unit test output via templates:
+* Customize the unit test output via templates: Just to go to Options > UnitTestBoiler PlateGenerator > Templates
 
 ![Options Screenshot](OptionsScreenshot.png)
 
