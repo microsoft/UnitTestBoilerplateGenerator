@@ -1,84 +1,103 @@
 ﻿<platformUi:DialogWindow
-    x:Class="UnitTestBoilerplate.View.CreateUnitTestBoilerplateDialog"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:UnitTestBoilerplate"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
-    Width="300"
-    Height="212"
-    MinWidth="200"
-    MinHeight="200"
-    WindowStartupLocation="CenterOwner"
-    mc:Ignorable="d">
-    <platformUi:DialogWindow.Resources>
-        <Style x:Key="CreateDialogCombo" TargetType="ComboBox">
-            <Setter Property="Margin" Value="6 0 0 0" />
-        </Style>
-        <Style x:Key="CreateDialogLabel" TargetType="TextBlock">
-            <Setter Property="HorizontalAlignment" Value="Right" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-        </Style>
-    </platformUi:DialogWindow.Resources>
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="4" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="4" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <TextBlock Style="{StaticResource CreateDialogLabel}" Text="Create in:" />
-        <ComboBox
-            Grid.Row="0"
-            Grid.Column="1"
-            DisplayMemberPath="Name"
-            ItemsSource="{Binding TestProjects}"
-            SelectedItem="{Binding SelectedProject}"
-            Style="{StaticResource CreateDialogCombo}" />
+	x:Class="UnitTestBoilerplate.View.CreateUnitTestBoilerplateDialog"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:UnitTestBoilerplate"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+	Width="400"
+	Height="212"
+	MinWidth="400"
+	MinHeight="200"
+	WindowStartupLocation="CenterOwner"
+	mc:Ignorable="d">
+	<platformUi:DialogWindow.Resources>
+		<Style x:Key="CreateDialogCombo" TargetType="ComboBox">
+			<Setter Property="Margin" Value="6 0 0 0" />
+			<Setter Property="VerticalAlignment" Value="Top" />
+		</Style>
+		<Style x:Key="CreateDialogLabel" TargetType="TextBlock">
+			<Setter Property="Margin" Value="0 2 0 0" />
+			<Setter Property="HorizontalAlignment" Value="Right" />
+			<Setter Property="VerticalAlignment" Value="Top" />
+		</Style>
+		<Style x:Key="CreateDialogDetectedText" TargetType="TextBlock">
+			<Setter Property="Margin" Value="6 2 0 0" />
+			<Setter Property="TextWrapping" Value="Wrap" />
+			<Setter Property="VerticalAlignment" Value="Top" />
+		</Style>
+	</platformUi:DialogWindow.Resources>
+	<Grid Margin="10">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="4" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="4" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="120" />
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		<TextBlock Style="{StaticResource CreateDialogLabel}" Text="Create in:" />
+		<ComboBox
+			Grid.Row="0"
+			Grid.Column="1"
+			Grid.ColumnSpan="2"
+			DisplayMemberPath="Name"
+			ItemsSource="{Binding TestProjects}"
+			SelectedItem="{Binding SelectedProject}"
+			Style="{StaticResource CreateDialogCombo}" />
 
-        <TextBlock
-            Grid.Row="2"
-            Grid.Column="0"
-            Style="{StaticResource CreateDialogLabel}"
-            Text="Test Framework:" />
-        <ComboBox
-            Grid.Row="2"
-            Grid.Column="1"
-            DisplayMemberPath="Name"
-            ItemsSource="{Binding TestFrameworkChoices}"
-            SelectedItem="{Binding SelectedTestFramework}"
-            Style="{StaticResource CreateDialogCombo}" />
+		<TextBlock
+			Grid.Row="2"
+			Grid.Column="0"
+			Style="{StaticResource CreateDialogLabel}"
+			Text="Test Framework:" />
+		<ComboBox
+			Grid.Row="2"
+			Grid.Column="1"
+			DisplayMemberPath="Name"
+			ItemsSource="{Binding TestFrameworkChoices}"
+			SelectedItem="{Binding SelectedTestFramework}"
+			Style="{StaticResource CreateDialogCombo}" />
+		<TextBlock
+			Grid.Row="2"
+			Grid.Column="2"
+			Style="{StaticResource CreateDialogDetectedText}"
+			Text="{Binding DetectedTestFrameworks}" />
 
-        <TextBlock
-            Grid.Row="4"
-            Grid.Column="0"
-            Style="{StaticResource CreateDialogLabel}"
-            Text="Mock Framework:" />
-        <ComboBox
-            Grid.Row="4"
-            Grid.Column="1"
-            DisplayMemberPath="Name"
-            ItemsSource="{Binding MockFrameworkChoices}"
-            SelectedItem="{Binding SelectedMockFramework}"
-            Style="{StaticResource CreateDialogCombo}" />
+		<TextBlock
+			Grid.Row="4"
+			Grid.Column="0"
+			Style="{StaticResource CreateDialogLabel}"
+			Text="Mock Framework:" />
+		<ComboBox
+			Grid.Row="4"
+			Grid.Column="1"
+			DisplayMemberPath="Name"
+			ItemsSource="{Binding MockFrameworkChoices}"
+			SelectedItem="{Binding SelectedMockFramework}"
+			Style="{StaticResource CreateDialogCombo}" />
+		<TextBlock
+			Grid.Row="4"
+			Grid.Column="2"
+			Style="{StaticResource CreateDialogDetectedText}"
+			Text="{Binding DetectedMockFrameworks}" />
 
-        <Button
-            Grid.Row="5"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="0 10 0 0"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Command="{Binding CreateUnitTestCommand}"
-            Content="Create Unit Test Class"
-            IsDefault="True" />
-    </Grid>
+		<Button
+			Grid.Row="5"
+			Grid.Column="0"
+			Grid.ColumnSpan="3"
+			Margin="0 10 0 0"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			Command="{Binding CreateUnitTestCommand}"
+			Content="Create Unit Test Class"
+			IsDefault="True" />
+	</Grid>
 </platformUi:DialogWindow>
 

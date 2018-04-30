@@ -88,8 +88,8 @@ namespace UnitTestBoilerplate.ViewModel
 			this.TestFrameworkChoices = TestFrameworks.List;
 			this.MockFrameworkChoices = MockFrameworks.List;
 
-			// Populate selected test/mock frameworks based on selected project
-			this.UpdateSelectedFrameworks();
+			// Populate selected/detected test/mock frameworks based on selected project
+			this.UpdateFrameworks();
 		}
 
 		public ICreateUnitTestBoilerplateView View { get; set; }
@@ -103,7 +103,7 @@ namespace UnitTestBoilerplate.ViewModel
 			set
 			{
 				this.Set(ref this.selectedProject, value);
-				this.UpdateSelectedFrameworks();
+				this.UpdateFrameworks();
 			}
 		}
 
@@ -116,6 +116,13 @@ namespace UnitTestBoilerplate.ViewModel
 			set { this.Set(ref this.selectedTestFramework, value); }
 		}
 
+		private string detectedTestFrameworks;
+		public string DetectedTestFrameworks
+		{
+			get { return this.detectedTestFrameworks; }
+			set { this.Set(ref this.detectedTestFrameworks, value); }
+		}
+
 		public IList<MockFramework> MockFrameworkChoices { get; }
 
 		private MockFramework selectedMockFramework;
@@ -124,6 +131,13 @@ namespace UnitTestBoilerplate.ViewModel
 		{
 			get { return this.selectedMockFramework; }
 			set { this.Set(ref this.selectedMockFramework, value); }
+		}
+
+		private string detectedMockFrameworks;
+		public string DetectedMockFrameworks
+		{
+			get { return this.detectedMockFrameworks; }
+			set { this.Set(ref this.detectedMockFrameworks, value); }
 		}
 
 		private RelayCommand createUnitTestCommand;
@@ -187,7 +201,7 @@ namespace UnitTestBoilerplate.ViewModel
 			this.View?.Close();
 		}
 
-		private void UpdateSelectedFrameworks()
+		private void UpdateFrameworks()
 		{
 			if (this.selectedProject == null)
 			{
@@ -196,8 +210,30 @@ namespace UnitTestBoilerplate.ViewModel
 			}
 			else
 			{
-				this.SelectedTestFramework = SolutionUtilities.FindTestFramework(this.selectedProject.Project);
-				this.SelectedMockFramework = SolutionUtilities.FindMockFramework(this.selectedProject.Project);
+				List<TestFramework> testFrameworks = SolutionUtilities.FindTestFrameworks(this.selectedProject.Project.FileName);
+				List<MockFramework> mockFrameworks = SolutionUtilities.FindMockFrameworks(this.selectedProject.Project.FileName);
+
+				if (testFrameworks.Count == 0)
+				{
+					this.SelectedTestFramework = TestFrameworks.Default;
+					this.DetectedTestFrameworks = "Detected: None";
+				}
+				else
+				{
+					this.SelectedTestFramework = testFrameworks.First();
+					this.DetectedTestFrameworks = "Detected: " + string.Join(", ", testFrameworks);
+				}
+
+				if (mockFrameworks.Count == 0)
+				{
+					this.SelectedMockFramework = MockFrameworks.Default;
+					this.DetectedMockFrameworks = "Detected: None";
+				}
+				else
+				{
+					this.SelectedMockFramework = mockFrameworks.First();
+					this.DetectedMockFrameworks = "Detected: " + string.Join(", ", mockFrameworks);
+				}
 			}
 		}
 	}

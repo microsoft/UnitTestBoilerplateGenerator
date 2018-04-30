@@ -56,5 +56,10 @@ namespace UnitTestBoilerplate.Model
 		public TestCleanupStyle TestCleanupStyle { get; }
 
 		public string TestCleanupAttribute { get; }
-	}
+
+	    public override string ToString()
+	    {
+		    return this.Name;
+	    }
+    }
 }

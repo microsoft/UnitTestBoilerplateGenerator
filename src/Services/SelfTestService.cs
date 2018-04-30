@@ -111,8 +111,8 @@ namespace UnitTestBoilerplate.Services
 			{
 				result.TotalCount++;
 
-				TestFramework actualTestFramework = SolutionUtilities.FindTestFramework(testProject);
-				MockFramework actualMockFramework = SolutionUtilities.FindMockFramework(testProject);
+				TestFramework actualTestFramework = SolutionUtilities.FindTestFramework(testProject.FileName);
+				MockFramework actualMockFramework = SolutionUtilities.FindMockFramework(testProject.FileName);
 
 				SelfTestDetectionResult expectedDetectionResult;
 				if (!ExpectedDetectionResults.TryGetValue(testProject.Name, out expectedDetectionResult))

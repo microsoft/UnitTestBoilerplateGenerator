@@ -117,5 +117,10 @@ namespace UnitTestBoilerplate.Model
 		/// Code referring to the mocked object.
 		/// </summary>
 		public string MockObjectReferenceCode { get; }
+
+		public override string ToString()
+		{
+			return this.Name;
+		}
 	}
 }

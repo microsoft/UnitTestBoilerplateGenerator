@@ -18,7 +18,7 @@ namespace UnitTestBoilerplate.Model
 				new MockFramework(
 					name: MoqName,
 					detectionReferenceMatches: new List<string> { "Moq" },
-					detectionRank: 1,
+					detectionRank: 2,
 					usingNamespaces: new List<string> { "Moq" },
 					supportsGenerics: true,
 					classStartCode: "private MockRepository mockRepository;",
@@ -34,7 +34,7 @@ namespace UnitTestBoilerplate.Model
 				new MockFramework(
 					name: AutoMoqName,
 					detectionReferenceMatches: new List<string> { "AutoMoq" },
-					detectionRank: 0,
+					detectionRank: 1,
 					usingNamespaces: new List<string> { "AutoMoq", "Moq" },
 					supportsGenerics: true,
 					classStartCode: null,
@@ -50,7 +50,7 @@ namespace UnitTestBoilerplate.Model
 				new MockFramework(
 					name: SimpleStubsName,
 					detectionReferenceMatches: new List<string> { "Etg.SimpleStubs" },
-					detectionRank: 1,
+					detectionRank: 2,
 					usingNamespaces: new List<string>(),
 					supportsGenerics: false,
 					classStartCode: null,
@@ -66,7 +66,7 @@ namespace UnitTestBoilerplate.Model
 				new MockFramework(
 					name: NSubstituteName,
 					detectionReferenceMatches: new List<string> { "NSubstitute" },
-					detectionRank: 1,
+					detectionRank: 0,
 					usingNamespaces: new List<string> { "NSubstitute" },
 					supportsGenerics: true,
 					classStartCode: null,
@@ -82,7 +82,7 @@ namespace UnitTestBoilerplate.Model
 				new MockFramework(
 					name: RhinoMocksName,
 					detectionReferenceMatches: new List<string> { "Rhino.Mocks", "RhinoMocks" },
-					detectionRank: 1,
+					detectionRank: 2,
 					usingNamespaces: new List<string> { "Rhino.Mocks" },
 					supportsGenerics: true,
 					classStartCode: null,

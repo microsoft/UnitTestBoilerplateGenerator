@@ -45,7 +45,7 @@ namespace UnitTestBoilerplate.Utilities
 				{
 					list.AddRange(GetSolutionFolderProjects(project));
 				}
-				else
+				else if (!string.IsNullOrEmpty(project.FileName))
 				{
 					list.Add(project);
 				}
@@ -54,9 +54,9 @@ namespace UnitTestBoilerplate.Utilities
 			return list;
 		}
 
-		private static IList<string> GetProjectReferences(Project project)
+		private static IList<string> GetProjectReferences(string projectFileName)
 		{
-			XDocument document = XDocument.Load(project.FileName);
+			XDocument document = XDocument.Load(projectFileName);
 			XNamespace ns = "http://schemas.microsoft.com/developer/msbuild/2003";
 
 			// Check normal references in project file
@@ -84,7 +84,10 @@ namespace UnitTestBoilerplate.Utilities
 			}
 
 			// Check package references in project file
-			foreach (XElement element in document.Descendants("PackageReference"))
+			List<XElement> packageReferenceElements = document.Descendants("PackageReference").ToList();
+			packageReferenceElements.AddRange(document.Descendants(ns + "PackageReference"));
+
+			foreach (XElement element in packageReferenceElements)
 			{
 				XAttribute includeAttribute = element.Attribute("Include");
 				if (includeAttribute != null)
@@ -94,7 +97,7 @@ namespace UnitTestBoilerplate.Utilities
 			}
 
 			// Check package references in project.json
-			string projectJsonPath = Path.Combine(Path.GetDirectoryName(project.FileName), "project.json");
+			string projectJsonPath = Path.Combine(Path.GetDirectoryName(projectFileName), "project.json");
 
 			if (File.Exists(projectJsonPath))
 			{
@@ -122,11 +125,11 @@ namespace UnitTestBoilerplate.Utilities
 			return result;
 		}
 
-		public static TestFramework FindTestFramework(Project project)
+		public static List<TestFramework> FindTestFrameworks(string projectFileName)
 		{
 			var matchingFrameworks = new List<TestFramework>();
 
-			IList<string> references = GetProjectReferences(project);
+			IList<string> references = GetProjectReferences(projectFileName);
 			foreach (string reference in references)
 			{
 				foreach (TestFramework framework in TestFrameworks.List)
@@ -141,6 +144,13 @@ namespace UnitTestBoilerplate.Utilities
 				}
 			}
 
+			return matchingFrameworks;
+		}
+
+		public static TestFramework FindTestFramework(string projectFileName)
+		{
+			var matchingFrameworks = FindTestFrameworks(projectFileName);
+
 			if (matchingFrameworks.Count == 0)
 			{
 				return TestFrameworks.Default;
@@ -149,11 +159,11 @@ namespace UnitTestBoilerplate.Utilities
 			return matchingFrameworks.OrderBy(f => f.DetectionRank).First();
 		}
 
-		public static MockFramework FindMockFramework(Project project)
+		public static List<MockFramework> FindMockFrameworks(string projectFileName)
 		{
 			var matchingFrameworks = new List<MockFramework>();
 
-			IList<string> references = GetProjectReferences(project);
+			IList<string> references = GetProjectReferences(projectFileName);
 			foreach (string reference in references)
 			{
 				foreach (MockFramework framework in MockFrameworks.List)
@@ -167,6 +177,13 @@ namespace UnitTestBoilerplate.Utilities
 					}
 				}
 			}
+
+			return matchingFrameworks;
+		}
+
+		public static MockFramework FindMockFramework(string projectFileName)
+		{
+			var matchingFrameworks = FindMockFrameworks(projectFileName);
 
 			if (matchingFrameworks.Count == 0)
 			{

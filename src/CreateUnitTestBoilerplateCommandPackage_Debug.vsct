@@ -32,12 +32,12 @@
     with command ids defined by other packages. -->
 
     <Menus>
-      <Menu guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="SelfTestTopLevelMenu" priority="0x700" type="Menu">
+      <Menu guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="DebugTopLevelMenu" priority="0x700" type="Menu">
         <Parent guid="guidSHLMainMenu"
                 id="IDG_VS_MM_TOOLSADDINS" />
         <Strings>
-          <ButtonText>UTBG Self Test</ButtonText>
-          <CommandName>UTBG Self Test</CommandName>
+          <ButtonText>UTBG Debug</ButtonText>
+          <CommandName>UTBG Debug</CommandName>
         </Strings>
       </Menu>
     </Menus>
@@ -50,8 +50,8 @@
       <Group guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
       </Group>
-      <Group guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="SelfTestMenuGroup" priority="0x0600">
-        <Parent guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="SelfTestTopLevelMenu" />
+      <Group guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="DebugMenuGroup" priority="0x0600">
+        <Parent guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="DebugTopLevelMenu" />
       </Group>
     </Groups>
 
@@ -76,17 +76,24 @@
       </Button>
 
       <Button guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="SelfTestCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="SelfTestMenuGroup" />
+        <Parent guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="DebugMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Run</ButtonText>
+          <ButtonText>Run Self Test</ButtonText>
         </Strings>
       </Button>
 
       <Button guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="SelfTestCleanCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="SelfTestMenuGroup" />
+        <Parent guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="DebugMenuGroup" />
         <Strings>
-          <ButtonText>Clean</ButtonText>
+          <ButtonText>Clean Self Test</ButtonText>
+        </Strings>
+      </Button>
+    
+      <Button guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="DetectCsprojCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="DebugMenuGroup" />
+        <Strings>
+          <ButtonText>Detect frameworks from .csproj</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -109,11 +116,12 @@
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidCreateUnitTestBoilerplateCommandPackageCmdSet" value="{542fa460-e966-445e-b2e2-3b82e1a75ca4}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="SelfTestTopLevelMenu" value="0x1021"/>
-      <IDSymbol name="SelfTestMenuGroup" value="0x1022" />
+      <IDSymbol name="DebugTopLevelMenu" value="0x1021"/>
+      <IDSymbol name="DebugMenuGroup" value="0x1022" />
       <IDSymbol name="CreateUnitTestBoilerplateCommandId" value="0x0100" />
       <IDSymbol name="SelfTestCommandId" value="0x0101" />
       <IDSymbol name="SelfTestCleanCommandId" value="0x0102" />
+      <IDSymbol name="DetectCsprojCommandId" value="0x0103" />
     </GuidSymbol>
     
     <GuidSymbol name="guidImages" value="{e37f3d2a-9d80-48fd-a90f-31ac4daf9a07}" >

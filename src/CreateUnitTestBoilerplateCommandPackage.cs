@@ -77,6 +77,7 @@ namespace UnitTestBoilerplate
 #if DEBUG
 			SelfTestCommand.Initialize(this);
 			SelfTestCleanCommand.Initialize(this);
+			DetectCsprojCommand.Initialize(this);
 #endif
 			base.Initialize();
 

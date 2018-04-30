@@ -15,7 +15,7 @@ namespace UnitTestBoilerplate.Model
 			{
 				new TestFramework(
 					name: VisualStudioName,
-					detectionReferenceMatches: new List<string> { "Microsoft.VisualStudio.QualityTools.UnitTestFramework" },
+					detectionReferenceMatches: new List<string> { "Microsoft.VisualStudio.QualityTools.UnitTestFramework", "Microsoft.VisualStudio.TestPlatform.TestFramework" },
 					detectionRank: 1,
 					usingString: "Microsoft.VisualStudio.TestTools.UnitTesting",
 					testClassAttribute: "TestClass",

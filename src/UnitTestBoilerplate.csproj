@@ -183,6 +183,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\DetectCsprojCommand.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="DefaultTemplateGenerator.cs" />
     <Compile Include="Services\TestGenerationService.cs" />
@@ -270,7 +271,6 @@
     </Content>
     <Content Include="stylesheet.css" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)' == 'Debug' " />
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
