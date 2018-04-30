@@ -12,13 +12,13 @@ using Microsoft.VisualStudio.ComponentModelHost;
 namespace UnitTestBoilerplate.View
 {
 	[Guid("6e5e083f-c2d6-457e-b3e2-891f781208f1")]
-	public class FileLocationOptionsDialogPage : UIElementDialogPage
+	public class OtherOptionsDialogPage : UIElementDialogPage
 	{
-		private FileLocationOptionsDialogPageControl optionsDialogControl;
+		private OtherOptionsDialogPageControl optionsDialogControl;
 
 		protected override UIElement Child
 		{
-			get { return this.optionsDialogControl ?? (this.optionsDialogControl = new FileLocationOptionsDialogPageControl()); }
+			get { return this.optionsDialogControl ?? (this.optionsDialogControl = new OtherOptionsDialogPageControl()); }
 		}
 
 		protected override void OnActivate(CancelEventArgs e)

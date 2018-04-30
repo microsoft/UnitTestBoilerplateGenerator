@@ -147,16 +147,42 @@ namespace UnitTestBoilerplate.Utilities
 			return matchingFrameworks;
 		}
 
+		public static TestFramework PickDefaultTestFramework(IList<TestFramework> frameworks)
+		{
+			// If there's only one framework detected, that must be it
+			if (frameworks.Count == 1)
+			{
+				return frameworks.First();
+			}
+
+			// If the preferred framework is included in the list, use it.
+			TestFramework preferredFramework = StaticBoilerplateSettings.PreferredTestFramework;
+			if (frameworks.Contains(preferredFramework))
+			{
+				return preferredFramework;
+			}
+
+			// If there's nothing in the list, pick our fallback
+			if (frameworks.Count == 0)
+			{
+				if (preferredFramework == null)
+				{
+					return TestFrameworks.Default;
+				}
+				else
+				{
+					return preferredFramework;
+				}
+			}
+
+			// If there are multiple frameworks and no preferred item is declared, pick the one stack ranked first.
+			return frameworks.OrderBy(f => f.DetectionRank).First();
+		}
+
 		public static TestFramework FindTestFramework(string projectFileName)
 		{
 			var matchingFrameworks = FindTestFrameworks(projectFileName);
-
-			if (matchingFrameworks.Count == 0)
-			{
-				return TestFrameworks.Default;
-			}
-
-			return matchingFrameworks.OrderBy(f => f.DetectionRank).First();
+			return PickDefaultTestFramework(matchingFrameworks);
 		}
 
 		public static List<MockFramework> FindMockFrameworks(string projectFileName)
@@ -181,16 +207,42 @@ namespace UnitTestBoilerplate.Utilities
 			return matchingFrameworks;
 		}
 
+		public static MockFramework PickDefaultMockFramework(IList<MockFramework> frameworks)
+		{
+			// If there's only one framework detected, that must be it
+			if (frameworks.Count == 1)
+			{
+				return frameworks.First();
+			}
+
+			// If the preferred framework is included in the list, use it.
+			MockFramework preferredFramework = StaticBoilerplateSettings.PreferredMockFramework;
+			if (frameworks.Contains(preferredFramework))
+			{
+				return preferredFramework;
+			}
+
+			// If there's nothing in the list, pick our fallback
+			if (frameworks.Count == 0)
+			{
+				if (preferredFramework == null)
+				{
+					return MockFrameworks.Default;
+				}
+				else
+				{
+					return preferredFramework;
+				}
+			}
+
+			// If there are multiple frameworks and no preferred item is declared, pick the one stack ranked first.
+			return frameworks.OrderBy(f => f.DetectionRank).First();
+		}
+
 		public static MockFramework FindMockFramework(string projectFileName)
 		{
 			var matchingFrameworks = FindMockFrameworks(projectFileName);
-
-			if (matchingFrameworks.Count == 0)
-			{
-				return MockFrameworks.Default;
-			}
-
-			return matchingFrameworks.OrderBy(f => f.DetectionRank).First();
+			return PickDefaultMockFramework(matchingFrameworks);
 		}
 
 		public static string GetSelfTestDirectoryFromSandbox(DTE2 dte)

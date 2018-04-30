@@ -8,6 +8,11 @@ namespace UnitTestBoilerplate.Model
 	/// <remarks>The "Code" properties can have placeholders for formatting, and can be later customized by the user.</remarks>
 	public class MockFramework
 	{
+		public MockFramework(string name)
+		{
+			this.Name = name;
+		}
+
 		public MockFramework(
 			string name,
 			IReadOnlyList<string> detectionReferenceMatches,

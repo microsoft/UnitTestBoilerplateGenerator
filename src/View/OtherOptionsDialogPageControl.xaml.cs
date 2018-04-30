@@ -17,17 +17,17 @@ using UnitTestBoilerplate.ViewModel;
 namespace UnitTestBoilerplate.View
 {
 	/// <summary>
-	/// Interaction logic for FileLocationOptionsDialogPageControl.xaml
+	/// Interaction logic for OtherOptionsDialogPageControl.xaml
 	/// </summary>
-	public partial class FileLocationOptionsDialogPageControl : UserControl
+	public partial class OtherOptionsDialogPageControl : UserControl
 	{
-		public FileLocationOptionsDialogViewModel ViewModel { get; }
+		public OtherOptionsDialogViewModel ViewModel { get; }
 
-		public FileLocationOptionsDialogPageControl()
+		public OtherOptionsDialogPageControl()
 		{
 			this.InitializeComponent();
 
-			this.ViewModel = new FileLocationOptionsDialogViewModel();
+			this.ViewModel = new OtherOptionsDialogViewModel();
 			this.DataContext = this.ViewModel;
 		}
 	}

@@ -48,7 +48,7 @@ namespace UnitTestBoilerplate.Model
 					testCleanupAttribute: null,
 					testInitializeStyle: TestInitializeStyle.Constructor,
 					testCleanupStyle: TestCleanupStyle.Disposable),
-			};
+			}.AsReadOnly();
 		}
 
 		public static IList<TestFramework> List { get; }

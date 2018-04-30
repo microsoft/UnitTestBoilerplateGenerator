@@ -13,13 +13,6 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="pack://application:,,,/UnitTestBoilerplate;component/View/XamlResources.xaml" />
 			</ResourceDictionary.MergedDictionaries>
-
-			<Style x:Key="FrameworkCombo" TargetType="ComboBox">
-				<Setter Property="Margin" Value="6 0 0 0" />
-				<Setter Property="VerticalAlignment" Value="Center" />
-				<Setter Property="DisplayMemberPath" Value="Name" />
-				<Setter Property="MinWidth" Value="120" />
-			</Style>
 		</ResourceDictionary>
 	</UserControl.Resources>
     <ScrollViewer>

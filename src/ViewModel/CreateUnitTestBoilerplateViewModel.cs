@@ -213,25 +213,24 @@ namespace UnitTestBoilerplate.ViewModel
 				List<TestFramework> testFrameworks = SolutionUtilities.FindTestFrameworks(this.selectedProject.Project.FileName);
 				List<MockFramework> mockFrameworks = SolutionUtilities.FindMockFrameworks(this.selectedProject.Project.FileName);
 
+				this.SelectedTestFramework = SolutionUtilities.PickDefaultTestFramework(testFrameworks);
+				this.SelectedMockFramework = SolutionUtilities.PickDefaultMockFramework(mockFrameworks);
+
 				if (testFrameworks.Count == 0)
 				{
-					this.SelectedTestFramework = TestFrameworks.Default;
 					this.DetectedTestFrameworks = "Detected: None";
 				}
 				else
 				{
-					this.SelectedTestFramework = testFrameworks.First();
 					this.DetectedTestFrameworks = "Detected: " + string.Join(", ", testFrameworks);
 				}
 
 				if (mockFrameworks.Count == 0)
 				{
-					this.SelectedMockFramework = MockFrameworks.Default;
 					this.DetectedMockFrameworks = "Detected: None";
 				}
 				else
 				{
-					this.SelectedMockFramework = mockFrameworks.First();
 					this.DetectedMockFrameworks = "Detected: " + string.Join(", ", mockFrameworks);
 				}
 			}

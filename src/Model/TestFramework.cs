@@ -4,6 +4,11 @@ namespace UnitTestBoilerplate.Model
 {
     public class TestFramework
     {
+	    public TestFramework(string name)
+	    {
+		    this.Name = name;
+	    }
+
 	    public TestFramework(
 			string name,
 			IReadOnlyList<string> detectionReferenceMatches,

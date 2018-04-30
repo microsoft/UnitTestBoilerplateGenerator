@@ -95,7 +95,7 @@ namespace UnitTestBoilerplate.Model
 					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod,
 					testedObjectCreationCode: null,
 					mockObjectReferenceCode: "this.stub$InterfaceMockName$"),
-			};
+			}.AsReadOnly();
 		}
 
 		public static IList<MockFramework> List { get; }

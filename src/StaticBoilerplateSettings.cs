@@ -22,6 +22,10 @@ namespace UnitTestBoilerplate
 
 		private const string FileNameTemplateKey = "FileNameTemplate";
 
+		private const string PreferredTestFrameworkKey = "PreferredTestFramework";
+
+		private const string PreferredMockFrameworkKey = "PreferredMockFramework";
+
 		private const int LatestVersion = 1;
 
 		private const string VersionKey = "Version";
@@ -157,6 +161,62 @@ namespace UnitTestBoilerplate
 			}
 
 			return null;
+		}
+
+		public static TestFramework PreferredTestFramework
+		{
+			get
+			{
+				if (Store.PropertyExists(CollectionPath, PreferredTestFrameworkKey))
+				{
+					string preferredTestFrameworkName = Store.GetString(CollectionPath, PreferredTestFrameworkKey);
+					return TestFrameworks.Get(preferredTestFrameworkName);
+				}
+				else
+				{
+					return null;
+				}
+			}
+
+			set
+			{
+				if (value == null)
+				{
+					Store.DeleteProperty(CollectionPath, PreferredTestFrameworkKey);
+				}
+				else
+				{
+					Store.SetString(CollectionPath, PreferredTestFrameworkKey, value.Name);
+				}
+			}
+		}
+
+		public static MockFramework PreferredMockFramework
+		{
+			get
+			{
+				if (Store.PropertyExists(CollectionPath, PreferredMockFrameworkKey))
+				{
+					string preferredMockFrameworkName = Store.GetString(CollectionPath, PreferredMockFrameworkKey);
+					return MockFrameworks.Get(preferredMockFrameworkName);
+				}
+				else
+				{
+					return null;
+				}
+			}
+
+			set
+			{
+				if (value == null)
+				{
+					Store.DeleteProperty(CollectionPath, PreferredMockFrameworkKey);
+				}
+				else
+				{
+					Store.SetString(CollectionPath, PreferredMockFrameworkKey, value.Name);
+				}
+			}
 		}
 
 		public static string FileNameTemplate

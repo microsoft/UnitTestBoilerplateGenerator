@@ -196,7 +196,7 @@
     <Compile Include="CreateUnitTestBoilerplateCommandPackage.cs" />
     <Compile Include="Utilities\SolutionUtilities.cs" />
     <Compile Include="Utilities\TypeUtilities.cs" />
-    <Compile Include="ViewModel\FileLocationOptionsDialogViewModel.cs" />
+    <Compile Include="ViewModel\OtherOptionsDialogViewModel.cs" />
     <Compile Include="View\CreateUnitTestBoilerplateDialog.xaml.cs">
       <DependentUpon>CreateUnitTestBoilerplateDialog.xaml</DependentUpon>
     </Compile>
@@ -224,11 +224,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\TestGenerationContext.cs" />
     <Compile Include="Model\TestProject.cs" />
-    <Compile Include="View\FileLocationOptionsDialogPage.cs">
+    <Compile Include="View\OtherOptionsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\FileLocationOptionsDialogPageControl.xaml.cs">
-      <DependentUpon>FileLocationOptionsDialogPageControl.xaml</DependentUpon>
+    <Compile Include="View\OtherOptionsDialogPageControl.xaml.cs">
+      <DependentUpon>OtherOptionsDialogPageControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -312,6 +312,7 @@
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -329,7 +330,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FileLocationOptionsDialogPageControl.xaml">
+    <Page Include="View\OtherOptionsDialogPageControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
