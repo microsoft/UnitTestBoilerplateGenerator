@@ -5,6 +5,12 @@
 
 # Changelog
 
+## 1.8.0
+**2018-04-01**
+- Added ability to set a preferred test and mock framework to be used when either multiple frameworks are detected or no frameworks are detected.
+- Added detected framework information to the "create" dialog.
+- Fixed issue with detecting frameworks added as PackageReference in .csproj files with an msbuild namespace.
+
 ## 1.7.1
 **2018-02-11**
 - Fixed crash issue on Visual Studio 2015 due to missing DLL.
