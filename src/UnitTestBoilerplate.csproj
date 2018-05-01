@@ -186,7 +186,14 @@
     <Compile Include="Commands\DetectCsprojCommand.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="DefaultTemplateGenerator.cs" />
+    <Compile Include="Model\SelfTestDetectionTest.cs" />
+    <Compile Include="Services\IBoilerplateSettings.cs" />
+    <Compile Include="Services\MockBoilerplateSettings.cs" />
+    <Compile Include="Services\FrameworkPickerService.cs" />
+    <Compile Include="Services\IFrameworkPickerService.cs" />
+    <Compile Include="Services\ITestGenerationService.cs" />
     <Compile Include="Services\TestGenerationService.cs" />
+    <Compile Include="Services\BoilerplateSettings.cs" />
     <Compile Include="Utilities\FileUtilities.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
     <Compile Include="Model\TestCleanupStyle.cs" />
@@ -215,7 +222,6 @@
       <DependentUpon>FileContentsOptionsDialogPageControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\FileContentsOptionsDialogViewModel.cs" />
-    <Compile Include="StaticBoilerplateSettings.cs" />
     <Compile Include="Model\TemplateType.cs" />
     <Compile Include="Model\InjectableType.cs" />
     <Compile Include="Model\InjectableProperty.cs" />

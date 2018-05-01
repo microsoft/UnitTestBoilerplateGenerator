@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.ComponentModel.Composition;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using UnitTestBoilerplate.ViewModel;
 
@@ -18,6 +20,9 @@ namespace UnitTestBoilerplate.View
 			this.InitializeComponent();
 
 			this.ViewModel = new FileContentsOptionsDialogViewModel();
+			IComponentModel componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
+			componentModel.DefaultCompositionService.SatisfyImportsOnce(this.ViewModel);
+
 			this.DataContext = this.ViewModel;
 
 			this.fileTemplateTextBox.AddHandler(UIElementDialogPage.DialogKeyPendingEvent, new RoutedEventHandler(this.OnDialogKeyPendingEvent));

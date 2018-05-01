@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using UnitTestBoilerplate.Model;
+using UnitTestBoilerplate.Services;
 
 namespace UnitTestBoilerplate.ViewModel
 {
@@ -21,52 +23,55 @@ namespace UnitTestBoilerplate.ViewModel
 			this.MockFrameworkChoices.Insert(0, new MockFramework(NoneName));
 		}
 
+		[Import]
+		internal IBoilerplateSettings Settings { get; set; }
+
 		public void Initialize()
 		{
-			this.TestFileNameFormat = StaticBoilerplateSettings.FileNameTemplate;
-			TestFramework preferredTestFramework = StaticBoilerplateSettings.PreferredTestFramework;
+			this.TestFileNameFormat = this.Settings.FileNameTemplate;
+			TestFramework settingsPreferredTestFramework = this.Settings.PreferredTestFramework;
 
-			if (preferredTestFramework == null)
+			if (settingsPreferredTestFramework == null)
 			{
 				this.PreferredTestFramework = this.TestFrameworkChoices[0];
 			}
 			else
 			{
-				this.PreferredTestFramework = preferredTestFramework;
+				this.PreferredTestFramework = settingsPreferredTestFramework;
 			}
 
-			MockFramework preferredMockFramework = StaticBoilerplateSettings.PreferredMockFramework;
+			MockFramework settingsPreferredMockFramework = this.Settings.PreferredMockFramework;
 
-			if (preferredMockFramework == null)
+			if (settingsPreferredMockFramework == null)
 			{
 				this.PreferredMockFramework = this.MockFrameworkChoices[0];
 			}
 			else
 			{
-				this.PreferredMockFramework = preferredMockFramework;
+				this.PreferredMockFramework = settingsPreferredMockFramework;
 			}
 		}
 
 		public void Apply()
 		{
-			StaticBoilerplateSettings.FileNameTemplate = this.TestFileNameFormat;
+			this.Settings.FileNameTemplate = this.TestFileNameFormat;
 
 			if (this.PreferredTestFramework.Name == NoneName)
 			{
-				StaticBoilerplateSettings.PreferredTestFramework = null;
+				this.Settings.PreferredTestFramework = null;
 			}
 			else
 			{
-				StaticBoilerplateSettings.PreferredTestFramework = this.PreferredTestFramework;
+				this.Settings.PreferredTestFramework = this.PreferredTestFramework;
 			}
 
 			if (this.PreferredMockFramework.Name == NoneName)
 			{
-				StaticBoilerplateSettings.PreferredMockFramework = null;
+				this.Settings.PreferredMockFramework = null;
 			}
 			else
 			{
-				StaticBoilerplateSettings.PreferredMockFramework = this.PreferredMockFramework;
+				this.Settings.PreferredMockFramework = this.PreferredMockFramework;
 			}
 		}
 

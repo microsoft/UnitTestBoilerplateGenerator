@@ -1,4 +1,7 @@
-﻿using Microsoft.VisualStudio.PlatformUI;
+﻿using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell;
+using System.ComponentModel.Composition;
 using UnitTestBoilerplate.ViewModel;
 
 namespace UnitTestBoilerplate.View
@@ -12,7 +15,10 @@ namespace UnitTestBoilerplate.View
         {
             this.InitializeComponent();
 
-            var viewModel = new CreateUnitTestBoilerplateViewModel();
+	        IComponentModel componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
+			var viewModel = new CreateUnitTestBoilerplateViewModel();
+			componentModel.DefaultCompositionService.SatisfyImportsOnce(viewModel);
+			viewModel.Initialize();
             viewModel.View = this;
 
             this.DataContext = viewModel;

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using UnitTestBoilerplate.Model;
 using UnitTestBoilerplate.Utilities;
@@ -15,25 +17,26 @@ namespace UnitTestBoilerplate.Services
 {
 	public class SelfTestService
 	{
-		// Key is project name, value is the expected detection result
-		private static readonly Dictionary<string, SelfTestDetectionResult> ExpectedDetectionResults = new Dictionary<string, SelfTestDetectionResult>
-		{
-			{ "AutoMoqTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.AutoMoqName) },
-			{ "NetCoreAutoMoqTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.AutoMoqName) },
-			{ "NetCoreMoqTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
-			{ "NetCoreNSubstituteTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName) },
-			{ "NetCoreNUnitTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.MoqName) },
-			{ "NetCoreSimpleStubsTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName) },
-			{ "NetCoreVSRhinoMocksTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName) },
-			{ "NoFrameworkTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
-			{ "NSubstituteTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName) },
-			{ "NUnitTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.MoqName) },
-			{ "NUnitUwpTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.SimpleStubsName) },
-			{ "SimpleStubsTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName) },
-			{ "VSRhinoMocksTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName) },
-			{ "VSTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
-			{ "XUnitMoqTestCases", new SelfTestDetectionResult(TestFrameworks.XUnitName, MockFrameworks.MoqName) },
-		};
+		//// Key is project name, value is the expected detection result
+		//private static readonly Dictionary<string, SelfTestDetectionResult> ExpectedDetectionResults = new Dictionary<string, SelfTestDetectionResult>
+		//{
+		//	{ "AutoMoqTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.AutoMoqName) },
+		//	{ "NetCoreAutoMoqTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.AutoMoqName) },
+		//	{ "NetCoreMoqTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
+		//	{ "NetCoreNSubstituteTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName) },
+		//	{ "NetCoreNUnitTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.MoqName) },
+		//	{ "NetCoreSimpleStubsTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName) },
+		//	{ "NetCoreVSRhinoMocksTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName) },
+		//	{ "NoFrameworkTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
+		//	{ "NSubstituteTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName) },
+		//	{ "NUnitTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.MoqName) },
+		//	{ "NUnitUwpTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.SimpleStubsName) },
+		//	{ "SimpleStubsTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName) },
+		//	{ "VSRhinoMocksTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName) },
+		//	{ "VSTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
+		//	{ "XUnitMoqTestCases", new SelfTestDetectionResult(TestFrameworks.XUnitName, MockFrameworks.MoqName) },
+		//	{ "MultipleFrameworkTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.NSubstituteName) },
+		//};
 
 		public void Clean(IList<Project> projects = null, bool save = false)
 		{
@@ -103,29 +106,70 @@ namespace UnitTestBoilerplate.Services
 
 		public SelfTestDetectionsResult RunDetectionTests(IList<Project> targetProjects)
 		{
+			var dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
+
 			var result = new SelfTestDetectionsResult();
+
+			var frameworkPickerService = new FrameworkPickerService();
+			var defaultSettings = new MockBoilerplateSettings
+			{
+				PreferredTestFramework = null,
+				PreferredMockFramework = null
+			};
+
+			var vsMoqSettings = new MockBoilerplateSettings
+			{
+				PreferredTestFramework = TestFrameworks.Get(TestFrameworks.VisualStudioName),
+				PreferredMockFramework = MockFrameworks.Get(MockFrameworks.MoqName)
+			};
+
+			var nunitNSubSettings = new MockBoilerplateSettings
+			{
+				PreferredTestFramework = TestFrameworks.Get(TestFrameworks.NUnitName),
+				PreferredMockFramework = MockFrameworks.Get(MockFrameworks.NSubstituteName)
+			};
+
+			var testList = new List<SelfTestDetectionTest>
+			{
+				new SelfTestDetectionTest("AutoMoqTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.AutoMoqName),
+				new SelfTestDetectionTest("NetCoreMoqTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.MoqName),
+				new SelfTestDetectionTest("NetCoreNSubstituteTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName),
+				new SelfTestDetectionTest("NetCoreNUnitTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.MoqName),
+				new SelfTestDetectionTest("NetCoreSimpleStubsTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName),
+				new SelfTestDetectionTest("NetCoreVSRhinoMocksTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName),
+				new SelfTestDetectionTest("NoFrameworkTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.MoqName),
+				new SelfTestDetectionTest("NoFrameworkTestCases", nunitNSubSettings, TestFrameworks.NUnitName, MockFrameworks.NSubstituteName),
+				new SelfTestDetectionTest("NSubstituteTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName),
+				new SelfTestDetectionTest("NUnitTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.MoqName),
+				new SelfTestDetectionTest("NUnitUwpTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.SimpleStubsName),
+				new SelfTestDetectionTest("SimpleStubsTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName),
+				new SelfTestDetectionTest("VSRhinoMocksTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName),
+				new SelfTestDetectionTest("VSTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.MoqName),
+				new SelfTestDetectionTest("XUnitMoqTestCases", defaultSettings, TestFrameworks.XUnitName, MockFrameworks.MoqName),
+				new SelfTestDetectionTest("MultipleFrameworkTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.NSubstituteName),
+				new SelfTestDetectionTest("MultipleFrameworkTestCases", vsMoqSettings, TestFrameworks.VisualStudioName, MockFrameworks.MoqName),
+			};
 
 			var failures = new List<string>();
 
-			foreach (Project testProject in targetProjects)
+			foreach (SelfTestDetectionTest test in testList)
 			{
 				result.TotalCount++;
 
-				TestFramework actualTestFramework = SolutionUtilities.FindTestFramework(testProject.FileName);
-				MockFramework actualMockFramework = SolutionUtilities.FindMockFramework(testProject.FileName);
+				string projectFileName = GetFileNameFromSandboxProjectName(test.ProjectName, dte);
 
-				SelfTestDetectionResult expectedDetectionResult;
-				if (!ExpectedDetectionResults.TryGetValue(testProject.Name, out expectedDetectionResult))
+				frameworkPickerService.Settings = test.Settings;
+
+				TestFramework actualTestFramework = frameworkPickerService.FindTestFramework(projectFileName);
+				MockFramework actualMockFramework = frameworkPickerService.FindMockFramework(projectFileName);
+
+				if (test.ExpectedTestFramework!= actualTestFramework.Name)
 				{
-					failures.Add("Could not find expected detection results for project " + testProject.Name);
+					failures.Add($"Expected {test.ExpectedTestFramework} test framework for {test.ProjectName} but got {actualTestFramework.Name}. (Preferred Framework: {test.Settings.PreferredTestFramework})");
 				}
-				else if (expectedDetectionResult.TestFramework != actualTestFramework.Name)
+				else if (test.ExpectedMockFramework != actualMockFramework.Name)
 				{
-					failures.Add($"Expected {expectedDetectionResult.TestFramework} test framework for {testProject.Name} but got {actualTestFramework.Name}");
-				}
-				else if (expectedDetectionResult.MockFramework != actualMockFramework.Name)
-				{
-					failures.Add($"Expected {expectedDetectionResult.MockFramework} mock framework for {testProject.Name} but got {actualMockFramework.Name}");
+					failures.Add($"Expected {test.ExpectedMockFramework} mock framework for {test.ProjectName} but got {actualMockFramework.Name}. (Preferred Framework: {test.Settings.PreferredMockFramework})");
 				}
 				else
 				{
@@ -133,9 +177,41 @@ namespace UnitTestBoilerplate.Services
 				}
 			}
 
+			//foreach (Project testProject in targetProjects)
+			//{
+			//	result.TotalCount++;
+
+			//	TestFramework actualTestFramework = frameworkPickerService.FindTestFramework(testProject.FileName);
+			//	MockFramework actualMockFramework = frameworkPickerService.FindMockFramework(testProject.FileName);
+
+			//	SelfTestDetectionResult expectedDetectionResult;
+			//	if (!ExpectedDetectionResults.TryGetValue(testProject.Name, out expectedDetectionResult))
+			//	{
+			//		failures.Add("Could not find expected detection results for project " + testProject.Name);
+			//	}
+			//	else if (expectedDetectionResult.TestFramework != actualTestFramework.Name)
+			//	{
+			//		failures.Add($"Expected {expectedDetectionResult.TestFramework} test framework for {testProject.Name} but got {actualTestFramework.Name}");
+			//	}
+			//	else if (expectedDetectionResult.MockFramework != actualMockFramework.Name)
+			//	{
+			//		failures.Add($"Expected {expectedDetectionResult.MockFramework} mock framework for {testProject.Name} but got {actualMockFramework.Name}");
+			//	}
+			//	else
+			//	{
+			//		result.SucceededCount++;
+			//	}
+			//}
+
 			result.Failures = failures;
 
 			return result;
+		}
+
+		private static string GetFileNameFromSandboxProjectName(string projectName, DTE2 dte)
+		{
+			string solutionDirectory = Path.GetDirectoryName(dte.Solution.FileName);
+			return Path.Combine(solutionDirectory, projectName, projectName + ".csproj");
 		}
 
 		public async System.Threading.Tasks.Task GenerateTestFilesAsync(Project classesProject)
@@ -288,7 +364,8 @@ namespace UnitTestBoilerplate.Services
 			ProjectItem casesFolder = classesProject.ProjectItems.Item("Cases");
 			ProjectItem classToTest = casesFolder.ProjectItems.Item(className + ".cs");
 
-			var testGenerationService = new TestGenerationService();
+			IComponentModel componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
+			var testGenerationService = componentModel.GetService<ITestGenerationService>();
 			await testGenerationService.GenerateUnitTestFileAsync(new ProjectItemSummary(classToTest), targetFilePath, "UnitTestBoilerplate.SelfTest", testFramework, mockFramework);
 		}
 	}

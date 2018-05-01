@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using UnitTestBoilerplate.Model;
 using UnitTestBoilerplate.Services;
@@ -30,13 +32,14 @@ namespace UnitTestBoilerplate.ViewModel
 		public CreateUnitTestBoilerplateViewModel()
 		{
 			this.dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
+		}
 
-
+		public void Initialize()
+		{
 			this.TestProjects = new List<TestProject>();
 			IList<Project> allProjects = SolutionUtilities.GetProjects(this.dte);
 
-
-			string lastSelectedProject = StaticBoilerplateSettings.GetLastSelectedProject(this.dte.Solution.FileName);
+			string lastSelectedProject = this.Settings.GetLastSelectedProject(this.dte.Solution.FileName);
 
 
 			var newProjectList = new List<TestProject>();
@@ -92,9 +95,18 @@ namespace UnitTestBoilerplate.ViewModel
 			this.UpdateFrameworks();
 		}
 
+		[Import]
+		internal IBoilerplateSettings Settings { get; set; }
+
+		[Import]
+		internal IFrameworkPickerService FrameworkPickerService { get; set; }
+
+		[Import]
+		internal ITestGenerationService TestGenerationService { get; set; }
+
 		public ICreateUnitTestBoilerplateView View { get; set; }
 
-		public List<TestProject> TestProjects { get; }
+		public List<TestProject> TestProjects { get; private set; }
 
 		private TestProject selectedProject;
 		public TestProject SelectedProject
@@ -107,7 +119,7 @@ namespace UnitTestBoilerplate.ViewModel
 			}
 		}
 
-		public IList<TestFramework> TestFrameworkChoices { get; }
+		public IList<TestFramework> TestFrameworkChoices { get; private set; }
 
 		private TestFramework selectedTestFramework;
 		public TestFramework SelectedTestFramework
@@ -123,7 +135,7 @@ namespace UnitTestBoilerplate.ViewModel
 			set { this.Set(ref this.detectedTestFrameworks, value); }
 		}
 
-		public IList<MockFramework> MockFrameworkChoices { get; }
+		public IList<MockFramework> MockFrameworkChoices { get; private set; }
 
 		private MockFramework selectedMockFramework;
 
@@ -163,11 +175,10 @@ namespace UnitTestBoilerplate.ViewModel
 
 		internal async Task CreateUnitTestAsync(IList<ProjectItemSummary> selectedFiles, bool addToProject = true)
 		{
-			var generationService = new TestGenerationService();
 			var createdTestPaths = new List<string>();
 			foreach (ProjectItemSummary selectedFile in selectedFiles)
 			{
-				string generatedTestPath = await generationService.GenerateUnitTestFileAsync(
+				string generatedTestPath = await this.TestGenerationService.GenerateUnitTestFileAsync(
 					selectedFile,
 					this.SelectedProject.Project,
 					this.SelectedTestFramework,
@@ -195,7 +206,7 @@ namespace UnitTestBoilerplate.ViewModel
 					}
 				}
 
-				StaticBoilerplateSettings.SaveSelectedTestProject(this.dte.Solution.FileName, this.SelectedProject.Project.FileName);
+				this.Settings.SaveSelectedTestProject(this.dte.Solution.FileName, this.SelectedProject.Project.FileName);
 			}
 
 			this.View?.Close();
@@ -210,11 +221,11 @@ namespace UnitTestBoilerplate.ViewModel
 			}
 			else
 			{
-				List<TestFramework> testFrameworks = SolutionUtilities.FindTestFrameworks(this.selectedProject.Project.FileName);
-				List<MockFramework> mockFrameworks = SolutionUtilities.FindMockFrameworks(this.selectedProject.Project.FileName);
+				List<TestFramework> testFrameworks = this.FrameworkPickerService.FindTestFrameworks(this.selectedProject.Project.FileName);
+				List<MockFramework> mockFrameworks = this.FrameworkPickerService.FindMockFrameworks(this.selectedProject.Project.FileName);
 
-				this.SelectedTestFramework = SolutionUtilities.PickDefaultTestFramework(testFrameworks);
-				this.SelectedMockFramework = SolutionUtilities.PickDefaultMockFramework(mockFrameworks);
+				this.SelectedTestFramework = this.FrameworkPickerService.PickDefaultTestFramework(testFrameworks);
+				this.SelectedMockFramework = this.FrameworkPickerService.PickDefaultMockFramework(mockFrameworks);
 
 				if (testFrameworks.Count == 0)
 				{

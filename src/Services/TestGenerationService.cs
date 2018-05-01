@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,9 @@ using UnitTestBoilerplate.Utilities;
 
 namespace UnitTestBoilerplate.Services
 {
-    public class TestGenerationService
-	{
+	[Export(typeof(ITestGenerationService))]
+    public class TestGenerationService : ITestGenerationService
+    {
 		private static readonly HashSet<string> PropertyInjectionAttributeNames = new HashSet<string>
 		{
 			"Microsoft.Practices.Unity.DependencyAttribute",
@@ -31,6 +33,9 @@ namespace UnitTestBoilerplate.Services
 			"Manager",
 			"Component"
 		};
+
+		[Import]
+		internal IBoilerplateSettings Settings { get; set; }
 
 		public async Task<string> GenerateUnitTestFileAsync(
 			ProjectItemSummary selectedFile,
@@ -55,7 +60,7 @@ namespace UnitTestBoilerplate.Services
 			string testFolder = Path.Combine(Path.GetDirectoryName(targetProject.FullName), relativePath);
 
 			string testFileNameBase = StringUtilities.ReplaceTokens(
-				StaticBoilerplateSettings.FileNameTemplate,
+				this.Settings.FileNameTemplate,
 				(tokenName, propertyIndex, builder) =>
 				{
 					if (WriteGlobalToken(tokenName, builder, context))
@@ -266,7 +271,7 @@ namespace UnitTestBoilerplate.Services
 			TestFramework testFramework = context.TestFramework;
 			MockFramework mockFramework = context.MockFramework;
 
-			string fileTemplate = StaticBoilerplateSettings.GetTemplate(testFramework, mockFramework, TemplateType.File);
+			string fileTemplate = this.Settings.GetTemplate(testFramework, mockFramework, TemplateType.File);
 			string filledTemplate = StringUtilities.ReplaceTokens(
 				fileTemplate,
 				(tokenName, propertyIndex, builder) =>
@@ -338,7 +343,7 @@ namespace UnitTestBoilerplate.Services
 			return true;
 		}
 
-		private static bool WriteContentToken(string tokenName, int propertyIndex, StringBuilder builder, TestGenerationContext context, string fileTemplate)
+		private bool WriteContentToken(string tokenName, int propertyIndex, StringBuilder builder, TestGenerationContext context, string fileTemplate)
 		{
 			switch (tokenName)
 			{
@@ -347,11 +352,11 @@ namespace UnitTestBoilerplate.Services
 					break;
 
 				case "MockFieldDeclarations":
-					WriteMockFieldDeclarations(builder, context);
+					this.WriteMockFieldDeclarations(builder, context);
 					break;
 
 				case "MockFieldInitializations":
-					WriteMockFieldInitializations(builder, context);
+					this.WriteMockFieldInitializations(builder, context);
 					break;
 
 				case "ExplicitConstructor":
@@ -428,15 +433,15 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
-		private static void WriteMockFieldDeclarations(StringBuilder builder, TestGenerationContext context)
+		private void WriteMockFieldDeclarations(StringBuilder builder, TestGenerationContext context)
 		{
-			string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldDeclaration);
+			string template = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldDeclaration);
 			WriteFieldLines(builder, context, template);
 		}
 
-		private static void WriteMockFieldInitializations(StringBuilder builder, TestGenerationContext context)
+		private void WriteMockFieldInitializations(StringBuilder builder, TestGenerationContext context)
 		{
-			string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldInitialization);
+			string template = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldInitialization);
 			WriteFieldLines(builder, context, template);
 		}
 
@@ -457,7 +462,7 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
-		private static void WriteExplicitConstructor(StringBuilder builder, TestGenerationContext context, string currentIndent)
+		private void WriteExplicitConstructor(StringBuilder builder, TestGenerationContext context, string currentIndent)
 		{
 			builder.Append($"new {context.ClassName}");
 
@@ -475,7 +480,7 @@ namespace UnitTestBoilerplate.Services
 					}
 					else
 					{
-						string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
+						string template = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
 						mockReferenceStatement = ReplaceInterfaceTokens(template, constructorType, context);
 					}
 
@@ -501,7 +506,7 @@ namespace UnitTestBoilerplate.Services
 
 				foreach (InjectableProperty property in context.Properties)
 				{
-					string template = StaticBoilerplateSettings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
+					string template = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
 					string mockReferenceStatement = ReplaceInterfaceTokens(template, property, context);
 
 					builder.AppendLine($"{property.PropertyName} = {mockReferenceStatement},");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Shell;
 using UnitTestBoilerplate.ViewModel;
 
 namespace UnitTestBoilerplate.View
@@ -28,6 +31,9 @@ namespace UnitTestBoilerplate.View
 			this.InitializeComponent();
 
 			this.ViewModel = new OtherOptionsDialogViewModel();
+			IComponentModel componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
+			componentModel.DefaultCompositionService.SatisfyImportsOnce(this.ViewModel);
+
 			this.DataContext = this.ViewModel;
 		}
 	}

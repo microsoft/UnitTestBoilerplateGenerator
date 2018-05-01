@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using UnitTestBoilerplate.Model;
+using UnitTestBoilerplate.Services;
 
 namespace UnitTestBoilerplate.ViewModel
 {
@@ -17,6 +19,9 @@ namespace UnitTestBoilerplate.ViewModel
 			this.selectedTestFramework = TestFrameworks.Default;
 			this.selectedMockFramework = MockFrameworks.Default;
 		}
+
+		[Import]
+		internal IBoilerplateSettings Settings { get; set; }
 
 		public void Initialize()
 		{
@@ -34,7 +39,7 @@ namespace UnitTestBoilerplate.ViewModel
 				string mockFrameworkString = keyParts[1];
 				string templateTypeString = keyParts[2];
 
-				StaticBoilerplateSettings.SetTemplate(testFrameworkString, mockFrameworkString, templateTypeString, pair.Value);
+				this.Settings.SetTemplate(testFrameworkString, mockFrameworkString, templateTypeString, pair.Value);
 			}
 		}
 
@@ -186,7 +191,7 @@ namespace UnitTestBoilerplate.ViewModel
 				return template;
 			}
 
-			return StaticBoilerplateSettings.GetTemplate(testFramework, mockFramework, templateType);
+			return this.Settings.GetTemplate(testFramework, mockFramework, templateType);
 		}
 
 		/// <summary>

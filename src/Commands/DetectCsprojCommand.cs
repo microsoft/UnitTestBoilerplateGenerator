@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.Win32;
 using UnitTestBoilerplate.Services;
@@ -95,8 +96,11 @@ namespace UnitTestBoilerplate.Commands
 			dialog.Filter = "Project files|*.csproj";
 			if (dialog.ShowDialog() == true)
 			{
-				MessageBox.Show("Test framework: " + SolutionUtilities.FindTestFramework(dialog.FileName) + Environment.NewLine + "Mock framework: " +
-				                SolutionUtilities.FindMockFramework(dialog.FileName));
+				IComponentModel componentModel = (IComponentModel)this.ServiceProvider.GetService(typeof(SComponentModel));
+				var frameworkPickerService = componentModel.GetService<IFrameworkPickerService>();
+
+				MessageBox.Show("Test framework: " + frameworkPickerService.FindTestFramework(dialog.FileName) + Environment.NewLine + "Mock framework: " +
+				                frameworkPickerService.FindMockFramework(dialog.FileName));
 			}
 		}
 	}
