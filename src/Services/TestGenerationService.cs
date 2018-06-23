@@ -234,27 +234,11 @@ namespace UnitTestBoilerplate.Services
 			{
 				var parameterList = GetParameterListNodes(methodDeclaration).ToList();
 
-				string[] parameterTypeNames = new string[parameterList.Count()];
+				string[] parameterTypeNames = GetParameterTypeNames(parameterList);
 
-				for (int i = 0; i < parameterTypeNames.Count(); i++)
-				{
-					var parameterType = parameterList[i].Type;
+				var isAsync = methodDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.AsyncKeyword));
 
-					if (parameterType is PredefinedTypeSyntax predefinedType)
-					{
-						parameterTypeNames[i] = predefinedType.Keyword.ValueText;
-					}
-					else if (parameterType is IdentifierNameSyntax customType)
-					{
-						parameterTypeNames[i] = customType.Identifier.Text;
-					}
-					else
-					{
-						throw new NotSupportedException("Parameter type not supported");
-					}
-				}
-
-				methodDeclarations.Add(new MethodDescriptor(methodDeclaration.Identifier.Text, parameterTypeNames));
+				methodDeclarations.Add(new MethodDescriptor(methodDeclaration.Identifier.Text, parameterTypeNames, isAsync));
 			}
 
 			string unitTestNamespace;
@@ -289,6 +273,31 @@ namespace UnitTestBoilerplate.Services
 				constructorInjectionTypes,
 				injectedTypes,
 				methodDeclarations);
+		}
+
+		private static string[] GetParameterTypeNames(List<ParameterSyntax> parameterList)
+		{
+			string[] parameterTypeNames = new string[parameterList.Count()];
+
+			for (int i = 0; i < parameterTypeNames.Count(); i++)
+			{
+				var parameterType = parameterList[i].Type;
+
+				if (parameterType is PredefinedTypeSyntax predefinedType)
+				{
+					parameterTypeNames[i] = predefinedType.Keyword.ValueText;
+				}
+				else if (parameterType is IdentifierNameSyntax customType)
+				{
+					parameterTypeNames[i] = customType.Identifier.Text;
+				}
+				else
+				{
+					throw new NotSupportedException("Parameter type not supported");
+				}
+			}
+
+			return parameterTypeNames;
 		}
 
 		private static IEnumerable<ParameterSyntax> GetParameterListNodes(SyntaxNode memberNode)
@@ -402,7 +411,7 @@ namespace UnitTestBoilerplate.Services
 					break;
 
 				case "TestMethods":
-					WriteTestMethods(builder, context, FindIndent(fileTemplate, propertyIndex));
+					WriteTestMethods(builder, context);
 					break;
 
 				default:
@@ -459,6 +468,11 @@ namespace UnitTestBoilerplate.Services
 			foreach (InjectableType injectedType in context.InjectedTypes)
 			{
 				namespaces.AddRange(injectedType.TypeNamespaces);
+			}
+
+			if (context.MethodDeclarations.Any(m => m.IsAsync))
+			{
+				namespaces.Add("System.Threading.Tasks");
 			}
 
 			namespaces = namespaces.Distinct().ToList();
@@ -558,9 +572,7 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
-
-
-		private void WriteTestMethods(StringBuilder builder, TestGenerationContext context, string currentIndent)
+		private void WriteTestMethods(StringBuilder builder, TestGenerationContext context)
 		{
 			if (context.MethodDeclarations.Count == 0)
 			{
@@ -573,10 +585,12 @@ namespace UnitTestBoilerplate.Services
 			{
 				string testMethodPrefix = CreateUniqueTestMethodPrefix(testMethodPrefixes, methodDescriptor);
 
-				testMethodPrefixes.Add(testMethodPrefix);
+				string returnType = methodDescriptor.IsAsync ? "Task" : "void";
+
+				string asyncModifier = methodDescriptor.IsAsync ? "async" : string.Empty;
 
 				builder.AppendLine($"[{context.TestFramework.TestMethodAttribute}]");
-				builder.AppendLine($"public void {testMethodPrefix}_Condition_Expectation()");
+				builder.AppendLine($"public {asyncModifier} {returnType} {testMethodPrefix}_Condition_Expectation()");
 				builder.AppendLine("{");
 				builder.AppendLine("// Arrange");
 				if (!string.IsNullOrEmpty(context.MockFramework.TestArrangeCode))
@@ -586,6 +600,10 @@ namespace UnitTestBoilerplate.Services
 				builder.AppendLine(); // Separator
 
 				builder.AppendLine("// Act");
+				if (methodDescriptor.IsAsync)
+				{
+					builder.Append("await ");
+				}
 				builder.Append($"_unitUnderTest.{methodDescriptor.Name}(");
 				var numberOfParameters = methodDescriptor.MethodParameterNames.Count();
 				if (numberOfParameters == 0)
@@ -617,6 +635,8 @@ namespace UnitTestBoilerplate.Services
 
 				builder.AppendLine("}");
 				builder.AppendLine();
+
+				testMethodPrefixes.Add(testMethodPrefix);
 			}
 		}
 
