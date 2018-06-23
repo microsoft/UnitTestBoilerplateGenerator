@@ -567,10 +567,16 @@ namespace UnitTestBoilerplate.Services
 				return;
 			}
 
+			var testMethodPrefixes = new List<string>();
+
 			foreach (var methodDescriptor in context.MethodDeclarations)
 			{
+				string testMethodPrefix = CreateUniqueTestMethodPrefix(testMethodPrefixes, methodDescriptor);
+
+				testMethodPrefixes.Add(testMethodPrefix);
+
 				builder.AppendLine($"[{context.TestFramework.TestMethodAttribute}]");
-				builder.AppendLine($"public void {methodDescriptor.Name}_Condition_Expectation()");
+				builder.AppendLine($"public void {testMethodPrefix}_Condition_Expectation()");
 				builder.AppendLine("{");
 				builder.AppendLine("// Arrange");
 				if (!string.IsNullOrEmpty(context.MockFramework.TestArrangeCode))
@@ -612,6 +618,21 @@ namespace UnitTestBoilerplate.Services
 				builder.AppendLine("}");
 				builder.AppendLine();
 			}
+		}
+
+		private static string CreateUniqueTestMethodPrefix(List<string> testMethodPrefixes, MethodDescriptor methodDescriptor)
+		{
+			string testMethodPrefix = methodDescriptor.Name;
+
+			int j = 1;
+
+			while (testMethodPrefixes.Contains(testMethodPrefix))
+			{
+				testMethodPrefix = methodDescriptor.Name + j;
+				j++;
+			}
+
+			return testMethodPrefix;
 		}
 
 		private static string FindIndent(string template, int currentIndex)
