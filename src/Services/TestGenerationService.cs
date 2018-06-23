@@ -214,17 +214,47 @@ namespace UnitTestBoilerplate.Services
 			string className = classIdentifierToken.ToString();
 
 			// Find constructor injection types
-			var constructorInjectionTypes = new List<InjectableType>();
+			List<InjectableType> constructorInjectionTypes = new List<InjectableType>();
+
 			SyntaxNode constructorDeclaration = firstClassDeclaration.ChildNodes().FirstOrDefault(n => n.Kind() == SyntaxKind.ConstructorDeclaration);
+
 			if (constructorDeclaration != null)
 			{
-				SyntaxNode parameterListNode = constructorDeclaration.ChildNodes().First(n => n.Kind() == SyntaxKind.ParameterList);
-				var parameterNodes = parameterListNode.ChildNodes().Where(n => n.Kind() == SyntaxKind.Parameter);
+				constructorInjectionTypes.AddRange(
+					GetParameterListNodes(constructorDeclaration)
+					.Select(node => InjectableType.TryCreateInjectableTypeFromParameterNode(node, semanticModel, mockFramework)));
+			}
 
-				foreach (SyntaxNode node in parameterNodes)
+			// Find public method declarations
+			IList<MethodDescriptor> methodDeclarations = new List<MethodDescriptor>();
+			foreach (MethodDeclarationSyntax methodDeclaration in
+				firstClassDeclaration.ChildNodes().Where(
+					n => n.Kind() == SyntaxKind.MethodDeclaration
+					&& ((MethodDeclarationSyntax)n).Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword))))
+			{
+				var parameterList = GetParameterListNodes(methodDeclaration).ToList();
+
+				string[] parameterTypeNames = new string[parameterList.Count()];
+
+				for (int i = 0; i < parameterTypeNames.Count(); i++)
 				{
-					constructorInjectionTypes.Add(InjectableType.TryCreateInjectableTypeFromParameterNode(node, semanticModel, mockFramework));
+					var parameterType = parameterList[i].Type;
+
+					if (parameterType is PredefinedTypeSyntax predefinedType)
+					{
+						parameterTypeNames[i] = predefinedType.Keyword.ValueText;
+					}
+					else if (parameterType is IdentifierNameSyntax customType)
+					{
+						parameterTypeNames[i] = customType.Identifier.Text;
+					}
+					else
+					{
+						throw new NotSupportedException("Parameter type not supported");
+					}
 				}
+
+				methodDeclarations.Add(new MethodDescriptor(methodDeclaration.Identifier.Text, parameterTypeNames));
 			}
 
 			string unitTestNamespace;
@@ -257,7 +287,15 @@ namespace UnitTestBoilerplate.Services
 				namespaceDeclarationSyntax.Name.ToString(),
 				injectableProperties,
 				constructorInjectionTypes,
-				injectedTypes);
+				injectedTypes,
+				methodDeclarations);
+		}
+
+		private static IEnumerable<ParameterSyntax> GetParameterListNodes(SyntaxNode memberNode)
+		{
+			SyntaxNode parameterListNode = memberNode.ChildNodes().First(n => n.Kind() == SyntaxKind.ParameterList);
+
+			return parameterListNode.ChildNodes().Where(n => n.Kind() == SyntaxKind.Parameter).Cast<ParameterSyntax>();
 		}
 
 		private async Task<TestGenerationContext> CollectTestGenerationContextAsync(ProjectItemSummary selectedFile, EnvDTE.Project targetProject, TestFramework testFramework, MockFramework mockFramework)
@@ -361,6 +399,10 @@ namespace UnitTestBoilerplate.Services
 
 				case "ExplicitConstructor":
 					WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex));
+					break;
+
+				case "TestMethods":
+					WriteTestMethods(builder, context, FindIndent(fileTemplate, propertyIndex));
 					break;
 
 				default:
@@ -517,6 +559,60 @@ namespace UnitTestBoilerplate.Services
 		}
 
 
+
+		private void WriteTestMethods(StringBuilder builder, TestGenerationContext context, string currentIndent)
+		{
+			if (context.MethodDeclarations.Count == 0)
+			{
+				return;
+			}
+
+			foreach (var methodDescriptor in context.MethodDeclarations)
+			{
+				builder.AppendLine($"[{context.TestFramework.TestMethodAttribute}]");
+				builder.AppendLine($"public void {methodDescriptor.Name}_Condition_Expectation()");
+				builder.AppendLine("{");
+				builder.AppendLine("// Arrange");
+				if (!string.IsNullOrEmpty(context.MockFramework.TestArrangeCode))
+				{
+					builder.AppendLine(context.MockFramework.TestArrangeCode);
+				}
+				builder.AppendLine(); // Separator
+
+				builder.AppendLine("// Act");
+				builder.Append($"_unitUnderTest.{methodDescriptor.Name}(");
+				var numberOfParameters = methodDescriptor.MethodParameterNames.Count();
+				if (numberOfParameters == 0)
+				{
+					builder.AppendLine(")");
+				}
+				else
+				{
+					builder.AppendLine();
+
+					for (int i = 0; i < numberOfParameters; i++)
+					{
+						builder.Append($"	default({methodDescriptor.MethodParameterNames[i]})");
+
+						if (i < numberOfParameters - 1)
+						{
+							builder.AppendLine(",");
+						}
+						else
+						{
+							builder.AppendLine(");");
+						}
+					}
+				}
+				builder.AppendLine(); // Separator
+
+				builder.AppendLine("// Assert");
+				builder.AppendLine("Assert.Fail();");
+
+				builder.AppendLine("}");
+				builder.AppendLine();
+			}
+		}
 
 		private static string FindIndent(string template, int currentIndex)
 		{

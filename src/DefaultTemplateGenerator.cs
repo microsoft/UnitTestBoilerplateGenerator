@@ -119,45 +119,6 @@ namespace UnitTestBoilerplate
 				this.AppendLineIndented();
 			}
 
-			// Test method
-			this.AppendLineIndented($"[{testFramework.TestMethodAttribute}]");
-			this.AppendLineIndented("public void TestMethod1()");
-			this.AppendLineIndented("{");
-			this.indentLevel++;
-
-			this.AppendLineIndented("// Arrange");
-			if (!string.IsNullOrEmpty(mockFramework.TestArrangeCode))
-			{
-				this.AppendLineIndented(mockFramework.TestArrangeCode);
-			}
-
-			this.AppendLineIndented(); // Blank line for users to put in their own arrange code
-			this.AppendLineIndented(); // Separator
-
-			this.AppendLineIndented("// Act");
-			switch (mockFramework.TestedObjectCreationStyle)
-			{
-				case TestedObjectCreationStyle.HelperMethod:
-					this.AppendLineIndented("$ClassName$ $ClassNameShort.CamelCase$ = this.Create$ClassNameShort$();");
-
-					break;
-				case TestedObjectCreationStyle.DirectCode:
-					this.AppendLineIndented(mockFramework.TestedObjectCreationCode);
-
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-
-			this.AppendLineIndented(); // Blank line for users to put in their own act code
-			this.AppendLineIndented(); // Separator
-
-			this.AppendLineIndented("// Assert");
-			this.AppendLineIndented(); // Blank line for users to put in their own assert code
-
-			this.indentLevel--;
-			this.AppendLineIndented("}");
-
 			// Helper method to create tested object
 			if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.HelperMethod)
 			{
@@ -170,6 +131,10 @@ namespace UnitTestBoilerplate
 				this.AppendLineIndented("}");
 
 			}
+
+			// Test Methods declaration
+			this.AppendLineIndented("$TestMethods$");
+			this.AppendLineIndented();
 
 			// Test class/namespace end
 			this.indentLevel--;
