@@ -13,6 +13,22 @@ namespace UnitTestBoilerplate
 
 		private StringBuilder template;
 
+		public const string TestObjectReference = "unitUnderTest";
+
+		public static string GetTestObjectCreation(MockFramework mockFramework)
+		{
+			var declaration = $"var {TestObjectReference} = ";
+
+			if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.HelperMethod)
+			{
+				return $"{declaration}{ObjectCreationMethod};";
+			}
+
+			return $"{declaration}$ExplicitConstructor$;";
+		}
+
+		private const string ObjectCreationMethod = "Create$ClassNameShort$()";
+
 		public string Get(TestFramework testFramework, MockFramework mockFramework)
 		{
 			this.indentLevel = 0;
@@ -123,7 +139,7 @@ namespace UnitTestBoilerplate
 			if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.HelperMethod)
 			{
 				this.AppendLineIndented();
-				this.AppendLineIndented("private $ClassName$ Create$ClassNameShort$()");
+				this.AppendLineIndented($"private $ClassName$ {ObjectCreationMethod}");
 				this.AppendLineIndented("{");
 				this.indentLevel++;
 				this.AppendLineIndented("return $ExplicitConstructor$;");

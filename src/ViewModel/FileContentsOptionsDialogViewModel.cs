@@ -106,6 +106,8 @@ namespace UnitTestBoilerplate.ViewModel
 				this.RaisePropertyChanged(nameof(this.MockFieldDeclarationTemplateVisible));
 				this.RaisePropertyChanged(nameof(this.MockFieldInitializationTemplateVisible));
 				this.RaisePropertyChanged(nameof(this.MockObjectReferenceTemplateVisible));
+				this.RaisePropertyChanged(nameof(this.TestedObjectCreationTemplateVisible));
+				this.RaisePropertyChanged(nameof(this.TestedObjectReferenceTemplateVisible));
 			}
 		}
 
@@ -157,6 +159,38 @@ namespace UnitTestBoilerplate.ViewModel
 			get { return this.FileTemplate.Contains("$ExplicitConstructor$"); }
 		}
 
+		public string TestedObjectCreationTemplate
+		{
+			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestedObjectCreation); }
+
+			set
+			{
+				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestedObjectCreation, value);
+				this.RaisePropertyChanged();
+			}
+		}
+
+		public bool TestedObjectCreationTemplateVisible
+		{
+			get { return this.FileTemplate.Contains("$TestMethods$"); }
+		}
+
+		public string TestedObjectReferenceTemplate
+		{
+			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestedObjectReference); }
+
+			set
+			{
+				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestedObjectReference, value);
+				this.RaisePropertyChanged();
+			}
+		}
+
+		public bool TestedObjectReferenceTemplateVisible
+		{
+			get { return this.FileTemplate.Contains("$TestMethods$"); }
+		}
+
 		private RelayCommand resetCommand;
 		public RelayCommand ResetCommand
 		{
@@ -172,6 +206,8 @@ namespace UnitTestBoilerplate.ViewModel
 						this.MockFieldDeclarationTemplate = mockFramework.MockFieldDeclarationCode;
 						this.MockFieldInitializationTemplate = mockFramework.MockFieldInitializationCode;
 						this.MockObjectReferenceTemplate = mockFramework.MockObjectReferenceCode;
+						this.TestedObjectCreationTemplate = DefaultTemplateGenerator.GetTestObjectCreation(mockFramework);
+						this.TestedObjectReferenceTemplate = DefaultTemplateGenerator.TestObjectReference;
 					}));
 			}
 		}

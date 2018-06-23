@@ -362,6 +362,26 @@ namespace UnitTestBoilerplate.Services
 				});
 		}
 
+		private string ReplaceGlobalOrContentTokens(string template, TestGenerationContext context)
+		{
+			return StringUtilities.ReplaceTokens(
+				template,
+				(tokenName, propertyIndex, builder) =>
+				{
+					if (WriteGlobalToken(tokenName, builder, context))
+					{
+						return;
+					}
+
+					if (WriteContentTokenNoIndent(tokenName, builder, context))
+					{
+						return;
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
+				});
+		}
+
 		private static bool WriteGlobalToken(string tokenName, StringBuilder builder, TestGenerationContext context)
 		{
 			switch (tokenName)
@@ -408,6 +428,37 @@ namespace UnitTestBoilerplate.Services
 
 				case "ExplicitConstructor":
 					WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex));
+					break;
+
+				case "TestMethods":
+					WriteTestMethods(builder, context);
+					break;
+
+				default:
+					return false;
+			}
+
+			return true;
+		}
+
+		private bool WriteContentTokenNoIndent(string tokenName, StringBuilder builder, TestGenerationContext context)
+		{
+			switch (tokenName)
+			{
+				case "UsingStatements":
+					WriteUsings(builder, context);
+					break;
+
+				case "MockFieldDeclarations":
+					this.WriteMockFieldDeclarations(builder, context);
+					break;
+
+				case "MockFieldInitializations":
+					this.WriteMockFieldInitializations(builder, context);
+					break;
+
+				case "ExplicitConstructor":
+					WriteExplicitConstructor(builder, context, string.Empty);
 					break;
 
 				case "TestMethods":
@@ -579,6 +630,18 @@ namespace UnitTestBoilerplate.Services
 				return;
 			}
 
+			string testedObjectReferenceTemplate = this.Settings.GetTemplate(
+				context.TestFramework,
+				context.MockFramework,
+				TemplateType.TestedObjectReference);
+			var testedObjectReference = ReplaceGlobalOrContentTokens(testedObjectReferenceTemplate, context);
+
+			string testedObjectCreationTemplate = this.Settings.GetTemplate(
+				context.TestFramework,
+				context.MockFramework,
+				TemplateType.TestedObjectCreation);
+			var testedObjectCreation = ReplaceGlobalOrContentTokens(testedObjectCreationTemplate, context);
+
 			var testMethodPrefixes = new List<string>();
 
 			foreach (var methodDescriptor in context.MethodDeclarations)
@@ -597,6 +660,8 @@ namespace UnitTestBoilerplate.Services
 				{
 					builder.AppendLine(context.MockFramework.TestArrangeCode);
 				}
+		
+				builder.AppendLine(testedObjectCreation);
 				builder.AppendLine(); // Separator
 
 				builder.AppendLine("// Act");
@@ -604,7 +669,8 @@ namespace UnitTestBoilerplate.Services
 				{
 					builder.Append("await ");
 				}
-				builder.Append($"_unitUnderTest.{methodDescriptor.Name}(");
+
+				builder.Append($"{testedObjectReference}.{methodDescriptor.Name}(");
 				var numberOfParameters = methodDescriptor.MethodParameterNames.Count();
 				if (numberOfParameters == 0)
 				{
@@ -632,7 +698,6 @@ namespace UnitTestBoilerplate.Services
 
 				builder.AppendLine("// Assert");
 				builder.AppendLine("Assert.Fail();");
-
 				builder.AppendLine("}");
 				builder.AppendLine();
 
