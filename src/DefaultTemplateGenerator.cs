@@ -23,8 +23,12 @@ namespace UnitTestBoilerplate
 			{
 				return $"{declaration}{ObjectCreationMethod};";
 			}
+			else if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.DirectCode)
+			{
+				return $"{mockFramework.TestArrangeCode}{Environment.NewLine}{declaration}{mockFramework.TestedObjectCreationCode}";
+			}
 
-			return $"{declaration}$ExplicitConstructor$;";
+			throw new NotSupportedException($"Tested object creation style {mockFramework.TestedObjectCreationStyle} is not supported");
 		}
 
 		private const string ObjectCreationMethod = "Create$ClassNameShort$()";

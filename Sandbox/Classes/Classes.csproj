@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="AbstractClass.cs" />
     <Compile Include="Cases\ClassWithGenericInterface.cs" />
+    <Compile Include="Cases\ClassWithMethods.cs" />
     <Compile Include="Cases\ClassWithOddCtorParams.cs" />
     <Compile Include="Cases\ClassWithNonInterfaceCtorParam.cs" />
     <Compile Include="Cases\ConstructorInjectedClassMultiple.cs" />

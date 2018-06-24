@@ -236,7 +236,9 @@ namespace UnitTestBoilerplate.Services
 
 				string[] parameterTypeNames = GetParameterTypeNames(parameterList);
 
-				var isAsync = methodDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.AsyncKeyword));
+				var isAsync =
+					methodDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.AsyncKeyword)) ||
+					(methodDeclaration.ReturnType is SimpleNameSyntax namedReturnType && namedReturnType.Identifier.Text == "Task");
 
 				methodDeclarations.Add(new MethodDescriptor(methodDeclaration.Identifier.Text, parameterTypeNames, isAsync));
 			}
@@ -664,11 +666,6 @@ namespace UnitTestBoilerplate.Services
 				builder.AppendLine($"public {asyncModifier} {returnType} {testMethodPrefix}_Condition_Expectation()");
 				builder.AppendLine("{");
 				builder.AppendLine("// Arrange");
-				if (!string.IsNullOrEmpty(context.MockFramework.TestArrangeCode))
-				{
-					builder.AppendLine(context.MockFramework.TestArrangeCode);
-				}
-		
 				builder.AppendLine(testedObjectCreation);
 				builder.AppendLine(); // Separator
 
@@ -682,7 +679,7 @@ namespace UnitTestBoilerplate.Services
 				var numberOfParameters = methodDescriptor.MethodParameterNames.Count();
 				if (numberOfParameters == 0)
 				{
-					builder.AppendLine(")");
+					builder.AppendLine(");");
 				}
 				else
 				{
