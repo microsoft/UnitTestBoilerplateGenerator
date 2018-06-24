@@ -10,19 +10,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class ClassWithGenericInterfaceTests
 	{
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-			var mocker = new AutoMoqer();
 
 
-			// Act
-			var classWithGenericInterface = mocker.Create<ClassWithGenericInterface>();
-
-
-			// Assert
-
-		}
 	}
 }

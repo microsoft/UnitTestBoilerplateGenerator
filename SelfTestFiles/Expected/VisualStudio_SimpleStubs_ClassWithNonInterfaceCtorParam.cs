@@ -15,24 +15,13 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeClass = new StubSomeClass();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ClassWithNonInterfaceCtorParam classWithNonInterfaceCtorParam = this.CreateClassWithNonInterfaceCtorParam();
-
-
-			// Assert
-
-		}
 
 		private ClassWithNonInterfaceCtorParam CreateClassWithNonInterfaceCtorParam()
 		{
 			return new ClassWithNonInterfaceCtorParam(
 				this.stubSomeClass);
 		}
+
+
 	}
 }

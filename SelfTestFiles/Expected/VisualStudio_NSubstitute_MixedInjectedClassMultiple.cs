@@ -22,19 +22,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeOtherInterface = Substitute.For<ISomeOtherInterface>();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			MixedInjectedClassMultiple mixedInjectedClassMultiple = this.CreateMixedInjectedClassMultiple();
-
-
-			// Assert
-
-		}
 
 		private MixedInjectedClassMultiple CreateMixedInjectedClassMultiple()
 		{
@@ -46,5 +33,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				Interface4Property = this.subInterface4,
 			};
 		}
+
+
 	}
 }

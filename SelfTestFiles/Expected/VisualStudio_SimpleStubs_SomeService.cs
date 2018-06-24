@@ -17,19 +17,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = new StubISomeOtherInterface();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			SomeService service = this.CreateService();
-
-
-			// Assert
-
-		}
 
 		private SomeService CreateService()
 		{
@@ -37,5 +24,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				this.stubSomeInterface,
 				this.stubSomeOtherInterface);
 		}
+
+
 	}
 }

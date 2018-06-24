@@ -26,25 +26,13 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[Fact]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			SomeService service = this.CreateService();
-
-
-			// Assert
-
-		}
-
 		private SomeService CreateService()
 		{
 			return new SomeService(
 				this.mockSomeInterface.Object,
 				this.mockSomeOtherInterface.Object);
 		}
+
+
 	}
 }

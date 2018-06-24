@@ -644,8 +644,16 @@ namespace UnitTestBoilerplate.Services
 
 			var testMethodPrefixes = new List<string>();
 
+			int idx = 0;
+
 			foreach (var methodDescriptor in context.MethodDeclarations)
 			{
+				if(idx > 0)
+				{
+					builder.AppendLine();
+				}
+				idx++;
+
 				string testMethodPrefix = CreateUniqueTestMethodPrefix(testMethodPrefixes, methodDescriptor);
 
 				string returnType = methodDescriptor.IsAsync ? "Task" : "void";
@@ -699,7 +707,6 @@ namespace UnitTestBoilerplate.Services
 				builder.AppendLine("// Assert");
 				builder.AppendLine("Assert.Fail();");
 				builder.AppendLine("}");
-				builder.AppendLine();
 
 				testMethodPrefixes.Add(testMethodPrefix);
 			}

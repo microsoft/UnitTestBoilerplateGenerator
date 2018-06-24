@@ -28,20 +28,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[Test]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			PropertyInjectedClassMultiple propertyInjectedClassMultiple = this.CreatePropertyInjectedClassMultiple();
-
-
-			// Assert
-
-		}
-
 		private PropertyInjectedClassMultiple CreatePropertyInjectedClassMultiple()
 		{
 			return new PropertyInjectedClassMultiple
@@ -50,5 +36,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				Property2 = this.mockSomeOtherInterface.Object,
 			};
 		}
+
+
 	}
 }

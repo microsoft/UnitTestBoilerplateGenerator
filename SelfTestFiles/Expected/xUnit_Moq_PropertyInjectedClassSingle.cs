@@ -24,20 +24,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[Fact]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			PropertyInjectedClassSingle propertyInjectedClassSingle = this.CreatePropertyInjectedClassSingle();
-
-
-			// Assert
-
-		}
-
 		private PropertyInjectedClassSingle CreatePropertyInjectedClassSingle()
 		{
 			return new PropertyInjectedClassSingle
@@ -45,5 +31,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				MyProperty = this.mockSomeInterface.Object,
 			};
 		}
+
+
 	}
 }

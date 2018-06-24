@@ -132,7 +132,6 @@ namespace UnitTestBoilerplate
 
 				this.indentLevel--;
 				this.AppendLineIndented("}");
-				this.AppendLineIndented();
 			}
 
 			// Helper method to create tested object
@@ -149,8 +148,8 @@ namespace UnitTestBoilerplate
 			}
 
 			// Test Methods declaration
-			this.AppendLineIndented("$TestMethods$");
 			this.AppendLineIndented();
+			this.AppendLineIndented("$TestMethods$");
 
 			// Test class/namespace end
 			this.indentLevel--;

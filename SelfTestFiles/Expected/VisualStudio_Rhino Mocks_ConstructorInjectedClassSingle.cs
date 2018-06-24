@@ -16,24 +16,13 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeInterface = MockRepository.GenerateStub<ISomeInterface>();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ConstructorInjectedClassSingle constructorInjectedClassSingle = this.CreateConstructorInjectedClassSingle();
-
-
-			// Assert
-
-		}
 
 		private ConstructorInjectedClassSingle CreateConstructorInjectedClassSingle()
 		{
 			return new ConstructorInjectedClassSingle(
 				this.stubSomeInterface);
 		}
+
+
 	}
 }

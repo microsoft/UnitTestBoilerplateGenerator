@@ -30,20 +30,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[Fact]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			MixedInjectedClassMultiple mixedInjectedClassMultiple = this.CreateMixedInjectedClassMultiple();
-
-
-			// Assert
-
-		}
-
 		private MixedInjectedClassMultiple CreateMixedInjectedClassMultiple()
 		{
 			return new MixedInjectedClassMultiple(
@@ -54,5 +40,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				Interface4Property = this.mockInterface4.Object,
 			};
 		}
+
+
 	}
 }

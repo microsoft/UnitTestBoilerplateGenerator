@@ -15,19 +15,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeInterface = new StubISomeInterface();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			PropertyInjectedClassSingle propertyInjectedClassSingle = this.CreatePropertyInjectedClassSingle();
-
-
-			// Assert
-
-		}
 
 		private PropertyInjectedClassSingle CreatePropertyInjectedClassSingle()
 		{
@@ -36,5 +23,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				MyProperty = this.stubSomeInterface,
 			};
 		}
+
+
 	}
 }

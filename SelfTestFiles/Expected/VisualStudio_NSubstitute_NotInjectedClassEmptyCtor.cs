@@ -15,23 +15,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			NotInjectedClassEmptyCtor notInjectedClassEmptyCtor = this.CreateNotInjectedClassEmptyCtor();
-
-
-			// Assert
-
-		}
 
 		private NotInjectedClassEmptyCtor CreateNotInjectedClassEmptyCtor()
 		{
 			return new NotInjectedClassEmptyCtor();
 		}
+
+
 	}
 }

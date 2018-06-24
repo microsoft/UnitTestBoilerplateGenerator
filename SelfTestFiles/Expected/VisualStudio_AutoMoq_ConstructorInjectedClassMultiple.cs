@@ -9,19 +9,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class ConstructorInjectedClassMultipleTests
 	{
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-			var mocker = new AutoMoqer();
 
 
-			// Act
-			var constructorInjectedClassMultiple = mocker.Create<ConstructorInjectedClassMultiple>();
-
-
-			// Assert
-
-		}
 	}
 }

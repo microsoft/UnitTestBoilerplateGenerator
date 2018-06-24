@@ -9,19 +9,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class ClassWithNonInterfaceCtorParamTests
 	{
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-			var mocker = new AutoMoqer();
 
 
-			// Act
-			var classWithNonInterfaceCtorParam = mocker.Create<ClassWithNonInterfaceCtorParam>();
-
-
-			// Assert
-
-		}
 	}
 }

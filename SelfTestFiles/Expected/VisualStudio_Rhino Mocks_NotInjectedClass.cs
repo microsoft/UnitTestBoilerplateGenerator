@@ -15,23 +15,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			NotInjectedClass notInjectedClass = this.CreateNotInjectedClass();
-
-
-			// Assert
-
-		}
 
 		private NotInjectedClass CreateNotInjectedClass()
 		{
 			return new NotInjectedClass();
 		}
+
+
 	}
 }
