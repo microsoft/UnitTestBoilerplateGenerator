@@ -646,15 +646,15 @@ namespace UnitTestBoilerplate.Services
 
 			var testMethodPrefixes = new List<string>();
 
-			int idx = 0;
+			bool isFirstMethod = true;
 
 			foreach (var methodDescriptor in context.MethodDeclarations)
 			{
-				if(idx > 0)
+				if(!isFirstMethod)
 				{
 					builder.AppendLine();
 				}
-				idx++;
+				isFirstMethod = false;
 
 				string testMethodPrefix = CreateUniqueTestMethodPrefix(testMethodPrefixes, methodDescriptor);
 
