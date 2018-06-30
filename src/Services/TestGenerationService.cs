@@ -235,7 +235,7 @@ namespace UnitTestBoilerplate.Services
 			{
 				var parameterList = GetParameterListNodes(methodDeclaration).ToList();
 
-				string[] parameterTypeNames = GetParameterTypeNames(parameterList);
+				var parameterTypes = GetArgumentDescriptors(parameterList, semanticModel, mockFramework);
 
 				var isAsync =
 					methodDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.AsyncKeyword)) ||
@@ -243,7 +243,7 @@ namespace UnitTestBoilerplate.Services
 
 				var hasReturnType = !DoesReturnNonGenericTask(methodDeclaration) && !DoesReturnVoid(methodDeclaration);
 
-				methodDeclarations.Add(new MethodDescriptor(methodDeclaration.Identifier.Text, parameterTypeNames, isAsync, hasReturnType));
+				methodDeclarations.Add(new MethodDescriptor(methodDeclaration.Identifier.Text, parameterTypes, isAsync, hasReturnType));
 			}
 
 			string unitTestNamespace;
@@ -295,29 +295,39 @@ namespace UnitTestBoilerplate.Services
 			return methodDeclaration.ReturnType is PredefinedTypeSyntax predefinedType && predefinedType.Keyword.IsKind(SyntaxKind.VoidKeyword);
 		}
 
-		private static string[] GetParameterTypeNames(List<ParameterSyntax> parameterList)
+		private static MethodArgumentDescriptor[] GetArgumentDescriptors(List<ParameterSyntax> argumentList, SemanticModel semanticModel, MockFramework mockFramework)
 		{
-			string[] parameterTypeNames = new string[parameterList.Count()];
+			MethodArgumentDescriptor[] argumentDescriptors = new MethodArgumentDescriptor[argumentList.Count()];
 
-			for (int i = 0; i < parameterTypeNames.Count(); i++)
+			for (int i = 0; i < argumentDescriptors.Count(); i++)
 			{
-				var parameterType = parameterList[i].Type;
+				string argumentName = argumentList[i].Identifier.Text;
 
-				if (parameterType is PredefinedTypeSyntax predefinedType)
+				var namedTypeSymbol = InjectableType.TryCreateInjectableTypeFromParameterNode(argumentList[i], semanticModel, mockFramework);
+
+				if (namedTypeSymbol != null)
 				{
-					parameterTypeNames[i] = predefinedType.Keyword.ValueText;
+					argumentDescriptors[i] = new MethodArgumentDescriptor(namedTypeSymbol, argumentName);
+					continue;
 				}
-				else if (parameterType is IdentifierNameSyntax customType)
+
+				var argumentType = argumentList[i].Type;
+
+				string typeName = string.Empty;
+
+				if (argumentType is PredefinedTypeSyntax predefinedType)
 				{
-					parameterTypeNames[i] = customType.Identifier.Text;
+					typeName = predefinedType.Keyword.ValueText;
 				}
 				else
 				{
 					throw new NotSupportedException("Parameter type not supported");
 				}
+
+				argumentDescriptors[i] = new MethodArgumentDescriptor( new TypeDescriptor(typeName, null), argumentName);
 			}
 
-			return parameterTypeNames;
+			return argumentDescriptors;
 		}
 
 		private static IEnumerable<ParameterSyntax> GetParameterListNodes(SyntaxNode memberNode)
@@ -692,6 +702,11 @@ namespace UnitTestBoilerplate.Services
 				builder.AppendLine("{");
 				builder.AppendLine("// Arrange");
 				builder.AppendLine(testedObjectCreation);
+				var numberOfParameters = methodDescriptor.MethodParameters.Count();
+				for (int i = 0; i < numberOfParameters; i++)
+				{
+					builder.AppendLine($"{methodDescriptor.MethodParameters[i].TypeInformation.TypeName} {methodDescriptor.MethodParameters[i].ArgumentName} = TODO;");
+				}
 				builder.AppendLine(); // Separator
 
 				builder.AppendLine("// Act");
@@ -706,7 +721,7 @@ namespace UnitTestBoilerplate.Services
 				}
 
 				builder.Append($"{testedObjectReference}.{methodDescriptor.Name}(");
-				var numberOfParameters = methodDescriptor.MethodParameterNames.Count();
+
 				if (numberOfParameters == 0)
 				{
 					builder.AppendLine(");");
@@ -717,7 +732,7 @@ namespace UnitTestBoilerplate.Services
 
 					for (int i = 0; i < numberOfParameters; i++)
 					{
-						builder.Append($"	default({methodDescriptor.MethodParameterNames[i]})");
+						builder.Append($"	{methodDescriptor.MethodParameters[i].ArgumentName}");
 
 						if (i < numberOfParameters - 1)
 						{

@@ -195,6 +195,7 @@
     <Compile Include="Commands\DetectCsprojCommand.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="DefaultTemplateGenerator.cs" />
+    <Compile Include="Model\MethodArgumentDescriptor.cs" />
     <Compile Include="Model\MethodDescriptor.cs" />
     <Compile Include="Model\SelfTestDetectionTest.cs" />
     <Compile Include="Model\Tokens\TestMethod\MethodNameToken.cs" />

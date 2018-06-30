@@ -2,17 +2,17 @@
 {
 	public class MethodDescriptor
 	{
-		public MethodDescriptor(string name, string[] methodParameterNames, bool isAsync, bool hasReturnType)
+		public MethodDescriptor(string name, MethodArgumentDescriptor[] methodParameters, bool isAsync, bool hasReturnType)
 		{
 			Name = name;
-			MethodParameterNames = methodParameterNames;
+			MethodParameters = methodParameters;
 			IsAsync = isAsync;
 			HasReturnType = hasReturnType;
 		}
 
 		public string Name { get; }
 
-		public string[] MethodParameterNames { get; }
+		public MethodArgumentDescriptor[] MethodParameters { get; }
 
 		public bool IsAsync { get; }
 
