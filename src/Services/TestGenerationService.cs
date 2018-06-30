@@ -551,6 +551,20 @@ namespace UnitTestBoilerplate.Services
 				namespaces.AddRange(injectedType.TypeNamespaces);
 			}
 
+			foreach (TypeDescriptor argumentDescriptor in
+				context.MethodDeclarations.SelectMany(
+					d => d.MethodParameters.Select(p => p.TypeInformation)))
+			{
+				if (argumentDescriptor is InjectableType injectableType)
+				{
+					namespaces.AddRange(injectableType.TypeNamespaces);
+
+					continue;
+				}
+
+				namespaces.Add("System");
+			}
+
 			if (context.MethodDeclarations.Any(m => m.IsAsync))
 			{
 				namespaces.Add("System.Threading.Tasks");
