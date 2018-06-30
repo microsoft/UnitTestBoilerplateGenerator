@@ -109,6 +109,11 @@ namespace UnitTestBoilerplate.Model
 			}
 		}
 
+		public override string ToString()
+		{
+			return TypeName;
+		}
+
 		/// <summary>
 		/// The name of the type, like string or ISomeInterface .
 		/// </summary>

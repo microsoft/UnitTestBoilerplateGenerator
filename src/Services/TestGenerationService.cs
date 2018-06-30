@@ -747,7 +747,7 @@ namespace UnitTestBoilerplate.Services
 				var numberOfParameters = methodDescriptor.MethodParameters.Count();
 				for (int i = 0; i < numberOfParameters; i++)
 				{
-					builder.AppendLine($"{methodDescriptor.MethodParameters[i].TypeInformation.TypeName} {methodDescriptor.MethodParameters[i].ArgumentName} = TODO;");
+					builder.AppendLine($"{methodDescriptor.MethodParameters[i].TypeInformation.ToString()} {methodDescriptor.MethodParameters[i].ArgumentName} = TODO;");
 				}
 				builder.AppendLine(); // Separator
 
