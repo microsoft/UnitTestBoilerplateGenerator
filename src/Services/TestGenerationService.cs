@@ -319,6 +319,10 @@ namespace UnitTestBoilerplate.Services
 				{
 					typeName = predefinedType.Keyword.ValueText;
 				}
+				else if (argumentType is IdentifierNameSyntax identifiedType)
+				{
+					typeName = identifiedType.Identifier.Text;
+				}
 				else
 				{
 					throw new NotSupportedException("Parameter type not supported");
