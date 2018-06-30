@@ -90,6 +90,7 @@ namespace UnitTestBoilerplate.ViewModel
 			this.RaisePropertyChanged(nameof(this.MockFieldDeclarationTemplateVisible));
 			this.RaisePropertyChanged(nameof(this.MockFieldInitializationTemplateVisible));
 			this.RaisePropertyChanged(nameof(this.MockObjectReferenceTemplateVisible));
+			this.RaisePropertyChanged(nameof(this.TestMethodNameTemplate));
 			this.RaisePropertyChanged(nameof(this.TestedObjectCreationTemplate));
 			this.RaisePropertyChanged(nameof(this.TestedObjectReferenceTemplate));
 			this.RaisePropertyChanged(nameof(this.TestMethodsVisible));
