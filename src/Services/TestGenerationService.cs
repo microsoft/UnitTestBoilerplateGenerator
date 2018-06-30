@@ -238,9 +238,11 @@ namespace UnitTestBoilerplate.Services
 
 				var isAsync =
 					methodDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.AsyncKeyword)) ||
-					(methodDeclaration.ReturnType is SimpleNameSyntax namedReturnType && namedReturnType.Identifier.Text == "Task");
+					DoesReturnTask(methodDeclaration);
 
-				methodDeclarations.Add(new MethodDescriptor(methodDeclaration.Identifier.Text, parameterTypeNames, isAsync));
+				var hasReturnType = !DoesReturnNonGenericTask(methodDeclaration) && !DoesReturnVoid(methodDeclaration);
+
+				methodDeclarations.Add(new MethodDescriptor(methodDeclaration.Identifier.Text, parameterTypeNames, isAsync, hasReturnType));
 			}
 
 			string unitTestNamespace;
@@ -275,6 +277,21 @@ namespace UnitTestBoilerplate.Services
 				constructorInjectionTypes,
 				injectedTypes,
 				methodDeclarations);
+		}
+
+		private static bool DoesReturnTask(MethodDeclarationSyntax methodDeclaration)
+		{
+			return methodDeclaration.ReturnType is SimpleNameSyntax namedReturnType && namedReturnType.Identifier.Text == "Task";
+		}
+
+		private static bool DoesReturnNonGenericTask(MethodDeclarationSyntax methodDeclaration)
+		{
+			return DoesReturnTask(methodDeclaration) && !methodDeclaration.ReturnType.IsKind(SyntaxKind.GenericName);
+		}
+
+		private static bool DoesReturnVoid(MethodDeclarationSyntax methodDeclaration)
+		{
+			return methodDeclaration.ReturnType is PredefinedTypeSyntax predefinedType && predefinedType.Keyword.IsKind(SyntaxKind.VoidKeyword);
 		}
 
 		private static string[] GetParameterTypeNames(List<ParameterSyntax> parameterList)
@@ -670,6 +687,11 @@ namespace UnitTestBoilerplate.Services
 				builder.AppendLine(); // Separator
 
 				builder.AppendLine("// Act");
+				if (methodDescriptor.HasReturnType)
+				{
+					builder.Append("var result = ");
+				}
+
 				if (methodDescriptor.IsAsync)
 				{
 					builder.Append("await ");
