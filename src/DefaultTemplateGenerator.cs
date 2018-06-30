@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnitTestBoilerplate.Model;
+using UnitTestBoilerplate.Model.Tokens;
 
 namespace UnitTestBoilerplate
 {
@@ -14,6 +15,8 @@ namespace UnitTestBoilerplate
 		private StringBuilder template;
 
 		public const string TestObjectReference = "unitUnderTest";
+
+		public static readonly string TestMethodName = $"{Token.TestMethod.MethodName.ToWrappedToken()}_StateUnderTest_ExpectedBehavior";
 
 		public static string GetTestObjectCreation(MockFramework mockFramework)
 		{

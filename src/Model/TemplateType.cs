@@ -7,6 +7,7 @@
 		MockFieldInitialization,
 		MockObjectReference,
 		TestedObjectReference,
-		TestedObjectCreation
+		TestedObjectCreation,
+		TestMethodName
 	}
 }

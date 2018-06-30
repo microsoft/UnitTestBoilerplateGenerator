@@ -262,6 +262,8 @@ namespace UnitTestBoilerplate.Services
 					return DefaultTemplateGenerator.TestObjectReference;
 				case TemplateType.TestedObjectCreation:
 					return DefaultTemplateGenerator.GetTestObjectCreation(mockFramework);
+				case TemplateType.TestMethodName:
+					return DefaultTemplateGenerator.TestMethodName;
 			    default:
 				    throw new ArgumentOutOfRangeException(nameof(templateType), templateType, null);
 		    }

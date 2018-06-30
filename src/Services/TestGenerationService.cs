@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 using UnitTestBoilerplate.Model;
+using UnitTestBoilerplate.Services.TokenEvaluation;
 using UnitTestBoilerplate.Utilities;
 
 namespace UnitTestBoilerplate.Services
@@ -661,26 +662,31 @@ namespace UnitTestBoilerplate.Services
 				TemplateType.TestedObjectCreation);
 			var testedObjectCreation = ReplaceGlobalOrContentTokens(testedObjectCreationTemplate, context);
 
-			var testMethodPrefixes = new List<string>();
+			var usedTestMethodNames = new List<string>();
 
 			bool isFirstMethod = true;
 
 			foreach (var methodDescriptor in context.MethodDeclarations)
 			{
+				var baseTestMethodName = ReplaceAllowedTokens(
+					context,
+					TemplateType.TestMethodName,
+					new[] { new TestedMethodNameTokenEvaluator(methodDescriptor) });
+
+				var testMethodName = CreateUniqueTestMethodName(usedTestMethodNames, baseTestMethodName);
+
 				if(!isFirstMethod)
 				{
 					builder.AppendLine();
 				}
 				isFirstMethod = false;
 
-				string testMethodPrefix = CreateUniqueTestMethodPrefix(testMethodPrefixes, methodDescriptor);
-
 				string returnType = methodDescriptor.IsAsync ? "Task" : "void";
 
 				string asyncModifier = methodDescriptor.IsAsync ? "async" : string.Empty;
 
 				builder.AppendLine($"[{context.TestFramework.TestMethodAttribute}]");
-				builder.AppendLine($"public {asyncModifier} {returnType} {testMethodPrefix}_Condition_Expectation()");
+				builder.AppendLine($"public {asyncModifier} {returnType} {testMethodName}()");
 				builder.AppendLine("{");
 				builder.AppendLine("// Arrange");
 				builder.AppendLine(testedObjectCreation);
@@ -727,23 +733,48 @@ namespace UnitTestBoilerplate.Services
 				builder.AppendLine("Assert.Fail();");
 				builder.AppendLine("}");
 
-				testMethodPrefixes.Add(testMethodPrefix);
+				usedTestMethodNames.Add(testMethodName);
 			}
 		}
 
-		private static string CreateUniqueTestMethodPrefix(List<string> testMethodPrefixes, MethodDescriptor methodDescriptor)
+		private static string CreateUniqueTestMethodName(List<string> usedTestMethodNames, string baseTestMethodName)
 		{
-			string testMethodPrefix = methodDescriptor.Name;
+			string testMethodName = baseTestMethodName;
 
 			int j = 1;
 
-			while (testMethodPrefixes.Contains(testMethodPrefix))
+			while (usedTestMethodNames.Contains(testMethodName))
 			{
-				testMethodPrefix = methodDescriptor.Name + j;
+				testMethodName = baseTestMethodName + j;
 				j++;
 			}
 
-			return testMethodPrefix;
+			return testMethodName;
+		}
+
+
+		private string ReplaceAllowedTokens(TestGenerationContext context, TemplateType templateType, IList<TokenEvaluator> allowedTokenEvaluators)
+		{
+			string templateValue = this.Settings.GetTemplate(
+					context.TestFramework,
+					context.MockFramework,
+					templateType);
+
+			return StringUtilities.ReplaceTokens(
+				templateValue,
+				(tokenName, propertyIndex, builder) =>
+				{
+					foreach (var tokenEvaluator in allowedTokenEvaluators)
+					{
+						if (tokenEvaluator.CanExecute(tokenName))
+						{
+							builder.Append(tokenEvaluator.Evaluate());
+							return;
+						}
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
+				});
 		}
 
 		private static string FindIndent(string template, int currentIndex)
