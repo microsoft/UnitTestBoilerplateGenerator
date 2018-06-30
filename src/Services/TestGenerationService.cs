@@ -645,11 +645,6 @@ namespace UnitTestBoilerplate.Services
 
 		private void WriteTestMethods(StringBuilder builder, TestGenerationContext context)
 		{
-			if (context.MethodDeclarations.Count == 0)
-			{
-				return;
-			}
-
 			string testedObjectReferenceTemplate = this.Settings.GetTemplate(
 				context.TestFramework,
 				context.MockFramework,
@@ -661,6 +656,13 @@ namespace UnitTestBoilerplate.Services
 				context.MockFramework,
 				TemplateType.TestedObjectCreation);
 			var testedObjectCreation = ReplaceGlobalOrContentTokens(testedObjectCreationTemplate, context);
+
+			if (context.MethodDeclarations.Count == 0)
+			{
+				WriteDefaultTestMethod(builder, context, testedObjectCreation);
+
+				return;
+			}
 
 			var usedTestMethodNames = new List<string>();
 
@@ -735,6 +737,23 @@ namespace UnitTestBoilerplate.Services
 
 				usedTestMethodNames.Add(testMethodName);
 			}
+		}
+
+		private static void WriteDefaultTestMethod(StringBuilder builder, TestGenerationContext context, string testedObjectCreation)
+		{
+			builder.AppendLine($"[{context.TestFramework.TestMethodAttribute}]");
+			builder.AppendLine($"public void TestMethod1()");
+			builder.AppendLine("{");
+			builder.AppendLine("// Arrange");
+			builder.AppendLine(testedObjectCreation);
+			builder.AppendLine(); // Separator
+
+			builder.AppendLine("// Act");
+			builder.AppendLine(); // Separator
+
+			builder.AppendLine("// Assert");
+			builder.AppendLine("Assert.Fail();");
+			builder.AppendLine("}");
 		}
 
 		private static string CreateUniqueTestMethodName(List<string> usedTestMethodNames, string baseTestMethodName)
