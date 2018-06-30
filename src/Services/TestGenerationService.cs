@@ -303,11 +303,13 @@ namespace UnitTestBoilerplate.Services
 			{
 				string argumentName = argumentList[i].Identifier.Text;
 
+				ParameterModifier modifier = GetArgumentModifier(argumentList[i]);
+
 				var namedTypeSymbol = InjectableType.TryCreateInjectableTypeFromParameterNode(argumentList[i], semanticModel, mockFramework);
 
 				if (namedTypeSymbol != null)
 				{
-					argumentDescriptors[i] = new MethodArgumentDescriptor(namedTypeSymbol, argumentName);
+					argumentDescriptors[i] = new MethodArgumentDescriptor(namedTypeSymbol, argumentName, modifier);
 					continue;
 				}
 
@@ -315,10 +317,25 @@ namespace UnitTestBoilerplate.Services
 
 				string typeName = GetSimpleTypeName(argumentType);
 
-				argumentDescriptors[i] = new MethodArgumentDescriptor(new TypeDescriptor(typeName, null), argumentName);
+				argumentDescriptors[i] = new MethodArgumentDescriptor(new TypeDescriptor(typeName, null), argumentName, modifier);
 			}
 
 			return argumentDescriptors;
+		}
+
+		private static ParameterModifier GetArgumentModifier(ParameterSyntax parameterSyntax)
+		{
+			if (parameterSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.OutKeyword)))
+			{
+				return ParameterModifier.Out;
+			}
+
+			if (parameterSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.RefKeyword)))
+			{
+				return ParameterModifier.Ref;
+			}
+
+			return ParameterModifier.None;
 		}
 
 		private static string GetSimpleTypeName(TypeSyntax argumentType)
@@ -774,7 +791,19 @@ namespace UnitTestBoilerplate.Services
 
 					for (int i = 0; i < numberOfParameters; i++)
 					{
-						builder.Append($"	{methodDescriptor.MethodParameters[i].ArgumentName}");
+						builder.Append($"	");
+						switch (methodDescriptor.MethodParameters[i].Modifier)
+						{
+							case ParameterModifier.Out:
+								builder.Append("out ");
+								break;
+							case ParameterModifier.Ref:
+								builder.Append("ref ");
+								break;
+							default:
+								break;
+						}
+						builder.Append($"{methodDescriptor.MethodParameters[i].ArgumentName}");
 
 						if (i < numberOfParameters - 1)
 						{
