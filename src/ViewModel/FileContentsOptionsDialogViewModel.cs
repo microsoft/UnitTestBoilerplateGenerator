@@ -217,6 +217,7 @@ namespace UnitTestBoilerplate.ViewModel
 						this.MockObjectReferenceTemplate = mockFramework.MockObjectReferenceCode;
 						this.TestedObjectCreationTemplate = DefaultTemplateGenerator.GetTestObjectCreation(mockFramework);
 						this.TestedObjectReferenceTemplate = DefaultTemplateGenerator.TestObjectReference;
+						this.TestMethodNameTemplate = DefaultTemplateGenerator.TestMethodName;
 					}));
 			}
 		}
