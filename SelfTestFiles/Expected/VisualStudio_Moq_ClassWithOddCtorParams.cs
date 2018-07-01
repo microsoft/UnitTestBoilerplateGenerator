@@ -32,6 +32,17 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				TODO);
 		}
 
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateClassWithOddCtorParams();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
 
 	}
 }

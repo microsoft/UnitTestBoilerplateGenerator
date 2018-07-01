@@ -23,6 +23,17 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				this.subSomeClass);
 		}
 
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateClassWithNonInterfaceCtorParam();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
 
 	}
 }

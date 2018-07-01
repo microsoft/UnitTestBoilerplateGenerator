@@ -9,6 +9,18 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	public class NotInjectedClassTests
 	{
 
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var mocker = new AutoMoqer();
+			var unitUnderTest = mocker.Create<NotInjectedClass>();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
 
 	}
 }

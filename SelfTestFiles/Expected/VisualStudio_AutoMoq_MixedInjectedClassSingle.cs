@@ -10,6 +10,18 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	public class MixedInjectedClassSingleTests
 	{
 
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var mocker = new AutoMoqer();
+			var unitUnderTest = mocker.Create<MixedInjectedClassSingle>();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
 
 	}
 }

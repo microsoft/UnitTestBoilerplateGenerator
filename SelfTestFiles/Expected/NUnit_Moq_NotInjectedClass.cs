@@ -30,6 +30,17 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			return new NotInjectedClass();
 		}
 
+		[Test]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateNotInjectedClass();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
 
 	}
 }

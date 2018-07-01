@@ -40,6 +40,17 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			};
 		}
 
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateDerivedPropertyInjectedClass();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
 
 	}
 }

@@ -50,5 +50,52 @@ namespace UnitBoilerplate.Sandbox.Classes.Cases
 		private void PrivateMethod(ISomeOtherInterface someOtherInterface)
 		{
 		}
+
+		public string GetOut(bool fufu, out int bubu)
+		{
+			bubu = 0;
+
+			return string.Empty;
+		}
+
+		public void DoRef(ref ClassWithMethods refArg)
+		{
+		}
+
+		public void DoEnum(Cucu cucuENum)
+		{
+		}
+
+		public Task<bool> GetParams(params string[] values)
+		{
+			return Task.FromResult(true);
+		}
+
+		public Task<bool> GetParams2D(params DateTime[][] values)
+		{
+			return Task.FromResult(true);
+		}
+
+		public Task<bool> GetParamsClass(params ClassWithMethods[] values)
+		{
+			return Task.FromResult(true);
+		}
+
+		public Task<bool> GetParamsClass2D(params ClassWithMethods[][] values)
+		{
+			return Task.FromResult(true);
+		}
+
+		public Task<bool> GetWithClass4D(ClassWithMethods[][][][] values)
+		{
+			return Task.FromResult(true);
+		}
+	}
+
+	public enum Cucu
+	{
+		ZUUA,
+
+		UJSAXK
 	}
 }

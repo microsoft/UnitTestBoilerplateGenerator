@@ -30,6 +30,17 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			return new NotInjectedClassEmptyCtor();
 		}
 
+		[Test]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateNotInjectedClassEmptyCtor();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
 
 	}
 }

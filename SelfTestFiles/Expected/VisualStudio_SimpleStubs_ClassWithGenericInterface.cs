@@ -29,6 +29,17 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			};
 		}
 
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateClassWithGenericInterface();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
 
 	}
 }

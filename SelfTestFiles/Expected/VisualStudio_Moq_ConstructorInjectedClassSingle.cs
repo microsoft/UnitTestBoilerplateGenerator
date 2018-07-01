@@ -32,6 +32,17 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				this.mockSomeInterface.Object);
 		}
 
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateConstructorInjectedClassSingle();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
 
 	}
 }

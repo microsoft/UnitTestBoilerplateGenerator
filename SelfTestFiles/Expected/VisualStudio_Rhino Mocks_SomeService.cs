@@ -26,6 +26,17 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				this.stubSomeOtherInterface);
 		}
 
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateService();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
 
 	}
 }
