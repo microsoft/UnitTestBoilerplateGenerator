@@ -437,26 +437,6 @@ namespace UnitTestBoilerplate.Services
 				});
 		}
 
-		private string ReplaceGlobalOrContentTokens(string template, TestGenerationContext context)
-		{
-			return StringUtilities.ReplaceTokens(
-				template,
-				(tokenName, propertyIndex, builder) =>
-				{
-					if (WriteGlobalToken(tokenName, builder, context))
-					{
-						return;
-					}
-
-					if (WriteContentTokenNoIndent(tokenName, builder, context))
-					{
-						return;
-					}
-
-					WriteTokenPassthrough(tokenName, builder);
-				});
-		}
-
 		private static bool WriteGlobalToken(string tokenName, StringBuilder builder, TestGenerationContext context)
 		{
 			switch (tokenName)
@@ -503,37 +483,6 @@ namespace UnitTestBoilerplate.Services
 
 				case "ExplicitConstructor":
 					WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex));
-					break;
-
-				case "TestMethods":
-					WriteTestMethods(builder, context);
-					break;
-
-				default:
-					return false;
-			}
-
-			return true;
-		}
-
-		private bool WriteContentTokenNoIndent(string tokenName, StringBuilder builder, TestGenerationContext context)
-		{
-			switch (tokenName)
-			{
-				case "UsingStatements":
-					WriteUsings(builder, context);
-					break;
-
-				case "MockFieldDeclarations":
-					this.WriteMockFieldDeclarations(builder, context);
-					break;
-
-				case "MockFieldInitializations":
-					this.WriteMockFieldInitializations(builder, context);
-					break;
-
-				case "ExplicitConstructor":
-					WriteExplicitConstructor(builder, context, string.Empty);
 					break;
 
 				case "TestMethods":
@@ -718,13 +667,13 @@ namespace UnitTestBoilerplate.Services
 				context.TestFramework,
 				context.MockFramework,
 				TemplateType.TestedObjectReference);
-			var testedObjectReference = ReplaceGlobalOrContentTokens(testedObjectReferenceTemplate, context);
+			var testedObjectReference = ReplaceTestedObjectReferenceTokens(testedObjectReferenceTemplate, context);
 
 			string testedObjectCreationTemplate = this.Settings.GetTemplate(
 				context.TestFramework,
 				context.MockFramework,
 				TemplateType.TestedObjectCreation);
-			var testedObjectCreation = ReplaceGlobalOrContentTokens(testedObjectCreationTemplate, context);
+			var testedObjectCreation = ReplaceTestedObjectCreationTokens(testedObjectCreationTemplate, context);
 
 			if (context.MethodDeclarations.Count == 0)
 			{
@@ -824,6 +773,67 @@ namespace UnitTestBoilerplate.Services
 				usedTestMethodNames.Add(testMethodName);
 			}
 		}
+
+		private string ReplaceTestedObjectCreationTokens(string testedObjectCreationTemplate, TestGenerationContext context)
+		{
+			return StringUtilities.ReplaceTokens(
+				testedObjectCreationTemplate,
+				(tokenName, propertyIndex, builder) =>
+				{
+					if (WriteClassNameTokens(tokenName, builder, context))
+					{
+						return;
+					}
+
+					if (tokenName == "ExplicitConstructor")
+					{
+						WriteExplicitConstructor(builder, context, string.Empty);
+						return;
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
+				});
+		}
+
+		private string ReplaceTestedObjectReferenceTokens(string testedObjectReferenceTemplate, TestGenerationContext context)
+		{
+			return StringUtilities.ReplaceTokens(
+				testedObjectReferenceTemplate,
+				(tokenName, propertyIndex, builder) =>
+				{
+					if (WriteClassNameTokens(tokenName, builder, context))
+					{
+						return;
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
+				});
+		}
+
+		private static bool WriteClassNameTokens(string tokenName, StringBuilder builder, TestGenerationContext context)
+		{
+			switch (tokenName)
+			{
+				case "ClassName":
+					builder.Append(context.ClassName);
+					break;
+
+				case "ClassNameShort":
+					builder.Append(GetShortClassName(context.ClassName));
+					break;
+
+				case "ClassNameShortLower":
+					// Legacy, new syntax is ClassNameShort.CamelCase
+					builder.Append(GetShortClassNameLower(context.ClassName));
+					break;
+
+				default:
+					return false;
+			}
+
+			return true;
+		}
+
 
 		private static void WriteDefaultTestMethod(StringBuilder builder, TestGenerationContext context, string testedObjectCreation)
 		{
