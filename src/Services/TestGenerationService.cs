@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 using UnitTestBoilerplate.Model;
+using UnitTestBoilerplate.Services.TokenEvaluation;
 using UnitTestBoilerplate.Utilities;
 
 namespace UnitTestBoilerplate.Services
@@ -214,17 +215,35 @@ namespace UnitTestBoilerplate.Services
 			string className = classIdentifierToken.ToString();
 
 			// Find constructor injection types
-			var constructorInjectionTypes = new List<InjectableType>();
+			List<InjectableType> constructorInjectionTypes = new List<InjectableType>();
+
 			SyntaxNode constructorDeclaration = firstClassDeclaration.ChildNodes().FirstOrDefault(n => n.Kind() == SyntaxKind.ConstructorDeclaration);
+
 			if (constructorDeclaration != null)
 			{
-				SyntaxNode parameterListNode = constructorDeclaration.ChildNodes().First(n => n.Kind() == SyntaxKind.ParameterList);
-				var parameterNodes = parameterListNode.ChildNodes().Where(n => n.Kind() == SyntaxKind.Parameter);
+				constructorInjectionTypes.AddRange(
+					GetParameterListNodes(constructorDeclaration)
+					.Select(node => InjectableType.TryCreateInjectableTypeFromParameterNode(node, semanticModel, mockFramework)));
+			}
 
-				foreach (SyntaxNode node in parameterNodes)
-				{
-					constructorInjectionTypes.Add(InjectableType.TryCreateInjectableTypeFromParameterNode(node, semanticModel, mockFramework));
-				}
+			// Find public method declarations
+			IList<MethodDescriptor> methodDeclarations = new List<MethodDescriptor>();
+			foreach (MethodDeclarationSyntax methodDeclaration in
+				firstClassDeclaration.ChildNodes().Where(
+					n => n.Kind() == SyntaxKind.MethodDeclaration
+					&& ((MethodDeclarationSyntax)n).Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword))))
+			{
+				var parameterList = GetParameterListNodes(methodDeclaration).ToList();
+
+				var parameterTypes = GetArgumentDescriptors(parameterList, semanticModel, mockFramework);
+
+				var isAsync =
+					methodDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.AsyncKeyword)) ||
+					DoesReturnTask(methodDeclaration);
+
+				var hasReturnType = !DoesReturnNonGenericTask(methodDeclaration) && !DoesReturnVoid(methodDeclaration);
+
+				methodDeclarations.Add(new MethodDescriptor(methodDeclaration.Identifier.Text, parameterTypes, isAsync, hasReturnType));
 			}
 
 			string unitTestNamespace;
@@ -257,7 +276,110 @@ namespace UnitTestBoilerplate.Services
 				namespaceDeclarationSyntax.Name.ToString(),
 				injectableProperties,
 				constructorInjectionTypes,
-				injectedTypes);
+				injectedTypes,
+				methodDeclarations);
+		}
+
+		private static bool DoesReturnTask(MethodDeclarationSyntax methodDeclaration)
+		{
+			return methodDeclaration.ReturnType is SimpleNameSyntax namedReturnType && namedReturnType.Identifier.Text == "Task";
+		}
+
+		private static bool DoesReturnNonGenericTask(MethodDeclarationSyntax methodDeclaration)
+		{
+			return DoesReturnTask(methodDeclaration) && !methodDeclaration.ReturnType.IsKind(SyntaxKind.GenericName);
+		}
+
+		private static bool DoesReturnVoid(MethodDeclarationSyntax methodDeclaration)
+		{
+			return methodDeclaration.ReturnType is PredefinedTypeSyntax predefinedType && predefinedType.Keyword.IsKind(SyntaxKind.VoidKeyword);
+		}
+
+		private static MethodArgumentDescriptor[] GetArgumentDescriptors(List<ParameterSyntax> argumentList, SemanticModel semanticModel, MockFramework mockFramework)
+		{
+			MethodArgumentDescriptor[] argumentDescriptors = new MethodArgumentDescriptor[argumentList.Count()];
+
+			for (int i = 0; i < argumentDescriptors.Count(); i++)
+			{
+				string argumentName = argumentList[i].Identifier.Text;
+
+				ParameterModifier modifier = GetArgumentModifier(argumentList[i]);
+
+				var namedTypeSymbol = InjectableType.TryCreateInjectableTypeFromParameterNode(argumentList[i], semanticModel, mockFramework);
+
+				if (namedTypeSymbol != null)
+				{
+					argumentDescriptors[i] = new MethodArgumentDescriptor(namedTypeSymbol, argumentName, modifier);
+					continue;
+				}
+
+				var argumentType = argumentList[i].Type;
+
+				string typeName = GetSimpleTypeName(argumentType);
+
+				argumentDescriptors[i] = new MethodArgumentDescriptor(new TypeDescriptor(typeName, null), argumentName, modifier);
+			}
+
+			return argumentDescriptors;
+		}
+
+		private static ParameterModifier GetArgumentModifier(ParameterSyntax parameterSyntax)
+		{
+			if (parameterSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.OutKeyword)))
+			{
+				return ParameterModifier.Out;
+			}
+
+			if (parameterSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.RefKeyword)))
+			{
+				return ParameterModifier.Ref;
+			}
+
+			return ParameterModifier.None;
+		}
+
+		private static string GetSimpleTypeName(TypeSyntax argumentType)
+		{
+			string typeName = string.Empty;
+
+			if (argumentType is PredefinedTypeSyntax predefinedType)
+			{
+				typeName = predefinedType.Keyword.ValueText;
+			}
+			else if (argumentType is IdentifierNameSyntax identifiedType)
+			{
+				typeName = identifiedType.Identifier.Text;
+			}
+			else if (argumentType is ArrayTypeSyntax arrayType)
+			{
+				var builder = new StringBuilder();
+
+				builder.Append(GetSimpleTypeName(arrayType.ElementType));
+
+				int dimension = arrayType.RankSpecifiers.Count;
+
+				for (int i = 0; i < dimension; i++)
+				{
+					builder.Append(
+						$"{arrayType.RankSpecifiers[i].OpenBracketToken.Text}" +
+						$"{arrayType.RankSpecifiers[i].CloseBracketToken.Text}");
+				}
+
+				typeName = builder.ToString();
+			}
+			else
+			{
+				throw new NotSupportedException("Parameter type not supported");
+			}
+
+			return typeName;
+		}
+
+		private static IEnumerable<ParameterSyntax> GetParameterListNodes(SyntaxNode memberNode)
+		{
+			SyntaxNode parameterListNode = memberNode.ChildNodes().First(n => n.Kind() == SyntaxKind.ParameterList);
+
+			return parameterListNode.ChildNodes().Where(n => n.Kind() == SyntaxKind.Parameter).Cast<ParameterSyntax>();
 		}
 
 		private async Task<TestGenerationContext> CollectTestGenerationContextAsync(ProjectItemSummary selectedFile, EnvDTE.Project targetProject, TestFramework testFramework, MockFramework mockFramework)
@@ -363,6 +485,10 @@ namespace UnitTestBoilerplate.Services
 					WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex));
 					break;
 
+				case "TestMethods":
+					WriteTestMethods(builder, context);
+					break;
+
 				default:
 					return false;
 			}
@@ -417,6 +543,25 @@ namespace UnitTestBoilerplate.Services
 			foreach (InjectableType injectedType in context.InjectedTypes)
 			{
 				namespaces.AddRange(injectedType.TypeNamespaces);
+			}
+
+			foreach (TypeDescriptor argumentDescriptor in
+				context.MethodDeclarations.SelectMany(
+					d => d.MethodParameters.Select(p => p.TypeInformation)))
+			{
+				if (argumentDescriptor is InjectableType injectableType)
+				{
+					namespaces.AddRange(injectableType.TypeNamespaces);
+
+					continue;
+				}
+
+				namespaces.Add("System");
+			}
+
+			if (context.MethodDeclarations.Any(m => m.IsAsync))
+			{
+				namespaces.Add("System.Threading.Tasks");
 			}
 
 			namespaces = namespaces.Distinct().ToList();
@@ -516,7 +661,236 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
+		private void WriteTestMethods(StringBuilder builder, TestGenerationContext context)
+		{
+			string testedObjectReferenceTemplate = this.Settings.GetTemplate(
+				context.TestFramework,
+				context.MockFramework,
+				TemplateType.TestedObjectReference);
+			var testedObjectReference = ReplaceTestedObjectReferenceTokens(testedObjectReferenceTemplate, context);
 
+			string testedObjectCreationTemplate = this.Settings.GetTemplate(
+				context.TestFramework,
+				context.MockFramework,
+				TemplateType.TestedObjectCreation);
+			var testedObjectCreation = ReplaceTestedObjectCreationTokens(testedObjectCreationTemplate, context);
+
+			if (context.MethodDeclarations.Count == 0)
+			{
+				WriteDefaultTestMethod(builder, context, testedObjectCreation);
+
+				return;
+			}
+
+			var usedTestMethodNames = new List<string>();
+
+			bool isFirstMethod = true;
+
+			foreach (var methodDescriptor in context.MethodDeclarations)
+			{
+				var baseTestMethodName = ReplaceAllowedTokens(
+					context,
+					TemplateType.TestMethodName,
+					new[] { new TestedMethodNameTokenEvaluator(methodDescriptor) });
+
+				var testMethodName = CreateUniqueTestMethodName(usedTestMethodNames, baseTestMethodName);
+
+				if(!isFirstMethod)
+				{
+					builder.AppendLine();
+				}
+				isFirstMethod = false;
+
+				string returnType = methodDescriptor.IsAsync ? "Task" : "void";
+
+				string asyncModifier = methodDescriptor.IsAsync ? "async" : string.Empty;
+
+				builder.AppendLine($"[{context.TestFramework.TestMethodAttribute}]");
+				builder.AppendLine($"public {asyncModifier} {returnType} {testMethodName}()");
+				builder.AppendLine("{");
+				builder.AppendLine("// Arrange");
+				builder.AppendLine(testedObjectCreation);
+				var numberOfParameters = methodDescriptor.MethodParameters.Count();
+				for (int i = 0; i < numberOfParameters; i++)
+				{
+					builder.AppendLine($"{methodDescriptor.MethodParameters[i].TypeInformation.ToString()} {methodDescriptor.MethodParameters[i].ArgumentName} = TODO;");
+				}
+				builder.AppendLine(); // Separator
+
+				builder.AppendLine("// Act");
+				if (methodDescriptor.HasReturnType)
+				{
+					builder.Append("var result = ");
+				}
+
+				if (methodDescriptor.IsAsync)
+				{
+					builder.Append("await ");
+				}
+
+				builder.Append($"{testedObjectReference}.{methodDescriptor.Name}(");
+
+				if (numberOfParameters == 0)
+				{
+					builder.AppendLine(");");
+				}
+				else
+				{
+					builder.AppendLine();
+
+					for (int i = 0; i < numberOfParameters; i++)
+					{
+						builder.Append($"	");
+						switch (methodDescriptor.MethodParameters[i].Modifier)
+						{
+							case ParameterModifier.Out:
+								builder.Append("out ");
+								break;
+							case ParameterModifier.Ref:
+								builder.Append("ref ");
+								break;
+							default:
+								break;
+						}
+						builder.Append($"{methodDescriptor.MethodParameters[i].ArgumentName}");
+
+						if (i < numberOfParameters - 1)
+						{
+							builder.AppendLine(",");
+						}
+						else
+						{
+							builder.AppendLine(");");
+						}
+					}
+				}
+				builder.AppendLine(); // Separator
+
+				builder.AppendLine("// Assert");
+				builder.AppendLine("Assert.Fail();");
+				builder.AppendLine("}");
+
+				usedTestMethodNames.Add(testMethodName);
+			}
+		}
+
+		private string ReplaceTestedObjectCreationTokens(string testedObjectCreationTemplate, TestGenerationContext context)
+		{
+			return StringUtilities.ReplaceTokens(
+				testedObjectCreationTemplate,
+				(tokenName, propertyIndex, builder) =>
+				{
+					if (WriteClassNameTokens(tokenName, builder, context))
+					{
+						return;
+					}
+
+					if (tokenName == "ExplicitConstructor")
+					{
+						WriteExplicitConstructor(builder, context, string.Empty);
+						return;
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
+				});
+		}
+
+		private string ReplaceTestedObjectReferenceTokens(string testedObjectReferenceTemplate, TestGenerationContext context)
+		{
+			return StringUtilities.ReplaceTokens(
+				testedObjectReferenceTemplate,
+				(tokenName, propertyIndex, builder) =>
+				{
+					if (WriteClassNameTokens(tokenName, builder, context))
+					{
+						return;
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
+				});
+		}
+
+		private static bool WriteClassNameTokens(string tokenName, StringBuilder builder, TestGenerationContext context)
+		{
+			switch (tokenName)
+			{
+				case "ClassName":
+					builder.Append(context.ClassName);
+					break;
+
+				case "ClassNameShort":
+					builder.Append(GetShortClassName(context.ClassName));
+					break;
+
+				case "ClassNameShortLower":
+					// Legacy, new syntax is ClassNameShort.CamelCase
+					builder.Append(GetShortClassNameLower(context.ClassName));
+					break;
+
+				default:
+					return false;
+			}
+
+			return true;
+		}
+
+
+		private static void WriteDefaultTestMethod(StringBuilder builder, TestGenerationContext context, string testedObjectCreation)
+		{
+			builder.AppendLine($"[{context.TestFramework.TestMethodAttribute}]");
+			builder.AppendLine($"public void TestMethod1()");
+			builder.AppendLine("{");
+			builder.AppendLine("// Arrange");
+			builder.AppendLine(testedObjectCreation);
+			builder.AppendLine(); // Separator
+
+			builder.AppendLine("// Act");
+			builder.AppendLine(); // Separator
+
+			builder.AppendLine("// Assert");
+			builder.AppendLine("Assert.Fail();");
+			builder.AppendLine("}");
+		}
+
+		private static string CreateUniqueTestMethodName(List<string> usedTestMethodNames, string baseTestMethodName)
+		{
+			string testMethodName = baseTestMethodName;
+
+			int j = 1;
+
+			while (usedTestMethodNames.Contains(testMethodName))
+			{
+				testMethodName = baseTestMethodName + j;
+				j++;
+			}
+
+			return testMethodName;
+		}
+
+
+		private string ReplaceAllowedTokens(TestGenerationContext context, TemplateType templateType, IList<TokenEvaluator> allowedTokenEvaluators)
+		{
+			string templateValue = this.Settings.GetTemplate(
+					context.TestFramework,
+					context.MockFramework,
+					templateType);
+
+			return StringUtilities.ReplaceTokens(
+				templateValue,
+				(tokenName, propertyIndex, builder) =>
+				{
+					foreach (var tokenEvaluator in allowedTokenEvaluators)
+					{
+						if (tokenEvaluator.CanExecute(tokenName))
+						{
+							builder.Append(tokenEvaluator.Evaluate());
+							return;
+						}
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
+				});
+		}
 
 		private static string FindIndent(string template, int currentIndex)
 		{

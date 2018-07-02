@@ -28,20 +28,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[Fact]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			DerivedPropertyInjectedClass derivedPropertyInjectedClass = this.CreateDerivedPropertyInjectedClass();
-
-
-			// Assert
-
-		}
-
 		private DerivedPropertyInjectedClass CreateDerivedPropertyInjectedClass()
 		{
 			return new DerivedPropertyInjectedClass
@@ -51,5 +37,18 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				Property2 = this.mockSomeOtherInterface.Object,
 			};
 		}
+
+		[Fact]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateDerivedPropertyInjectedClass();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

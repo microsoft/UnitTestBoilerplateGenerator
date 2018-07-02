@@ -9,19 +9,19 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class DerivedPropertyInjectedClassTests
 	{
+
 		[TestMethod]
 		public void TestMethod1()
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-
+			var unitUnderTest = mocker.Create<DerivedPropertyInjectedClass>();
 
 			// Act
-			var derivedPropertyInjectedClass = mocker.Create<DerivedPropertyInjectedClass>();
-
 
 			// Assert
-
+			Assert.Fail();
 		}
+
 	}
 }

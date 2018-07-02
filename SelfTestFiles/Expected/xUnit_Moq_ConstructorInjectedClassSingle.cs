@@ -24,24 +24,23 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[Fact]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ConstructorInjectedClassSingle constructorInjectedClassSingle = this.CreateConstructorInjectedClassSingle();
-
-
-			// Assert
-
-		}
-
 		private ConstructorInjectedClassSingle CreateConstructorInjectedClassSingle()
 		{
 			return new ConstructorInjectedClassSingle(
 				this.mockSomeInterface.Object);
 		}
+
+		[Fact]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateConstructorInjectedClassSingle();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

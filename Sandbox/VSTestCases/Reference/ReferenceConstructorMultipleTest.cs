@@ -23,12 +23,6 @@ namespace UnitBoilerplate.Sandbox.VSTestCases.Reference
             this.mockSomeOtherInterface = this.mockRepository.Create<ISomeOtherInterface>();
         }
 
-        [TestMethod]
-        public void TestMethod1()
-        {
-            ConstructorInjectedClassMultiple viewModel = this.CreateViewModel();
-        }
-
         private ConstructorInjectedClassMultiple CreateViewModel()
         {
             return new ConstructorInjectedClassMultiple(

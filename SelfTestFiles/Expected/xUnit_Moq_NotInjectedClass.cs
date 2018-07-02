@@ -23,23 +23,22 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[Fact]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			NotInjectedClass notInjectedClass = this.CreateNotInjectedClass();
-
-
-			// Assert
-
-		}
-
 		private NotInjectedClass CreateNotInjectedClass()
 		{
 			return new NotInjectedClass();
 		}
+
+		[Fact]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateNotInjectedClass();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

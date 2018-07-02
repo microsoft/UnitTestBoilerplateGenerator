@@ -15,24 +15,24 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeInterface = new StubISomeInterface();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ConstructorInjectedClassSingle constructorInjectedClassSingle = this.CreateConstructorInjectedClassSingle();
-
-
-			// Assert
-
-		}
 
 		private ConstructorInjectedClassSingle CreateConstructorInjectedClassSingle()
 		{
 			return new ConstructorInjectedClassSingle(
 				this.stubSomeInterface);
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateConstructorInjectedClassSingle();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

@@ -17,19 +17,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = new StubISomeOtherInterface();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ConstructorInjectedClassMultiple constructorInjectedClassMultiple = this.CreateConstructorInjectedClassMultiple();
-
-
-			// Assert
-
-		}
 
 		private ConstructorInjectedClassMultiple CreateConstructorInjectedClassMultiple()
 		{
@@ -37,5 +24,18 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				this.stubSomeInterface,
 				this.stubSomeOtherInterface);
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateConstructorInjectedClassMultiple();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

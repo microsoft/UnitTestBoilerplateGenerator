@@ -19,19 +19,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = new StubISomeOtherInterface();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			DerivedPropertyInjectedClass derivedPropertyInjectedClass = this.CreateDerivedPropertyInjectedClass();
-
-
-			// Assert
-
-		}
 
 		private DerivedPropertyInjectedClass CreateDerivedPropertyInjectedClass()
 		{
@@ -42,5 +29,18 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				Property2 = this.stubSomeOtherInterface,
 			};
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateDerivedPropertyInjectedClass();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

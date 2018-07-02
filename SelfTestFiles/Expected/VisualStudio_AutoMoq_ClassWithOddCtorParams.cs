@@ -8,19 +8,19 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class ClassWithOddCtorParamsTests
 	{
+
 		[TestMethod]
 		public void TestMethod1()
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-
+			var unitUnderTest = mocker.Create<ClassWithOddCtorParams>();
 
 			// Act
-			var classWithOddCtorParams = mocker.Create<ClassWithOddCtorParams>();
-
 
 			// Assert
-
+			Assert.Fail();
 		}
+
 	}
 }

@@ -28,25 +28,24 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ConstructorInjectedClassMultiple constructorInjectedClassMultiple = this.CreateConstructorInjectedClassMultiple();
-
-
-			// Assert
-
-		}
-
 		private ConstructorInjectedClassMultiple CreateConstructorInjectedClassMultiple()
 		{
 			return new ConstructorInjectedClassMultiple(
 				this.mockSomeInterface.Object,
 				this.mockSomeOtherInterface.Object);
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateConstructorInjectedClassMultiple();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

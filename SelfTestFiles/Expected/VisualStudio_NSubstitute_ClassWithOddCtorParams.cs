@@ -15,19 +15,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ClassWithOddCtorParams classWithOddCtorParams = this.CreateClassWithOddCtorParams();
-
-
-			// Assert
-
-		}
 
 		private ClassWithOddCtorParams CreateClassWithOddCtorParams()
 		{
@@ -35,5 +22,18 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				TODO,
 				TODO);
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateClassWithOddCtorParams();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

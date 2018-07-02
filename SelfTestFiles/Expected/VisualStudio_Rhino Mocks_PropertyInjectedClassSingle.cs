@@ -16,19 +16,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeInterface = MockRepository.GenerateStub<ISomeInterface>();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			PropertyInjectedClassSingle propertyInjectedClassSingle = this.CreatePropertyInjectedClassSingle();
-
-
-			// Assert
-
-		}
 
 		private PropertyInjectedClassSingle CreatePropertyInjectedClassSingle()
 		{
@@ -37,5 +24,18 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				MyProperty = this.stubSomeInterface,
 			};
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreatePropertyInjectedClassSingle();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

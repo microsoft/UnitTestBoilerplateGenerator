@@ -26,24 +26,23 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ClassWithNonInterfaceCtorParam classWithNonInterfaceCtorParam = this.CreateClassWithNonInterfaceCtorParam();
-
-
-			// Assert
-
-		}
-
 		private ClassWithNonInterfaceCtorParam CreateClassWithNonInterfaceCtorParam()
 		{
 			return new ClassWithNonInterfaceCtorParam(
 				this.mockSomeClass.Object);
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateClassWithNonInterfaceCtorParam();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

@@ -25,25 +25,24 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ClassWithOddCtorParams classWithOddCtorParams = this.CreateClassWithOddCtorParams();
-
-
-			// Assert
-
-		}
-
 		private ClassWithOddCtorParams CreateClassWithOddCtorParams()
 		{
 			return new ClassWithOddCtorParams(
 				TODO,
 				TODO);
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateClassWithOddCtorParams();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

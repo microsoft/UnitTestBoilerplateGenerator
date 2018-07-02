@@ -18,19 +18,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeOtherInterface = Substitute.For<ISomeOtherInterface>();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ConstructorInjectedClassMultiple constructorInjectedClassMultiple = this.CreateConstructorInjectedClassMultiple();
-
-
-			// Assert
-
-		}
 
 		private ConstructorInjectedClassMultiple CreateConstructorInjectedClassMultiple()
 		{
@@ -38,5 +25,18 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				this.subSomeInterface,
 				this.subSomeOtherInterface);
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateConstructorInjectedClassMultiple();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

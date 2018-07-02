@@ -35,20 +35,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository.VerifyAll();
 		}
 
-		[Fact]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ClassWithGenericInterface classWithGenericInterface = this.CreateClassWithGenericInterface();
-
-
-			// Assert
-
-		}
-
 		private ClassWithGenericInterface CreateClassWithGenericInterface()
 		{
 			return new ClassWithGenericInterface(
@@ -61,5 +47,18 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				GenericInterface4 = this.mockGenericInterfaceListSomeOtherInterface.Object,
 			};
 		}
+
+		[Fact]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateClassWithGenericInterface();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

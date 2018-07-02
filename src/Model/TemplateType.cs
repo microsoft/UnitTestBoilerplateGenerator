@@ -5,6 +5,9 @@
 		File,
 		MockFieldDeclaration,
 		MockFieldInitialization,
-		MockObjectReference
+		MockObjectReference,
+		TestedObjectReference,
+		TestedObjectCreation,
+		TestMethodName
 	}
 }

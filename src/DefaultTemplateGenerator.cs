@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnitTestBoilerplate.Model;
+using UnitTestBoilerplate.Model.Tokens;
 
 namespace UnitTestBoilerplate
 {
@@ -12,6 +13,28 @@ namespace UnitTestBoilerplate
 		private int indentLevel;
 
 		private StringBuilder template;
+
+		public const string TestObjectReference = "unitUnderTest";
+
+		public static readonly string TestMethodName = $"{Token.TestMethod.MethodName.ToWrappedToken()}_StateUnderTest_ExpectedBehavior";
+
+		public static string GetTestObjectCreation(MockFramework mockFramework)
+		{
+			var declaration = $"var {TestObjectReference} = ";
+
+			if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.HelperMethod)
+			{
+				return $"{declaration}{ObjectCreationMethod};";
+			}
+			else if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.DirectCode)
+			{
+				return $"{mockFramework.TestArrangeCode}{Environment.NewLine}{declaration}{mockFramework.TestedObjectCreationCode}";
+			}
+
+			throw new NotSupportedException($"Tested object creation style {mockFramework.TestedObjectCreationStyle} is not supported");
+		}
+
+		private const string ObjectCreationMethod = "Create$ClassNameShort$()";
 
 		public string Get(TestFramework testFramework, MockFramework mockFramework)
 		{
@@ -116,53 +139,13 @@ namespace UnitTestBoilerplate
 
 				this.indentLevel--;
 				this.AppendLineIndented("}");
-				this.AppendLineIndented();
 			}
-
-			// Test method
-			this.AppendLineIndented($"[{testFramework.TestMethodAttribute}]");
-			this.AppendLineIndented("public void TestMethod1()");
-			this.AppendLineIndented("{");
-			this.indentLevel++;
-
-			this.AppendLineIndented("// Arrange");
-			if (!string.IsNullOrEmpty(mockFramework.TestArrangeCode))
-			{
-				this.AppendLineIndented(mockFramework.TestArrangeCode);
-			}
-
-			this.AppendLineIndented(); // Blank line for users to put in their own arrange code
-			this.AppendLineIndented(); // Separator
-
-			this.AppendLineIndented("// Act");
-			switch (mockFramework.TestedObjectCreationStyle)
-			{
-				case TestedObjectCreationStyle.HelperMethod:
-					this.AppendLineIndented("$ClassName$ $ClassNameShort.CamelCase$ = this.Create$ClassNameShort$();");
-
-					break;
-				case TestedObjectCreationStyle.DirectCode:
-					this.AppendLineIndented(mockFramework.TestedObjectCreationCode);
-
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-
-			this.AppendLineIndented(); // Blank line for users to put in their own act code
-			this.AppendLineIndented(); // Separator
-
-			this.AppendLineIndented("// Assert");
-			this.AppendLineIndented(); // Blank line for users to put in their own assert code
-
-			this.indentLevel--;
-			this.AppendLineIndented("}");
 
 			// Helper method to create tested object
 			if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.HelperMethod)
 			{
 				this.AppendLineIndented();
-				this.AppendLineIndented("private $ClassName$ Create$ClassNameShort$()");
+				this.AppendLineIndented($"private $ClassName$ {ObjectCreationMethod}");
 				this.AppendLineIndented("{");
 				this.indentLevel++;
 				this.AppendLineIndented("return $ExplicitConstructor$;");
@@ -170,6 +153,10 @@ namespace UnitTestBoilerplate
 				this.AppendLineIndented("}");
 
 			}
+
+			// Test Methods declaration
+			this.AppendLineIndented();
+			this.AppendLineIndented("$TestMethods$");
 
 			// Test class/namespace end
 			this.indentLevel--;

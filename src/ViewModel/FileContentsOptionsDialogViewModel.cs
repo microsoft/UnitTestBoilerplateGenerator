@@ -90,6 +90,10 @@ namespace UnitTestBoilerplate.ViewModel
 			this.RaisePropertyChanged(nameof(this.MockFieldDeclarationTemplateVisible));
 			this.RaisePropertyChanged(nameof(this.MockFieldInitializationTemplateVisible));
 			this.RaisePropertyChanged(nameof(this.MockObjectReferenceTemplateVisible));
+			this.RaisePropertyChanged(nameof(this.TestMethodNameTemplate));
+			this.RaisePropertyChanged(nameof(this.TestedObjectCreationTemplate));
+			this.RaisePropertyChanged(nameof(this.TestedObjectReferenceTemplate));
+			this.RaisePropertyChanged(nameof(this.TestMethodsVisible));
 		}
 
 		public string FileTemplate
@@ -106,6 +110,7 @@ namespace UnitTestBoilerplate.ViewModel
 				this.RaisePropertyChanged(nameof(this.MockFieldDeclarationTemplateVisible));
 				this.RaisePropertyChanged(nameof(this.MockFieldInitializationTemplateVisible));
 				this.RaisePropertyChanged(nameof(this.MockObjectReferenceTemplateVisible));
+				this.RaisePropertyChanged(nameof(this.TestMethodsVisible));
 			}
 		}
 
@@ -157,6 +162,44 @@ namespace UnitTestBoilerplate.ViewModel
 			get { return this.FileTemplate.Contains("$ExplicitConstructor$"); }
 		}
 
+		public string TestedObjectCreationTemplate
+		{
+			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestedObjectCreation); }
+
+			set
+			{
+				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestedObjectCreation, value);
+				this.RaisePropertyChanged();
+			}
+		}
+
+		public bool TestMethodsVisible
+		{
+			get { return this.FileTemplate.Contains("$TestMethods$"); }
+		}
+
+		public string TestedObjectReferenceTemplate
+		{
+			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestedObjectReference); }
+
+			set
+			{
+				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestedObjectReference, value);
+				this.RaisePropertyChanged();
+			}
+		}
+
+		public string TestMethodNameTemplate
+		{
+			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestMethodName); }
+
+			set
+			{
+				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestMethodName, value);
+				this.RaisePropertyChanged();
+			}
+		}
+
 		private RelayCommand resetCommand;
 		public RelayCommand ResetCommand
 		{
@@ -172,6 +215,9 @@ namespace UnitTestBoilerplate.ViewModel
 						this.MockFieldDeclarationTemplate = mockFramework.MockFieldDeclarationCode;
 						this.MockFieldInitializationTemplate = mockFramework.MockFieldInitializationCode;
 						this.MockObjectReferenceTemplate = mockFramework.MockObjectReferenceCode;
+						this.TestedObjectCreationTemplate = DefaultTemplateGenerator.GetTestObjectCreation(mockFramework);
+						this.TestedObjectReferenceTemplate = DefaultTemplateGenerator.TestObjectReference;
+						this.TestMethodNameTemplate = DefaultTemplateGenerator.TestMethodName;
 					}));
 			}
 		}

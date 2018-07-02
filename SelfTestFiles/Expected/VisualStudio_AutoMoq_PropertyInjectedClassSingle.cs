@@ -9,19 +9,19 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class PropertyInjectedClassSingleTests
 	{
+
 		[TestMethod]
 		public void TestMethod1()
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-
+			var unitUnderTest = mocker.Create<PropertyInjectedClassSingle>();
 
 			// Act
-			var propertyInjectedClassSingle = mocker.Create<PropertyInjectedClassSingle>();
-
 
 			// Assert
-
+			Assert.Fail();
 		}
+
 	}
 }

@@ -15,7 +15,8 @@ namespace UnitTestBoilerplate.Model
 			string classNamespace,
 			IList<InjectableProperty> properties,
 			IList<InjectableType> constructorTypes,
-			IList<InjectableType> injectedTypes)
+			IList<InjectableType> injectedTypes,
+			IList<MethodDescriptor> methodDeclarations)
 		{
 			this.MockFramework = mockFramework;
 			this.TestFramework = testFramework;
@@ -25,6 +26,7 @@ namespace UnitTestBoilerplate.Model
 			this.Properties = properties;
 			this.ConstructorTypes = constructorTypes;
 			this.InjectedTypes = injectedTypes;
+			MethodDeclarations = methodDeclarations;
 		}
 
 		public MockFramework MockFramework { get; }
@@ -42,5 +44,7 @@ namespace UnitTestBoilerplate.Model
 		public IList<InjectableType> ConstructorTypes { get; }
 
 		public IList<InjectableType> InjectedTypes { get; }
+
+		public IList<MethodDescriptor> MethodDeclarations { get; }
 	}
 }

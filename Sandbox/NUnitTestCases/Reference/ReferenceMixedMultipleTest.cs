@@ -37,16 +37,6 @@ namespace UnitBoilerplate.Sandbox.NUnitTestCases.Reference
 			this.mockRepository.VerifyAll();
 		}
 
-		[Test]
-		public void TestMethod1()
-		{
-
-
-			MixedInjectedClassMultiple viewModel = this.CreateViewModel();
-
-
-		}
-
 		private MixedInjectedClassMultiple CreateViewModel()
 		{
 			return new MixedInjectedClassMultiple(

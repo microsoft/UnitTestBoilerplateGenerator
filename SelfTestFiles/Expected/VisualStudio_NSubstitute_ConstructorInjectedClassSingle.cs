@@ -16,24 +16,24 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeInterface = Substitute.For<ISomeInterface>();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			ConstructorInjectedClassSingle constructorInjectedClassSingle = this.CreateConstructorInjectedClassSingle();
-
-
-			// Assert
-
-		}
 
 		private ConstructorInjectedClassSingle CreateConstructorInjectedClassSingle()
 		{
 			return new ConstructorInjectedClassSingle(
 				this.subSomeInterface);
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateConstructorInjectedClassSingle();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

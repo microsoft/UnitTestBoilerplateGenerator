@@ -29,6 +29,12 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup>
+    <!-- Common debugging support -->
+    <StartAction>Program</StartAction>
+    <StartProgram>$(DevEnvDir)\devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
@@ -87,6 +93,9 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="1.2.2" />
     <PackageReference Include="Microsoft.Composition" Version="1.0.27" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="1.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.ComponentModelHost">
+      <Version>15.7.27703</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Imaging" Version="14.3.25407" />
     <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="1.2.2" />
     <PackageReference Include="Microsoft.VisualStudio.OLE.Interop" Version="7.10.6070" />
@@ -186,7 +195,12 @@
     <Compile Include="Commands\DetectCsprojCommand.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="DefaultTemplateGenerator.cs" />
+    <Compile Include="Model\MethodArgumentDescriptor.cs" />
+    <Compile Include="Model\MethodDescriptor.cs" />
     <Compile Include="Model\SelfTestDetectionTest.cs" />
+    <Compile Include="Model\Tokens\TestMethod\MethodNameToken.cs" />
+    <Compile Include="Model\Tokens\TestMethod\TestMethodToken.cs" />
+    <Compile Include="Model\Tokens\Token.cs" />
     <Compile Include="Services\IBoilerplateSettings.cs" />
     <Compile Include="Services\MockBoilerplateSettings.cs" />
     <Compile Include="Services\FrameworkPickerService.cs" />
@@ -194,6 +208,8 @@
     <Compile Include="Services\ITestGenerationService.cs" />
     <Compile Include="Services\TestGenerationService.cs" />
     <Compile Include="Services\BoilerplateSettings.cs" />
+    <Compile Include="Services\TokenEvaluation\TestedMethodNameTokenEvaluator.cs" />
+    <Compile Include="Services\TokenEvaluation\TokenEvaluator.cs" />
     <Compile Include="Utilities\FileUtilities.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
     <Compile Include="Model\TestCleanupStyle.cs" />
@@ -295,7 +311,6 @@
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

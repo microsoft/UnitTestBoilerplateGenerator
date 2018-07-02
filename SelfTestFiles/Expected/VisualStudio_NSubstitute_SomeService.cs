@@ -18,19 +18,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeOtherInterface = Substitute.For<ISomeOtherInterface>();
 		}
 
-		[TestMethod]
-		public void TestMethod1()
-		{
-			// Arrange
-
-
-			// Act
-			SomeService service = this.CreateService();
-
-
-			// Assert
-
-		}
 
 		private SomeService CreateService()
 		{
@@ -38,5 +25,18 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				this.subSomeInterface,
 				this.subSomeOtherInterface);
 		}
+
+		[TestMethod]
+		public void TestMethod1()
+		{
+			// Arrange
+			var unitUnderTest = CreateService();
+
+			// Act
+
+			// Assert
+			Assert.Fail();
+		}
+
 	}
 }

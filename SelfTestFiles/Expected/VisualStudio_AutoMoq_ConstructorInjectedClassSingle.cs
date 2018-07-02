@@ -9,19 +9,19 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class ConstructorInjectedClassSingleTests
 	{
+
 		[TestMethod]
 		public void TestMethod1()
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-
+			var unitUnderTest = mocker.Create<ConstructorInjectedClassSingle>();
 
 			// Act
-			var constructorInjectedClassSingle = mocker.Create<ConstructorInjectedClassSingle>();
-
 
 			// Assert
-
+			Assert.Fail();
 		}
+
 	}
 }

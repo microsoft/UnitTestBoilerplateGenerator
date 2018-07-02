@@ -9,19 +9,19 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class SomeServiceTests
 	{
+
 		[TestMethod]
 		public void TestMethod1()
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-
+			var unitUnderTest = mocker.Create<SomeService>();
 
 			// Act
-			var service = mocker.Create<SomeService>();
-
 
 			// Assert
-
+			Assert.Fail();
 		}
+
 	}
 }
