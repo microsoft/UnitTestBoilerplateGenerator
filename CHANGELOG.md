@@ -5,6 +5,10 @@
 
 # Changelog
 
+## 1.9.0
+**2018-07-01**
+- Added stub tests for all public method (Thanks to rCartoux)
+
 ## 1.8.0
 **2018-04-01**
 - Added ability to set a preferred test and mock framework to be used when either multiple frameworks are detected or no frameworks are detected.

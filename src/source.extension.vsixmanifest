@@ -1,29 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-  <Metadata>
-    <Identity Id="UnitTestBoilerplate.RandomEngy.ca0bb824-eb5a-41a8-ab39-3b81f03ba3fe" Version="1.8" Language="en-US" Publisher="David Rickard" />
-    <DisplayName>Unit Test Boilerplate Generator</DisplayName>
-    <Description xml:space="preserve">Generates a unit test boilerplate from a given C# class, setting up mocks for all dependencies. Right click an item in Solution Explorer and choose "Create Unit Test Boilerplate" .
+    <Metadata>
+        <Identity Id="UnitTestBoilerplate.RandomEngy.ca0bb824-eb5a-41a8-ab39-3b81f03ba3fe" Version="1.9" Language="en-US" Publisher="David Rickard" />
+        <DisplayName>Unit Test Boilerplate Generator</DisplayName>
+        <Description xml:space="preserve">Generates a unit test boilerplate from a given C# class, setting up mocks for all dependencies. Right click an item in Solution Explorer and choose "Create Unit Test Boilerplate" .
 
 Supports Visual Studio Test, NUnit, xUnit and many mock frameworks.</Description>
-    <License>Resources\LICENSE</License>
-    <Icon>Resources\PackageIcon-90x90.png</Icon>
-    <PreviewImage>Resources\Preview.png</PreviewImage>
-    <Tags>Unit Testing, unity, dependency injection, NSubstitute, MOQ, AutoMoq, SimpleStubs, Rhino Mocks, NUnit, xUnit, C#, Ninject, Grace</Tags>
-  </Metadata>
-  <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,16.0)" />
-  </Installation>
-  <Dependencies>
-    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-  </Dependencies>
-  <Assets>
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-  </Assets>
-  <Prerequisites>
-    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0.26004.1,16.0)" DisplayName="Visual Studio core editor" />
-    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[15.0.26004.1,16.0)" DisplayName="C# and Visual Basic" />
-    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.Compiler" Version="[15.0.26004.1,16.0)" DisplayName="C# and Visual Basic Roslyn compilers" />
-  </Prerequisites>
+        <License>Resources\LICENSE</License>
+        <Icon>Resources\PackageIcon-90x90.png</Icon>
+        <PreviewImage>Resources\Preview.png</PreviewImage>
+        <Tags>Unit Testing, unity, dependency injection, NSubstitute, MOQ, AutoMoq, SimpleStubs, Rhino Mocks, NUnit, xUnit, C#, Ninject, Grace</Tags>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,16.0)" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+    </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0.26004.1,16.0)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[15.0.26004.1,16.0)" DisplayName="C# and Visual Basic" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.Compiler" Version="[15.0.26004.1,16.0)" DisplayName="C# and Visual Basic Roslyn compilers" />
+    </Prerequisites>
 </PackageManifest>

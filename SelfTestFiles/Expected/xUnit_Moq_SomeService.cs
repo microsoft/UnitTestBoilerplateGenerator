@@ -34,16 +34,20 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		}
 
 		[Fact]
-		public void TestMethod1()
+		public void AddNumbers_StateUnderTest_ExpectedBehavior()
 		{
 			// Arrange
 			var unitUnderTest = CreateService();
+			int a = TODO;
+			int b = TODO;
 
 			// Act
+			var result = unitUnderTest.AddNumbers(
+				a,
+				b);
 
 			// Assert
 			Assert.Fail();
 		}
-
 	}
 }

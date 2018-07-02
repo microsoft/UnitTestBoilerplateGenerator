@@ -1,5 +1,6 @@
 using Moq;
 using NUnit.Framework;
+using System;
 using UnitBoilerplate.Sandbox.Classes;
 using UnitBoilerplate.Sandbox.Classes.Cases;
 
@@ -36,16 +37,20 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		}
 
 		[Test]
-		public void TestMethod1()
+		public void AddNumbers_StateUnderTest_ExpectedBehavior()
 		{
 			// Arrange
 			var unitUnderTest = CreateService();
+			int a = TODO;
+			int b = TODO;
 
 			// Act
+			var result = unitUnderTest.AddNumbers(
+				a,
+				b);
 
 			// Assert
 			Assert.Fail();
 		}
-
 	}
 }

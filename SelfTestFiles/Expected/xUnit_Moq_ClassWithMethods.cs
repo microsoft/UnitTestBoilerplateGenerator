@@ -249,6 +249,5 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			// Assert
 			Assert.Fail();
 		}
-
 	}
 }

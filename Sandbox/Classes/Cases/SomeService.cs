@@ -16,5 +16,10 @@ namespace UnitBoilerplate.Sandbox.Classes.Cases
             this.someInterface = someInterface;
             this.someOtherInterface = someOtherInterface;
         }
+
+		public int AddNumbers(int a, int b)
+		{
+			return a + b;
+		}
     }
 }

@@ -7,7 +7,7 @@ or get the [CI build](http://vsixgallery.com/extension/UnitTestBoilerplate.Rando
 
 ---------------------------------------
 
-Generates a unit test boilerplate from a given C# class, setting up mocks for all dependencies.
+Generates a unit test boilerplate from a given C# class, setting up mocks for all dependencies and test outlines for all public methods.
 
 Test frameworks supported:
 * Visual Studio
@@ -30,7 +30,8 @@ Right click an item in Solution Explorer and choose "Create Unit Test Boilerplat
 ![Before Screenshot](BeforeScreenshot.png)
 
 This will create a test class in the same relative path as the class in a specified unit test project.
-All the dependencies are mocked and saved as fields which are created fresh for each test via [TestInitialize].
+All the dependencies are mocked and saved as fields which are created fresh for each test via [TestInitialize]. In addition, all public methods
+on the tested class are set up with a test method outline:
 
 ![After Screenshot](AfterScreenshot.png)
 

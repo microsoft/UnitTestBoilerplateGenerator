@@ -482,11 +482,11 @@ namespace UnitTestBoilerplate.Services
 					break;
 
 				case "ExplicitConstructor":
-					WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex));
+					this.WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex));
 					break;
 
 				case "TestMethods":
-					WriteTestMethods(builder, context);
+					this.WriteTestMethods(builder, context);
 					break;
 
 				default:
@@ -667,13 +667,13 @@ namespace UnitTestBoilerplate.Services
 				context.TestFramework,
 				context.MockFramework,
 				TemplateType.TestedObjectReference);
-			var testedObjectReference = ReplaceTestedObjectReferenceTokens(testedObjectReferenceTemplate, context);
+			var testedObjectReference = this.ReplaceTestedObjectReferenceTokens(testedObjectReferenceTemplate, context);
 
 			string testedObjectCreationTemplate = this.Settings.GetTemplate(
 				context.TestFramework,
 				context.MockFramework,
 				TemplateType.TestedObjectCreation);
-			var testedObjectCreation = ReplaceTestedObjectCreationTokens(testedObjectCreationTemplate, context);
+			var testedObjectCreation = this.ReplaceTestedObjectCreationTokens(testedObjectCreationTemplate, context);
 
 			if (context.MethodDeclarations.Count == 0)
 			{
@@ -684,22 +684,20 @@ namespace UnitTestBoilerplate.Services
 
 			var usedTestMethodNames = new List<string>();
 
-			bool isFirstMethod = true;
-
-			foreach (var methodDescriptor in context.MethodDeclarations)
+			for (int i = 0; i < context.MethodDeclarations.Count; i++)
 			{
-				var baseTestMethodName = ReplaceAllowedTokens(
+				var methodDescriptor = context.MethodDeclarations[i];
+				var baseTestMethodName = this.ReplaceAllowedTokens(
 					context,
 					TemplateType.TestMethodName,
 					new[] { new TestedMethodNameTokenEvaluator(methodDescriptor) });
 
 				var testMethodName = CreateUniqueTestMethodName(usedTestMethodNames, baseTestMethodName);
 
-				if(!isFirstMethod)
+				if (i > 0)
 				{
 					builder.AppendLine();
 				}
-				isFirstMethod = false;
 
 				string returnType = methodDescriptor.IsAsync ? "Task" : "void";
 
@@ -711,9 +709,9 @@ namespace UnitTestBoilerplate.Services
 				builder.AppendLine("// Arrange");
 				builder.AppendLine(testedObjectCreation);
 				var numberOfParameters = methodDescriptor.MethodParameters.Count();
-				for (int i = 0; i < numberOfParameters; i++)
+				for (int j = 0; j < numberOfParameters; j++)
 				{
-					builder.AppendLine($"{methodDescriptor.MethodParameters[i].TypeInformation.ToString()} {methodDescriptor.MethodParameters[i].ArgumentName} = TODO;");
+					builder.AppendLine($"{methodDescriptor.MethodParameters[j].TypeInformation} {methodDescriptor.MethodParameters[j].ArgumentName} = TODO;");
 				}
 				builder.AppendLine(); // Separator
 
@@ -738,10 +736,10 @@ namespace UnitTestBoilerplate.Services
 				{
 					builder.AppendLine();
 
-					for (int i = 0; i < numberOfParameters; i++)
+					for (int j = 0; j < numberOfParameters; j++)
 					{
 						builder.Append($"	");
-						switch (methodDescriptor.MethodParameters[i].Modifier)
+						switch (methodDescriptor.MethodParameters[j].Modifier)
 						{
 							case ParameterModifier.Out:
 								builder.Append("out ");
@@ -752,9 +750,9 @@ namespace UnitTestBoilerplate.Services
 							default:
 								break;
 						}
-						builder.Append($"{methodDescriptor.MethodParameters[i].ArgumentName}");
+						builder.Append($"{methodDescriptor.MethodParameters[j].ArgumentName}");
 
-						if (i < numberOfParameters - 1)
+						if (j < numberOfParameters - 1)
 						{
 							builder.AppendLine(",");
 						}
@@ -768,7 +766,12 @@ namespace UnitTestBoilerplate.Services
 
 				builder.AppendLine("// Assert");
 				builder.AppendLine("Assert.Fail();");
-				builder.AppendLine("}");
+				builder.Append("}");
+
+				if (i != context.MethodDeclarations.Count - 1)
+				{
+					builder.AppendLine();
+				}
 
 				usedTestMethodNames.Add(testMethodName);
 			}

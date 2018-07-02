@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
+using System;
 using UnitBoilerplate.Sandbox.Classes;
 using UnitBoilerplate.Sandbox.Classes.Cases;
 
@@ -27,16 +28,20 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		}
 
 		[TestMethod]
-		public void TestMethod1()
+		public void AddNumbers_StateUnderTest_ExpectedBehavior()
 		{
 			// Arrange
 			var unitUnderTest = CreateService();
+			int a = TODO;
+			int b = TODO;
 
 			// Act
+			var result = unitUnderTest.AddNumbers(
+				a,
+				b);
 
 			// Assert
 			Assert.Fail();
 		}
-
 	}
 }
