@@ -49,11 +49,11 @@ Each mocking framework has its own pattern.
 * Applies any user-specific formatting rules to the generated code
 * Automatically detects which mocking library and test framework you're using
 
-See the [changelog](CHANGELOG.md) for changes and roadmap. If you'd like to see support for other mocking
+See the [changelog](https://raw.githubusercontent.com/Microsoft/UnitTestBoilerplateGenerator/master/CHANGELOG.md) for changes and roadmap. If you'd like to see support for other mocking
 frameworks or other IoC frameworks, [open an issue](https://github.com/Microsoft/UnitTestBoilerplateGenerator/issues/new).
 
 ## Contribute
-Check out the [contribution guidelines](CONTRIBUTING.md)
+Check out the [contribution guidelines](https://raw.githubusercontent.com/Microsoft/UnitTestBoilerplateGenerator/master/CONTRIBUTING.md)
 if you want to contribute to this project.
 
 For cloning and building this project yourself, make sure
@@ -63,4 +63,4 @@ extension for Visual Studio which enables some features
 used by this project.
 
 ## License
-[MIT](LICENSE)
+[MIT](https://raw.githubusercontent.com/Microsoft/UnitTestBoilerplateGenerator/master/LICENSE)

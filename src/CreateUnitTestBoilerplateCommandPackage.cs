@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.LanguageServices;
@@ -19,6 +20,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using UnitTestBoilerplate.Commands;
 using UnitTestBoilerplate.View;
+using Task = System.Threading.Tasks.Task;
 
 namespace UnitTestBoilerplate
 {
@@ -47,7 +49,7 @@ namespace UnitTestBoilerplate
 	[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
 	[ProvideOptionPage(typeof(FileContentsOptionsDialogPage), "Unit Test Boilerplate Generator", "Test File Contents", 106, 109, supportsAutomation: true, Sort = 1)]
 	[ProvideOptionPage(typeof(OtherOptionsDialogPage), "Unit Test Boilerplate Generator", "Test File Location", 106, 113, supportsAutomation: true, Sort = 2)]
-	public sealed class CreateUnitTestBoilerplateCommandPackage : Package
+	public sealed class CreateUnitTestBoilerplateCommandPackage : AsyncPackage
 	{
 		/// <summary>
 		/// CreateUnitTestBoilerplateCommandPackage GUID string.
@@ -62,24 +64,21 @@ namespace UnitTestBoilerplate
 			// Inside this method you can place any initialization code that does not require
 			// any Visual Studio service because at this point the package object is created but
 			// not sited yet inside Visual Studio environment. The place to do all the other
-			// initialization is the Initialize method.
+			// initialization is the InitializeAsync method.
 		}
 
 		#region Package Members
 
-		/// <summary>
-		/// Initialization of the package; this method is called right after the package is sited, so this is the place
-		/// where you can put all the initialization code that rely on services provided by VisualStudio.
-		/// </summary>
-		protected override void Initialize()
+		protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
 		{
+
 			CreateUnitTestBoilerplateCommand.Initialize(this);
 #if DEBUG
 			SelfTestCommand.Initialize(this);
 			SelfTestCleanCommand.Initialize(this);
 			DetectCsprojCommand.Initialize(this);
 #endif
-			base.Initialize();
+			await base.InitializeAsync(cancellationToken, progress);
 
 			var componentModel = (IComponentModel)this.GetService(typeof(SComponentModel));
 			VisualStudioWorkspace = componentModel.GetService<VisualStudioWorkspace>();
