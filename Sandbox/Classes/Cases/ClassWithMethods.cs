@@ -90,6 +90,16 @@ namespace UnitBoilerplate.Sandbox.Classes.Cases
 		{
 			return Task.FromResult(true);
 		}
+
+		public string MethodWithNullableArgument(int? argument)
+		{
+			return string.Empty;
+		}
+
+		public string MethodWithNamespaceQualifiedArgument(Classes.IInterface3 myInterface)
+		{
+			return string.Empty;
+		}
 	}
 
 	public enum Cucu

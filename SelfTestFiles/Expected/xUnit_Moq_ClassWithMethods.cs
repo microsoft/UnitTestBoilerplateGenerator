@@ -249,5 +249,35 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			// Assert
 			Assert.Fail();
 		}
+
+		[Fact]
+		public void MethodWithNullableArgument_StateUnderTest_ExpectedBehavior()
+		{
+			// Arrange
+			var unitUnderTest = CreateClassWithMethods();
+			int? argument = TODO;
+
+			// Act
+			var result = unitUnderTest.MethodWithNullableArgument(
+				argument);
+
+			// Assert
+			Assert.Fail();
+		}
+
+		[Fact]
+		public void MethodWithNamespaceQualifiedArgument_StateUnderTest_ExpectedBehavior()
+		{
+			// Arrange
+			var unitUnderTest = CreateClassWithMethods();
+			Classes.IInterface3 myInterface = TODO;
+
+			// Act
+			var result = unitUnderTest.MethodWithNamespaceQualifiedArgument(
+				myInterface);
+
+			// Assert
+			Assert.Fail();
+		}
 	}
 }
