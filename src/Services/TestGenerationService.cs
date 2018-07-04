@@ -315,7 +315,7 @@ namespace UnitTestBoilerplate.Services
 
 				var argumentType = argumentList[i].Type;
 
-				string typeName = GetSimpleTypeName(argumentType);
+				string typeName = argumentType.ToString();
 
 				argumentDescriptors[i] = new MethodArgumentDescriptor(new TypeDescriptor(typeName, null), argumentName, modifier);
 			}
@@ -336,43 +336,6 @@ namespace UnitTestBoilerplate.Services
 			}
 
 			return ParameterModifier.None;
-		}
-
-		private static string GetSimpleTypeName(TypeSyntax argumentType)
-		{
-			string typeName = string.Empty;
-
-			if (argumentType is PredefinedTypeSyntax predefinedType)
-			{
-				typeName = predefinedType.Keyword.ValueText;
-			}
-			else if (argumentType is IdentifierNameSyntax identifiedType)
-			{
-				typeName = identifiedType.Identifier.Text;
-			}
-			else if (argumentType is ArrayTypeSyntax arrayType)
-			{
-				var builder = new StringBuilder();
-
-				builder.Append(GetSimpleTypeName(arrayType.ElementType));
-
-				int dimension = arrayType.RankSpecifiers.Count;
-
-				for (int i = 0; i < dimension; i++)
-				{
-					builder.Append(
-						$"{arrayType.RankSpecifiers[i].OpenBracketToken.Text}" +
-						$"{arrayType.RankSpecifiers[i].CloseBracketToken.Text}");
-				}
-
-				typeName = builder.ToString();
-			}
-			else
-			{
-				throw new NotSupportedException("Parameter type not supported");
-			}
-
-			return typeName;
 		}
 
 		private static IEnumerable<ParameterSyntax> GetParameterListNodes(SyntaxNode memberNode)
