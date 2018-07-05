@@ -5,6 +5,10 @@
 
 # Changelog
 
+## 1.9.5
+**2018-07-05**
+- Fixed crash on nullable or fully qualified parameters (Thanks to rCartoux)
+
 ## 1.9.0
 **2018-07-01**
 - Added stub tests for all public method (Thanks to rCartoux)
