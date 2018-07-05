@@ -49,7 +49,7 @@ namespace UnitTestBoilerplate
 	[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
 	[ProvideOptionPage(typeof(FileContentsOptionsDialogPage), "Unit Test Boilerplate Generator", "Test File Contents", 106, 109, supportsAutomation: true, Sort = 1)]
 	[ProvideOptionPage(typeof(OtherOptionsDialogPage), "Unit Test Boilerplate Generator", "Test File Location", 106, 113, supportsAutomation: true, Sort = 2)]
-	public sealed class CreateUnitTestBoilerplateCommandPackage : AsyncPackage
+	public sealed class CreateUnitTestBoilerplateCommandPackage : Package
 	{
 		/// <summary>
 		/// CreateUnitTestBoilerplateCommandPackage GUID string.
@@ -69,16 +69,19 @@ namespace UnitTestBoilerplate
 
 		#region Package Members
 
-		protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
+		/// <summary>
+		/// Initialization of the package; this method is called right after the package is sited, so this is the place
+		/// where you can put all the initialization code that rely on services provided by VisualStudio.
+		/// </summary>
+		protected override void Initialize()
 		{
-
 			CreateUnitTestBoilerplateCommand.Initialize(this);
 #if DEBUG
 			SelfTestCommand.Initialize(this);
 			SelfTestCleanCommand.Initialize(this);
 			DetectCsprojCommand.Initialize(this);
 #endif
-			await base.InitializeAsync(cancellationToken, progress);
+			base.Initialize();
 
 			var componentModel = (IComponentModel)this.GetService(typeof(SComponentModel));
 			VisualStudioWorkspace = componentModel.GetService<VisualStudioWorkspace>();

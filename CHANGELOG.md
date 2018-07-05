@@ -5,7 +5,7 @@
 
 # Changelog
 
-## 1.9.5
+## 1.9.6
 **2018-07-05**
 - Fixed crash on nullable or fully qualified parameters (Thanks to rCartoux)
 
