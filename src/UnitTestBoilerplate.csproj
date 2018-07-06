@@ -93,9 +93,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="1.2.2" />
     <PackageReference Include="Microsoft.Composition" Version="1.0.27" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="1.1.0" />
-    <PackageReference Include="Microsoft.VisualStudio.ComponentModelHost">
-      <Version>15.7.27703</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Imaging" Version="14.3.25407" />
     <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="1.2.2" />
     <PackageReference Include="Microsoft.VisualStudio.OLE.Interop" Version="7.10.6070" />
@@ -311,6 +308,7 @@
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
