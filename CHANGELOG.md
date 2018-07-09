@@ -5,6 +5,10 @@
 
 # Changelog
 
+## 1.9.8
+**2018-07-08**
+- Fixed crash issue on VS 2015.
+
 ## 1.9.6
 **2018-07-05**
 - Fixed crash on nullable or fully qualified parameters (Thanks to rCartoux)
