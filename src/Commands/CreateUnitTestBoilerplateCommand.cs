@@ -11,14 +11,17 @@ using System.Linq;
 using System.Text;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
 using UnitTestBoilerplate.Utilities;
 using UnitTestBoilerplate.View;
+using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
+using Task = System.Threading.Tasks.Task;
 
 namespace UnitTestBoilerplate.Commands
 {
@@ -40,14 +43,14 @@ namespace UnitTestBoilerplate.Commands
 		/// <summary>
 		/// VS Package that provides this command, not null.
 		/// </summary>
-		private readonly Package package;
+		private readonly AsyncPackage package;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CreateUnitTestBoilerplateCommand"/> class.
 		/// Adds our command handlers for menu (commands must exist in the command table file)
 		/// </summary>
 		/// <param name="package">Owner package, not null.</param>
-		private CreateUnitTestBoilerplateCommand(Package package)
+		private CreateUnitTestBoilerplateCommand(AsyncPackage package)
 		{
 			if (package == null)
 			{
@@ -55,20 +58,6 @@ namespace UnitTestBoilerplate.Commands
 			}
 
 			this.package = package;
-
-			DTE2 dte = (DTE2)this.ServiceProvider.GetService(typeof(DTE));
-			OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-			if (commandService != null)
-			{
-				var menuCommandId = new CommandID(CommandSet, CommandId);
-				var menuItem = new OleMenuCommand(this.MenuItemCallback, menuCommandId);
-				menuItem.BeforeQueryStatus += (sender, args) =>
-				{
-					menuItem.Visible = SolutionUtilities.GetSelectedFiles(dte).Any(file => file != null && file.FilePath != null && file.FilePath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase));
-				};
-				
-				commandService.AddCommand(menuItem);
-			}
 		}
 
 		/// <summary>
@@ -81,17 +70,32 @@ namespace UnitTestBoilerplate.Commands
 		}
 
 		/// <summary>
-		/// Gets the service provider from the owner package.
-		/// </summary>
-		private IServiceProvider ServiceProvider => this.package;
-
-		/// <summary>
 		/// Initializes the singleton instance of the command.
 		/// </summary>
 		/// <param name="package">Owner package, not null.</param>
-		public static void Initialize(Package package)
+		public static async Task InitializeAsync(AsyncPackage package)
 		{
 			Instance = new CreateUnitTestBoilerplateCommand(package);
+			await Instance.InitializeAsync();
+		}
+
+		private async Task InitializeAsync()
+		{
+			DTE2 dte = (DTE2)await this.package.GetServiceAsync(typeof(DTE));
+			OleMenuCommandService commandService = await this.package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+			if (commandService != null)
+			{
+				var menuCommandId = new CommandID(CommandSet, CommandId);
+				var menuItem = new OleMenuCommand(this.MenuItemCallback, menuCommandId);
+				menuItem.BeforeQueryStatus += (sender, args) =>
+				{
+					menuItem.Visible = SolutionUtilities.GetSelectedFiles(dte).Any(file => file != null && file.FilePath != null && file.FilePath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase));
+				};
+
+				commandService.AddCommand(menuItem);
+			}
 		}
 
 		/// <summary>

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using UnitTestBoilerplate.View;
+using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
+using Task = System.Threading.Tasks.Task;
 
 namespace UnitTestBoilerplate.Commands
 {
@@ -29,14 +31,14 @@ namespace UnitTestBoilerplate.Commands
 		/// <summary>
 		/// VS Package that provides this command, not null.
 		/// </summary>
-		private readonly Package package;
+		private readonly AsyncPackage package;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SelfTestCommand"/> class.
 		/// Adds our command handlers for menu (commands must exist in the command table file)
 		/// </summary>
 		/// <param name="package">Owner package, not null.</param>
-		private SelfTestCommand(Package package)
+		private SelfTestCommand(AsyncPackage package)
 		{
 			if (package == null)
 			{
@@ -44,14 +46,6 @@ namespace UnitTestBoilerplate.Commands
 			}
 
 			this.package = package;
-
-			OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-			if (commandService != null)
-			{
-				var menuCommandID = new CommandID(CommandSet, CommandId);
-				var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
-				commandService.AddCommand(menuItem);
-			}
 		}
 
 		/// <summary>
@@ -64,23 +58,26 @@ namespace UnitTestBoilerplate.Commands
 		}
 
 		/// <summary>
-		/// Gets the service provider from the owner package.
-		/// </summary>
-		private IServiceProvider ServiceProvider
-		{
-			get
-			{
-				return this.package;
-			}
-		}
-
-		/// <summary>
 		/// Initializes the singleton instance of the command.
 		/// </summary>
 		/// <param name="package">Owner package, not null.</param>
-		public static void Initialize(Package package)
+		public static async Task InitializeAsync(AsyncPackage package)
 		{
 			Instance = new SelfTestCommand(package);
+
+			await Instance.InitializeAsync();
+		}
+
+		private async Task InitializeAsync()
+		{
+			OleMenuCommandService commandService = await this.package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+			if (commandService != null)
+			{
+				var menuCommandID = new CommandID(CommandSet, CommandId);
+				var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
+				commandService.AddCommand(menuItem);
+			}
 		}
 
 		/// <summary>
