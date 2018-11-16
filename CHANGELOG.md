@@ -5,6 +5,14 @@
 
 # Changelog
 
+## 1.9.11
+**2018-11-16**
+- Fixed "Not implemented" error on solutions with unloaded projects on VS 2017 15.9.0.
+
+## 1.9.10
+**2018-07-11**
+- Updated to use async background loading
+
 ## 1.9.8
 **2018-07-08**
 - Fixed crash issue on VS 2015.

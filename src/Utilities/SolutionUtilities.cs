@@ -45,9 +45,19 @@ namespace UnitTestBoilerplate.Utilities
 				{
 					list.AddRange(GetSolutionFolderProjects(project));
 				}
-				else if (!string.IsNullOrEmpty(project.FileName))
+				else
 				{
-					list.Add(project);
+					try
+					{
+						if (!string.IsNullOrEmpty(project.FileName))
+						{
+							list.Add(project);
+						}
+					}
+					catch (Exception)
+					{
+						// In some VS versions trying to access project.FileName can throw a NotImplementedException for unloaded projects.
+					}
 				}
 			}
 
