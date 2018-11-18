@@ -39,7 +39,7 @@ namespace UnitTestBoilerplate.Model
 
 				new TestFramework(
 					name: XUnitName,
-					detectionReferenceMatches: new List<string> { "xunit" },
+					detectionReferenceMatches: new List<string> { "xunit", "xunit.core" },
 					detectionRank: 0,
 					usingString: "Xunit",
 					testClassAttribute: null,

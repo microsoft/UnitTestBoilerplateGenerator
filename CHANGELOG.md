@@ -5,6 +5,10 @@
 
 # Changelog
 
+## 1.9.12
+**2018-11-18**
+- Fixed xUnit detection on .NET Framework projects.
+
 ## 1.9.11
 **2018-11-16**
 - Fixed "Not implemented" error on solutions with unloaded projects on VS 2017 15.9.0.
