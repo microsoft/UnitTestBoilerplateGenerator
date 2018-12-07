@@ -37,7 +37,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void AddNumbers_StateUnderTest_ExpectedBehavior()
 		{
 			// Arrange
-			var unitUnderTest = CreateService();
+			var unitUnderTest = this.CreateService();
 			int a = TODO;
 			int b = TODO;
 
@@ -47,7 +47,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 				b);
 
 			// Assert
-			Assert.Fail();
+			Assert.True(false);
 		}
 	}
 }

@@ -25,13 +25,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = CreateNotInjectedClassEmptyCtor();
+			var unitUnderTest = this.CreateNotInjectedClassEmptyCtor();
 
 			// Act
 
 			// Assert
 			Assert.Fail();
 		}
-
 	}
 }

@@ -5,6 +5,11 @@
 
 # Changelog
 
+## 1.9.13
+**2018-12-06**
+- Generated tests in xUnit now use Assert.True(false) instead of the non-existent Assert.Fail() .
+- Removed extra newline after placeholder test.
+
 ## 1.9.12
 **2018-11-18**
 - Fixed xUnit detection on .NET Framework projects.

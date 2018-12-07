@@ -728,7 +728,7 @@ namespace UnitTestBoilerplate.Services
 				builder.AppendLine(); // Separator
 
 				builder.AppendLine("// Assert");
-				builder.AppendLine("Assert.Fail();");
+				builder.AppendLine(context.TestFramework.AssertFailStatement);
 				builder.Append("}");
 
 				if (i != context.MethodDeclarations.Count - 1)
@@ -753,7 +753,7 @@ namespace UnitTestBoilerplate.Services
 
 					if (tokenName == "ExplicitConstructor")
 					{
-						WriteExplicitConstructor(builder, context, string.Empty);
+						this.WriteExplicitConstructor(builder, context, string.Empty);
 						return;
 					}
 
@@ -814,8 +814,8 @@ namespace UnitTestBoilerplate.Services
 			builder.AppendLine(); // Separator
 
 			builder.AppendLine("// Assert");
-			builder.AppendLine("Assert.Fail();");
-			builder.AppendLine("}");
+			builder.AppendLine(context.TestFramework.AssertFailStatement);
+			builder.Append("}");
 		}
 
 		private static string CreateUniqueTestMethodName(List<string> usedTestMethodNames, string baseTestMethodName)

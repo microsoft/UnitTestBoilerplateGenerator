@@ -19,7 +19,8 @@ namespace UnitTestBoilerplate.Model
 			TestInitializeStyle testInitializeStyle,
 			string testInitializeAttribute, 
 			TestCleanupStyle testCleanupStyle,
-			string testCleanupAttribute)
+			string testCleanupAttribute,
+			string assertFailStatement)
 	    {
 		    this.Name = name;
 			this.DetectionReferenceMatches = detectionReferenceMatches;
@@ -31,7 +32,8 @@ namespace UnitTestBoilerplate.Model
 			this.TestInitializeAttribute = testInitializeAttribute;
 			this.TestCleanupStyle = testCleanupStyle;
 			this.TestCleanupAttribute = testCleanupAttribute;
-		}
+		    this.AssertFailStatement = assertFailStatement;
+	    }
 
 	    public string Name { get; }
 
@@ -61,6 +63,8 @@ namespace UnitTestBoilerplate.Model
 		public TestCleanupStyle TestCleanupStyle { get; }
 
 		public string TestCleanupAttribute { get; }
+
+		public string AssertFailStatement { get; }
 
 	    public override string ToString()
 	    {

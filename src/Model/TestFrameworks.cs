@@ -23,7 +23,8 @@ namespace UnitTestBoilerplate.Model
 					testInitializeAttribute: "TestInitialize",
 					testCleanupAttribute: "TestCleanup",
 					testInitializeStyle: TestInitializeStyle.AttributedMethod,
-					testCleanupStyle: TestCleanupStyle.AttributedMethod),
+					testCleanupStyle: TestCleanupStyle.AttributedMethod,
+					assertFailStatement: "Assert.Fail();"),
 
 				new TestFramework(
 					name: NUnitName,
@@ -35,7 +36,8 @@ namespace UnitTestBoilerplate.Model
 					testInitializeAttribute: "SetUp",
 					testCleanupAttribute: "TearDown",
 					testInitializeStyle: TestInitializeStyle.AttributedMethod,
-					testCleanupStyle: TestCleanupStyle.AttributedMethod),
+					testCleanupStyle: TestCleanupStyle.AttributedMethod,
+					assertFailStatement: "Assert.Fail();"),
 
 				new TestFramework(
 					name: XUnitName,
@@ -47,7 +49,8 @@ namespace UnitTestBoilerplate.Model
 					testInitializeAttribute: null,
 					testCleanupAttribute: null,
 					testInitializeStyle: TestInitializeStyle.Constructor,
-					testCleanupStyle: TestCleanupStyle.Disposable),
+					testCleanupStyle: TestCleanupStyle.Disposable,
+					assertFailStatement: "Assert.True(false);"),
 			}.AsReadOnly();
 		}
 

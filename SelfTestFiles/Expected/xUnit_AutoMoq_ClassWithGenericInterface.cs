@@ -21,8 +21,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			// Act
 
 			// Assert
-			Assert.Fail();
+			Assert.True(false);
 		}
-
 	}
 }

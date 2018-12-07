@@ -26,7 +26,7 @@ namespace UnitTestBoilerplate.Model
 			this.Properties = properties;
 			this.ConstructorTypes = constructorTypes;
 			this.InjectedTypes = injectedTypes;
-			MethodDeclarations = methodDeclarations;
+			this.MethodDeclarations = methodDeclarations;
 		}
 
 		public MockFramework MockFramework { get; }

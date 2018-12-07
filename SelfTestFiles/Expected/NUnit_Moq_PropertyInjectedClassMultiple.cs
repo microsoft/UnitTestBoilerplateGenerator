@@ -41,13 +41,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = CreatePropertyInjectedClassMultiple();
+			var unitUnderTest = this.CreatePropertyInjectedClassMultiple();
 
 			// Act
 
 			// Assert
 			Assert.Fail();
 		}
-
 	}
 }

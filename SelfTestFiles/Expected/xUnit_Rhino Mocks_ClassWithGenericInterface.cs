@@ -44,13 +44,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = CreateClassWithGenericInterface();
+			var unitUnderTest = this.CreateClassWithGenericInterface();
 
 			// Act
 
 			// Assert
-			Assert.Fail();
+			Assert.True(false);
 		}
-
 	}
 }

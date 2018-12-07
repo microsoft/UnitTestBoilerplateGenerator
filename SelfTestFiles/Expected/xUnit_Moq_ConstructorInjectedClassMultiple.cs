@@ -37,13 +37,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = CreateConstructorInjectedClassMultiple();
+			var unitUnderTest = this.CreateConstructorInjectedClassMultiple();
 
 			// Act
 
 			// Assert
-			Assert.Fail();
+			Assert.True(false);
 		}
-
 	}
 }

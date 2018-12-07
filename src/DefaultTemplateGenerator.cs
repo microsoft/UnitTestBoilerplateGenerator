@@ -24,7 +24,7 @@ namespace UnitTestBoilerplate
 
 			if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.HelperMethod)
 			{
-				return $"{declaration}{ObjectCreationMethod};";
+				return $"{declaration}this.{ObjectCreationMethod};";
 			}
 			else if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.DirectCode)
 			{
