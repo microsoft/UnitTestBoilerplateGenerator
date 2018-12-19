@@ -5,6 +5,10 @@
 
 # Changelog
 
+## 1.9.15
+**2018-12-18**
+- Added support for Visual Studio 2019.
+
 ## 1.9.13
 **2018-12-06**
 - Generated tests in xUnit now use Assert.True(false) instead of the non-existent Assert.Fail() .
