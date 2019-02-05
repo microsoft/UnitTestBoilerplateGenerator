@@ -5,6 +5,10 @@
 
 # Changelog
 
+## 1.9.20
+**2018-02-05**
+- Fixed installation issues with some versions of Visual Studio.
+
 ## 1.9.15
 **2018-12-18**
 - Added support for Visual Studio 2019.
