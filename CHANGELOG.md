@@ -5,7 +5,7 @@
 
 # Changelog
 
-## 1.9.20
+## 1.9.17
 **2018-02-05**
 - Fixed installation issues with some versions of Visual Studio.
 
