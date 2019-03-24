@@ -9,6 +9,6 @@ namespace UnitTestBoilerplate.Model
 
 		public Project Project { get; set; }
 
-		public string ProjectDirectory => Path.GetDirectoryName(this.Project.FileName);
+		public string ProjectDirectory => Path.GetDirectoryName(this.Project.FullName);
 	}
 }

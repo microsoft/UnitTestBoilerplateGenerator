@@ -61,7 +61,7 @@ namespace UnitTestBoilerplate.ViewModel
 			{
 				foreach (var project in this.TestProjects)
 				{
-					if (string.Equals(lastSelectedProject, project.Project.FileName, StringComparison.OrdinalIgnoreCase))
+					if (string.Equals(lastSelectedProject, project.Project.FullName, StringComparison.OrdinalIgnoreCase))
 					{
 						this.selectedProject = project;
 						break;
@@ -206,7 +206,7 @@ namespace UnitTestBoilerplate.ViewModel
 					}
 				}
 
-				this.Settings.SaveSelectedTestProject(this.dte.Solution.FileName, this.SelectedProject.Project.FileName);
+				this.Settings.SaveSelectedTestProject(this.dte.Solution.FileName, this.SelectedProject.Project.FullName);
 			}
 
 			this.View?.Close();
@@ -221,8 +221,8 @@ namespace UnitTestBoilerplate.ViewModel
 			}
 			else
 			{
-				List<TestFramework> testFrameworks = this.FrameworkPickerService.FindTestFrameworks(this.selectedProject.Project.FileName);
-				List<MockFramework> mockFrameworks = this.FrameworkPickerService.FindMockFrameworks(this.selectedProject.Project.FileName);
+				List<TestFramework> testFrameworks = this.FrameworkPickerService.FindTestFrameworks(this.selectedProject.Project.FullName);
+				List<MockFramework> mockFrameworks = this.FrameworkPickerService.FindMockFrameworks(this.selectedProject.Project.FullName);
 
 				this.SelectedTestFramework = this.FrameworkPickerService.PickDefaultTestFramework(testFrameworks);
 				this.SelectedMockFramework = this.FrameworkPickerService.PickDefaultMockFramework(mockFrameworks);

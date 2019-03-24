@@ -63,7 +63,7 @@ namespace UnitTestBoilerplate.Services
 					}
 
 					// Delete folder if it existed but was not added to project.
-					string projectFolder = Path.GetDirectoryName(project.FileName);
+					string projectFolder = Path.GetDirectoryName(project.FullName);
 					string casesFolder = Path.Combine(projectFolder, "Cases");
 
 					if (Directory.Exists(casesFolder))
@@ -176,32 +176,6 @@ namespace UnitTestBoilerplate.Services
 					result.SucceededCount++;
 				}
 			}
-
-			//foreach (Project testProject in targetProjects)
-			//{
-			//	result.TotalCount++;
-
-			//	TestFramework actualTestFramework = frameworkPickerService.FindTestFramework(testProject.FileName);
-			//	MockFramework actualMockFramework = frameworkPickerService.FindMockFramework(testProject.FileName);
-
-			//	SelfTestDetectionResult expectedDetectionResult;
-			//	if (!ExpectedDetectionResults.TryGetValue(testProject.Name, out expectedDetectionResult))
-			//	{
-			//		failures.Add("Could not find expected detection results for project " + testProject.Name);
-			//	}
-			//	else if (expectedDetectionResult.TestFramework != actualTestFramework.Name)
-			//	{
-			//		failures.Add($"Expected {expectedDetectionResult.TestFramework} test framework for {testProject.Name} but got {actualTestFramework.Name}");
-			//	}
-			//	else if (expectedDetectionResult.MockFramework != actualMockFramework.Name)
-			//	{
-			//		failures.Add($"Expected {expectedDetectionResult.MockFramework} mock framework for {testProject.Name} but got {actualMockFramework.Name}");
-			//	}
-			//	else
-			//	{
-			//		result.SucceededCount++;
-			//	}
-			//}
 
 			result.Failures = failures;
 

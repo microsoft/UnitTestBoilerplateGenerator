@@ -49,14 +49,13 @@ namespace UnitTestBoilerplate.Utilities
 				{
 					try
 					{
-						if (!string.IsNullOrEmpty(project.FileName))
+						if (!string.IsNullOrEmpty(project.FullName))
 						{
 							list.Add(project);
 						}
 					}
 					catch (Exception)
 					{
-						// In some VS versions trying to access project.FileName can throw a NotImplementedException for unloaded projects.
 					}
 				}
 			}

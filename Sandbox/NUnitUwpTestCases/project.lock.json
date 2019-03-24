@@ -25430,8 +25430,7 @@
     "UAP,Version=v10.0.10586": []
   },
   "packageFolders": {
-    "C:\\Users\\RandomEngy\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {}
+    "C:\\Users\\RandomEngy\\.nuget\\packages\\": {}
   },
   "project": {
     "restore": {
@@ -25442,18 +25441,16 @@
       "packagesPath": "C:\\Users\\RandomEngy\\.nuget\\packages\\",
       "outputPath": "D:\\git\\UnitTestBoilerplateGenerator\\Sandbox\\NUnitUwpTestCases\\obj\\",
       "projectStyle": "ProjectJson",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\"
-      ],
       "configFilePaths": [
         "D:\\git\\UnitTestBoilerplateGenerator\\Sandbox\\NuGet.Config",
         "D:\\git\\UnitTestBoilerplateGenerator\\NuGet.Config",
         "C:\\Users\\RandomEngy\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "D:\\Temp\\LocalNuGet": {},
+        "D:\\git\\PipeMethodCalls\\PipeMethodCalls\\bin\\Release": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
