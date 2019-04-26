@@ -20,6 +20,7 @@ Mock frameworks supported:
 * NSubstitute
 * SimpleStubs
 * Rhino Mocks
+* FakeItEasy
 
 Dependency injection modes supported:
 * Constructor injection via any IoC framework
