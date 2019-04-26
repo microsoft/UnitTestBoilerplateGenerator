@@ -20,7 +20,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = MockRepository.GenerateStub<ISomeOtherInterface>();
 		}
 
-
 		private ClassWithMethods CreateClassWithMethods()
 		{
 			return new ClassWithMethods(

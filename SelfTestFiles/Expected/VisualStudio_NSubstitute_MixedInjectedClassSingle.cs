@@ -18,7 +18,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeInterface = Substitute.For<ISomeInterface>();
 		}
 
-
 		private MixedInjectedClassSingle CreateMixedInjectedClassSingle()
 		{
 			return new MixedInjectedClassSingle(

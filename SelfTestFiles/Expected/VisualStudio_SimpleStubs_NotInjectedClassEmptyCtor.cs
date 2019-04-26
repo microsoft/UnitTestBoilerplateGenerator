@@ -14,7 +14,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 		}
 
-
 		private NotInjectedClassEmptyCtor CreateNotInjectedClassEmptyCtor()
 		{
 			return new NotInjectedClassEmptyCtor();

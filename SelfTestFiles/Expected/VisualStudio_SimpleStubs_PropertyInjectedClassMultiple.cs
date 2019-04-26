@@ -17,7 +17,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = new StubISomeOtherInterface();
 		}
 
-
 		private PropertyInjectedClassMultiple CreatePropertyInjectedClassMultiple()
 		{
 			return new PropertyInjectedClassMultiple

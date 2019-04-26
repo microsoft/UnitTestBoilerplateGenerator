@@ -26,7 +26,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeInterface = Substitute.For<ISomeInterface>();
 		}
 
-
 		private ClassWithGenericInterface CreateClassWithGenericInterface()
 		{
 			return new ClassWithGenericInterface(

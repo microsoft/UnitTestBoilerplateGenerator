@@ -18,7 +18,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = new StubISomeOtherInterface();
 		}
 
-
 		private SomeService CreateService()
 		{
 			return new SomeService(

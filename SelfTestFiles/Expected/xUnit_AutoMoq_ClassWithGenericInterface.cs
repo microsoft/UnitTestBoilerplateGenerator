@@ -10,7 +10,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 {
 	public class ClassWithGenericInterfaceTests
 	{
-
 		[Fact]
 		public void TestMethod1()
 		{

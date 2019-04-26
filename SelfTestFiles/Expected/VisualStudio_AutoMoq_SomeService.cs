@@ -10,7 +10,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class SomeServiceTests
 	{
-
 		[TestMethod]
 		public void AddNumbers_StateUnderTest_ExpectedBehavior()
 		{

@@ -15,7 +15,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeInterface = new StubISomeInterface();
 		}
 
-
 		private PropertyInjectedClassSingle CreatePropertyInjectedClassSingle()
 		{
 			return new PropertyInjectedClassSingle

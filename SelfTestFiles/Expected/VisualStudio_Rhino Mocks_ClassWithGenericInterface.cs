@@ -27,7 +27,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeInterface = MockRepository.GenerateStub<ISomeInterface>();
 		}
 
-
 		private ClassWithGenericInterface CreateClassWithGenericInterface()
 		{
 			return new ClassWithGenericInterface(

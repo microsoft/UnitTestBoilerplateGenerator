@@ -14,7 +14,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 		}
 
-
 		private NotInjectedClass CreateNotInjectedClass()
 		{
 			return new NotInjectedClass();

@@ -10,6 +10,7 @@ namespace UnitTestBoilerplate.Model
 		public const string SimpleStubsName = "SimpleStubs";
 		public const string NSubstituteName = "NSubstitute";
 		public const string RhinoMocksName = "Rhino Mocks";
+		public const string FakeItEasyName = "FakeItEasy";
 
 		static MockFrameworks()
 		{
@@ -95,6 +96,22 @@ namespace UnitTestBoilerplate.Model
 					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod,
 					testedObjectCreationCode: null,
 					mockObjectReferenceCode: "this.stub$InterfaceMockName$"),
+				new MockFramework(
+					name: FakeItEasyName,
+					detectionReferenceMatches: new List<string> { "FakeItEasy" },
+					detectionRank: 2,
+					usingNamespaces: new List<string> { "FakeItEasy" },
+					supportsGenerics: true,
+					classStartCode: null,
+					hasMockFields: true,
+					initializeStartCode: null,
+					mockFieldDeclarationCode: "private $InterfaceType$ fake$InterfaceMockName$;",
+					mockFieldInitializationCode: "this.fake$InterfaceMockName$ = A.Fake<$InterfaceType$>();",
+					testCleanupCode: null,
+					testArrangeCode: null,
+					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod,
+					testedObjectCreationCode: null,
+					mockObjectReferenceCode: "this.fake$InterfaceMockName$")
 			}.AsReadOnly();
 		}
 

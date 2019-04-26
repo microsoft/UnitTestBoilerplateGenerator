@@ -11,7 +11,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class ClassWithMethodsTests
 	{
-
 		[TestMethod]
 		public async Task GetBoolTaskAsync_StateUnderTest_ExpectedBehavior()
 		{

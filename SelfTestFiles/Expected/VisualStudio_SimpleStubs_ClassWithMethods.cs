@@ -19,7 +19,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = new StubISomeOtherInterface();
 		}
 
-
 		private ClassWithMethods CreateClassWithMethods()
 		{
 			return new ClassWithMethods(

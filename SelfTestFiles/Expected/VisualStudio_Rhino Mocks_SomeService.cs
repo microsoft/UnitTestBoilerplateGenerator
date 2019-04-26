@@ -19,7 +19,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = MockRepository.GenerateStub<ISomeOtherInterface>();
 		}
 
-
 		private SomeService CreateService()
 		{
 			return new SomeService(

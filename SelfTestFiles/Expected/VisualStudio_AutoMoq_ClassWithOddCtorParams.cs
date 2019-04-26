@@ -8,7 +8,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class ClassWithOddCtorParamsTests
 	{
-
 		[TestMethod]
 		public void TestMethod1()
 		{

@@ -20,7 +20,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeOtherInterface = Substitute.For<ISomeOtherInterface>();
 		}
 
-
 		private ClassWithMethods CreateClassWithMethods()
 		{
 			return new ClassWithMethods(

@@ -132,6 +132,7 @@ namespace UnitTestBoilerplate.Services
 			var testList = new List<SelfTestDetectionTest>
 			{
 				new SelfTestDetectionTest("AutoMoqTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.AutoMoqName),
+				new SelfTestDetectionTest("FakeItEasyTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.FakeItEasyName),
 				new SelfTestDetectionTest("NetCoreMoqTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.MoqName),
 				new SelfTestDetectionTest("NetCoreNSubstituteTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName),
 				new SelfTestDetectionTest("NetCoreNUnitTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.MoqName),

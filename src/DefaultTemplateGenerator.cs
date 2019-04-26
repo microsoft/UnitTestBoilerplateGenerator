@@ -139,23 +139,22 @@ namespace UnitTestBoilerplate
 
 				this.indentLevel--;
 				this.AppendLineIndented("}");
+				this.AppendLineIndented();
 			}
 
 			// Helper method to create tested object
 			if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.HelperMethod)
 			{
-				this.AppendLineIndented();
 				this.AppendLineIndented($"private $ClassName$ {ObjectCreationMethod}");
 				this.AppendLineIndented("{");
 				this.indentLevel++;
 				this.AppendLineIndented("return $ExplicitConstructor$;");
 				this.indentLevel--;
 				this.AppendLineIndented("}");
-
+				this.AppendLineIndented();
 			}
 
 			// Test Methods declaration
-			this.AppendLineIndented();
 			this.AppendLineIndented("$TestMethods$");
 
 			// Test class/namespace end

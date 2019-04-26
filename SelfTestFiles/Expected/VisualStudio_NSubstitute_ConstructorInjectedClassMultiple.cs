@@ -18,7 +18,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeOtherInterface = Substitute.For<ISomeOtherInterface>();
 		}
 
-
 		private ConstructorInjectedClassMultiple CreateConstructorInjectedClassMultiple()
 		{
 			return new ConstructorInjectedClassMultiple(

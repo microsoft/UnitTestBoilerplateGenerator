@@ -18,7 +18,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = MockRepository.GenerateStub<ISomeOtherInterface>();
 		}
 
-
 		private ConstructorInjectedClassMultiple CreateConstructorInjectedClassMultiple()
 		{
 			return new ConstructorInjectedClassMultiple(

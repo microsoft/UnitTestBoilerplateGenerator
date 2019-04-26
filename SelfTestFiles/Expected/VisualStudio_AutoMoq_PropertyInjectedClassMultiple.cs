@@ -9,7 +9,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class PropertyInjectedClassMultipleTests
 	{
-
 		[TestMethod]
 		public void TestMethod1()
 		{

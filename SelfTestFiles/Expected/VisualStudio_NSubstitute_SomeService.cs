@@ -19,7 +19,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeOtherInterface = Substitute.For<ISomeOtherInterface>();
 		}
 
-
 		private SomeService CreateService()
 		{
 			return new SomeService(

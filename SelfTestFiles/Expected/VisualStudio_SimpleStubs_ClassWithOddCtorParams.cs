@@ -14,7 +14,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 		}
 
-
 		private ClassWithOddCtorParams CreateClassWithOddCtorParams()
 		{
 			return new ClassWithOddCtorParams(

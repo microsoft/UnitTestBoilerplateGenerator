@@ -16,7 +16,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeInterface = Substitute.For<ISomeInterface>();
 		}
 
-
 		private ConstructorInjectedClassSingle CreateConstructorInjectedClassSingle()
 		{
 			return new ConstructorInjectedClassSingle(

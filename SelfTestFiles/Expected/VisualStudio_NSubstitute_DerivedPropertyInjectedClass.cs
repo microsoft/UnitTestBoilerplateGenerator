@@ -20,7 +20,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.subSomeOtherInterface = Substitute.For<ISomeOtherInterface>();
 		}
 
-
 		private DerivedPropertyInjectedClass CreateDerivedPropertyInjectedClass()
 		{
 			return new DerivedPropertyInjectedClass

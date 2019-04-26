@@ -21,7 +21,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = new StubISomeOtherInterface();
 		}
 
-
 		private MixedInjectedClassMultiple CreateMixedInjectedClassMultiple()
 		{
 			return new MixedInjectedClassMultiple(

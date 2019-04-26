@@ -9,7 +9,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	[TestClass]
 	public class ConstructorInjectedClassSingleTests
 	{
-
 		[TestMethod]
 		public void TestMethod1()
 		{

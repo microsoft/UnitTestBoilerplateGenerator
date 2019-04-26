@@ -19,7 +19,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.stubSomeOtherInterface = new StubISomeOtherInterface();
 		}
 
-
 		private DerivedPropertyInjectedClass CreateDerivedPropertyInjectedClass()
 		{
 			return new DerivedPropertyInjectedClass

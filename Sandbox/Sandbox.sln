@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Classes", "Classes\Classes.csproj", "{C858AB02-55A4-4F5A-950F-6F403912777F}"
 EndProject
@@ -38,6 +38,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultipleFrameworkTestCases", "MultipleFrameworkTestCases\MultipleFrameworkTestCases.csproj", "{FCEC9C55-9E6E-410D-A2AC-0ADA4979AE2F}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SqlDatabaseTestCases", "SqlDatabaseTestCases\SqlDatabaseTestCases.sqlproj", "{9F0BBCE3-D893-43A4-9FB8-10A2B9E337C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeItEasyTestCases", "FakeItEasyTestCases\FakeItEasyTestCases.csproj", "{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -347,6 +349,22 @@ Global
 		{9F0BBCE3-D893-43A4-9FB8-10A2B9E337C5}.Release|x86.ActiveCfg = Release|Any CPU
 		{9F0BBCE3-D893-43A4-9FB8-10A2B9E337C5}.Release|x86.Build.0 = Release|Any CPU
 		{9F0BBCE3-D893-43A4-9FB8-10A2B9E337C5}.Release|x86.Deploy.0 = Release|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Debug|ARM.Build.0 = Debug|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Debug|x64.Build.0 = Debug|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Debug|x86.Build.0 = Debug|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Release|ARM.ActiveCfg = Release|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Release|ARM.Build.0 = Release|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Release|x64.ActiveCfg = Release|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Release|x64.Build.0 = Release|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF1B5A74-5868-4560-87CE-A2824BEA5B0B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
