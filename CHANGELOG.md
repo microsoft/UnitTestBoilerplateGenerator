@@ -5,12 +5,16 @@
 
 # Changelog
 
+## 1.10.0
+**2019-04-25**
+- Added support for FakeItEasy mock framework.
+
 ## 1.9.20
-**2018-02-05**
+**2019-02-05**
 - Fixed error with SQL Database projects.
 
 ## 1.9.17
-**2018-02-05**
+**2019-02-05**
 - Fixed installation issues with some versions of Visual Studio.
 
 ## 1.9.15
