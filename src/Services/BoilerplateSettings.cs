@@ -276,8 +276,17 @@ namespace UnitTestBoilerplate.Services
 
 	    public void SetTemplate(string testFrameworkString, string mockFrameworkString, string templateTypeString, string template)
 	    {
-		    this.store.SetString(CollectionPath, GetTemplateSettingsKey(testFrameworkString, mockFrameworkString, templateTypeString), template);
-	    }
+			string settingsKey = GetTemplateSettingsKey(testFrameworkString, mockFrameworkString, templateTypeString);
+
+			if (template == null)
+			{
+				this.store.DeleteProperty(CollectionPath, settingsKey);
+			}
+			else
+			{
+				this.store.SetString(CollectionPath, settingsKey, template);
+			}
+		}
 
 	    public void RevertTemplateToDefault(TestFramework testFramework, MockFramework mockFramework)
 	    {
