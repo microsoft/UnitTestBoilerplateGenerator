@@ -14,5 +14,10 @@
 		/// The object is created directly from code with help of the mock library.
 		/// </summary>
 		DirectCode,
+
+		/// <summary>
+		/// The object is created with TODO stubs for all methods. Used when no mock library is available.
+		/// </summary>
+		TodoStub
 	}
 }

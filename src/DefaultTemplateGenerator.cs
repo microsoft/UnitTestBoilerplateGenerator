@@ -30,6 +30,10 @@ namespace UnitTestBoilerplate
 			{
 				return $"{mockFramework.TestArrangeCode}{Environment.NewLine}{declaration}{mockFramework.TestedObjectCreationCode}";
 			}
+			else if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.TodoStub)
+			{
+				return $"{declaration}$TodoConstructor$;";
+			}
 
 			throw new NotSupportedException($"Tested object creation style {mockFramework.TestedObjectCreationStyle} is not supported");
 		}

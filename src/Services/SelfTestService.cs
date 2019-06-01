@@ -138,7 +138,7 @@ namespace UnitTestBoilerplate.Services
 				new SelfTestDetectionTest("NetCoreNUnitTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.MoqName),
 				new SelfTestDetectionTest("NetCoreSimpleStubsTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName),
 				new SelfTestDetectionTest("NetCoreVSRhinoMocksTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName),
-				new SelfTestDetectionTest("NoFrameworkTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.MoqName),
+				new SelfTestDetectionTest("NoFrameworkTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.NoneName),
 				new SelfTestDetectionTest("NoFrameworkTestCases", nunitNSubSettings, TestFrameworks.NUnitName, MockFrameworks.NSubstituteName),
 				new SelfTestDetectionTest("NSubstituteTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName),
 				new SelfTestDetectionTest("NUnitTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.MoqName),

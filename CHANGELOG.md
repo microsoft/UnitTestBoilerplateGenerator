@@ -5,6 +5,11 @@
 
 # Changelog
 
+## 1.10.4
+**2019-06-01**
+- Added ability to choose no mock framework.
+- Fixed crash when trying to revert a template to default.
+
 ## 1.10.0
 **2019-04-25**
 - Added support for FakeItEasy mock framework.

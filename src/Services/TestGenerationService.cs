@@ -624,6 +624,24 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
+		private static void WriteTodoConstructor(StringBuilder builder, TestGenerationContext context)
+		{
+			builder.Append("new ");
+			builder.Append(context.ClassName);
+			builder.Append("(");
+
+			for (int i = 0; i < context.ConstructorTypes.Count; i++)
+			{
+				builder.Append("TODO");
+				if (i < context.ConstructorTypes.Count - 1)
+				{
+					builder.Append(", ");
+				}
+			}
+
+			builder.Append(")");
+		}
+
 		private void WriteTestMethods(StringBuilder builder, TestGenerationContext context)
 		{
 			string testedObjectReferenceTemplate = this.Settings.GetTemplate(
@@ -754,6 +772,12 @@ namespace UnitTestBoilerplate.Services
 					if (tokenName == "ExplicitConstructor")
 					{
 						this.WriteExplicitConstructor(builder, context, string.Empty);
+						return;
+					}
+
+					if (tokenName == "TodoConstructor")
+					{
+						WriteTodoConstructor(builder, context);
 						return;
 					}
 

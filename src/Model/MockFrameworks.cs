@@ -5,6 +5,7 @@ namespace UnitTestBoilerplate.Model
 {
 	public static class MockFrameworks
 	{
+		public const string NoneName = "None";
 		public const string MoqName = "Moq";
 		public const string AutoMoqName = "AutoMoq";
 		public const string SimpleStubsName = "SimpleStubs";
@@ -16,6 +17,22 @@ namespace UnitTestBoilerplate.Model
 		{
 			List = new List<MockFramework>
 			{
+				new MockFramework(
+					name: NoneName,
+					detectionReferenceMatches: new List<string>(),
+					detectionRank: 3,
+					usingNamespaces: new List<string>(),
+					supportsGenerics: true,
+					classStartCode: null,
+					hasMockFields: false,
+					initializeStartCode: null,
+					mockFieldDeclarationCode: null,
+					mockFieldInitializationCode: null,
+					testCleanupCode: null,
+					testArrangeCode: null,
+					testedObjectCreationStyle: TestedObjectCreationStyle.TodoStub,
+					testedObjectCreationCode: null,
+					mockObjectReferenceCode: null),
 				new MockFramework(
 					name: MoqName,
 					detectionReferenceMatches: new List<string> { "Moq" },
