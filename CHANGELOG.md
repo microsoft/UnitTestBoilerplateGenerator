@@ -5,7 +5,7 @@
 
 # Changelog
 
-## 1.10.4
+## 1.10.5
 **2019-06-01**
 - Added ability to choose no mock framework.
 - Fixed crash when trying to revert a template to default.

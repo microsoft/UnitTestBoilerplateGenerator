@@ -12,15 +12,15 @@ namespace UnitTestBoilerplate.ViewModel
 {
 	public class OtherOptionsDialogViewModel : ViewModelBase
 	{
-		private const string NoneName = "None";
+		private const string AutoName = "Auto";
 
 		public OtherOptionsDialogViewModel()
 		{
 			this.TestFrameworkChoices = new List<TestFramework>(TestFrameworks.List);
 			this.MockFrameworkChoices = new List<MockFramework>(MockFrameworks.List);
 
-			this.TestFrameworkChoices.Insert(0, new TestFramework(NoneName));
-			this.MockFrameworkChoices.Insert(0, new MockFramework(NoneName));
+			this.TestFrameworkChoices.Insert(0, new TestFramework(AutoName));
+			this.MockFrameworkChoices.Insert(0, new MockFramework(AutoName));
 		}
 
 		[Import]
@@ -56,7 +56,7 @@ namespace UnitTestBoilerplate.ViewModel
 		{
 			this.Settings.FileNameTemplate = this.TestFileNameFormat;
 
-			if (this.PreferredTestFramework.Name == NoneName)
+			if (this.PreferredTestFramework.Name == AutoName)
 			{
 				this.Settings.PreferredTestFramework = null;
 			}
@@ -65,7 +65,7 @@ namespace UnitTestBoilerplate.ViewModel
 				this.Settings.PreferredTestFramework = this.PreferredTestFramework;
 			}
 
-			if (this.PreferredMockFramework.Name == NoneName)
+			if (this.PreferredMockFramework.Name == AutoName)
 			{
 				this.Settings.PreferredMockFramework = null;
 			}

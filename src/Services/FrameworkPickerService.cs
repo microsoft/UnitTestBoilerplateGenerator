@@ -102,14 +102,20 @@ namespace UnitTestBoilerplate.Services
 
 	    public MockFramework PickDefaultMockFramework(IList<MockFramework> frameworks)
 	    {
-		    // If there's only one framework detected, that must be it
-		    if (frameworks.Count == 1)
+			// If the preferred framework is None, use that
+			MockFramework preferredFramework = this.Settings.PreferredMockFramework;
+			if (preferredFramework != null && preferredFramework.Name == MockFrameworks.NoneName)
+			{
+				return preferredFramework;
+			}
+
+			// If there's only one framework detected, that must be it
+			if (frameworks.Count == 1)
 		    {
 			    return frameworks.First();
 		    }
 
 		    // If the preferred framework is included in the list, use it.
-		    MockFramework preferredFramework = this.Settings.PreferredMockFramework;
 		    if (frameworks.Contains(preferredFramework))
 		    {
 			    return preferredFramework;

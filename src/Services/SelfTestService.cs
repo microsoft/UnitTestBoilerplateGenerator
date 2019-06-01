@@ -117,6 +117,12 @@ namespace UnitTestBoilerplate.Services
 				PreferredMockFramework = null
 			};
 
+			var noMockFrameworkSettings = new MockBoilerplateSettings
+			{
+				PreferredTestFramework = null,
+				PreferredMockFramework = MockFrameworks.Get(MockFrameworks.NoneName)
+			};
+
 			var vsMoqSettings = new MockBoilerplateSettings
 			{
 				PreferredTestFramework = TestFrameworks.Get(TestFrameworks.VisualStudioName),
@@ -146,6 +152,7 @@ namespace UnitTestBoilerplate.Services
 				new SelfTestDetectionTest("SimpleStubsTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName),
 				new SelfTestDetectionTest("VSRhinoMocksTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName),
 				new SelfTestDetectionTest("VSTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.MoqName),
+				new SelfTestDetectionTest("VSTestCases", noMockFrameworkSettings, TestFrameworks.VisualStudioName, MockFrameworks.NoneName),
 				new SelfTestDetectionTest("XUnitMoqTestCases", defaultSettings, TestFrameworks.XUnitName, MockFrameworks.MoqName),
 				new SelfTestDetectionTest("MultipleFrameworkTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.NSubstituteName),
 				new SelfTestDetectionTest("MultipleFrameworkTestCases", vsMoqSettings, TestFrameworks.VisualStudioName, MockFrameworks.MoqName),
