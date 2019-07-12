@@ -12,9 +12,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = new ClassWithGenericInterface(TODO, TODO, TODO);
+			var classWithGenericInterface = new ClassWithGenericInterface(TODO, TODO, TODO);
 
 			// Act
+
 
 			// Assert
 			Assert.True(false);

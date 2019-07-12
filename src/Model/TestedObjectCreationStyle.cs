@@ -16,7 +16,7 @@
 		DirectCode,
 
 		/// <summary>
-		/// The object is created with TODO stubs for all methods. Used when no mock library is available.
+		/// The object is created with TODO stubs for all parameters. Used when no mock library is available.
 		/// </summary>
 		TodoStub
 	}

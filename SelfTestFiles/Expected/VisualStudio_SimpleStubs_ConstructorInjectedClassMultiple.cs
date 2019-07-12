@@ -28,9 +28,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = this.CreateConstructorInjectedClassMultiple();
+			var constructorInjectedClassMultiple = this.CreateConstructorInjectedClassMultiple();
 
 			// Act
+
 
 			// Assert
 			Assert.Fail();

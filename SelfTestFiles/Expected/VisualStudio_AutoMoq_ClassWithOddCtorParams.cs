@@ -13,9 +13,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithOddCtorParams>();
+			var classWithOddCtorParams = mocker.Create<ClassWithOddCtorParams>();
 
 			// Act
+
 
 			// Assert
 			Assert.Fail();

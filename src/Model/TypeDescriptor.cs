@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -77,6 +80,30 @@ namespace UnitTestBoilerplate.Model
 			}
 		}
 
+		public TypeDescriptor(SymbolInfo symbolInfo, TypeSyntax typeSyntax, SyntaxKind nodeKind)
+		{
+			this.TypeSymbol = symbolInfo.Symbol as ITypeSymbol;
+			switch (nodeKind)
+			{
+				case SyntaxKind.IdentifierName:
+				case SyntaxKind.GenericName:
+				case SyntaxKind.QualifiedName:
+					this.TypeName = symbolInfo.Symbol.Name;
+					break;
+				default:
+					this.TypeName = typeSyntax.ToString();
+					break;
+			}
+
+			this.TypeNamespace = symbolInfo.Symbol.ContainingNamespace == null ? null : symbolInfo.Symbol.ContainingNamespace.ToString();
+		}
+
+		public TypeDescriptor(string name, string ns)
+		{
+			this.TypeName = name;
+			this.TypeNamespace = ns;
+		}
+
 		private static void SetTypeName(string fullTypeName, Stack<TypeDescriptor> descriptorStack, StringBuilder currentTypeNameBuilder)
 		{
 			string currentTypeName = currentTypeNameBuilder.ToString();
@@ -86,12 +113,6 @@ namespace UnitTestBoilerplate.Model
 			}
 
 			descriptorStack.Peek().SetNameAndNamespaceFromFullName(currentTypeName);
-		}
-
-		public TypeDescriptor(string name, string ns)
-		{
-			this.TypeName = name;
-			this.TypeNamespace = ns;
 		}
 
 		private void SetNameAndNamespaceFromFullName(string fullNameWithoutGenerics)
@@ -117,12 +138,14 @@ namespace UnitTestBoilerplate.Model
 		/// <summary>
 		/// The name of the type, like string or ISomeInterface .
 		/// </summary>
-		public string TypeName { get; set; }
+		public string TypeName { get; private set; }
 
 		/// <summary>
 		/// The namespace for the type, or null if none is needed.
 		/// </summary>
-		public string TypeNamespace { get; set; }
+		public string TypeNamespace { get; private set; }
+
+		public ITypeSymbol TypeSymbol { get; private set; }
 
 		/// <summary>
 		/// The list of child generic type arguments.

@@ -10,9 +10,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = new NotInjectedClassEmptyCtor();
+			var notInjectedClassEmptyCtor = new NotInjectedClassEmptyCtor();
 
 			// Act
+
 
 			// Assert
 			Assert.Fail();

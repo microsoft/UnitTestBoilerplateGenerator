@@ -14,9 +14,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithNonInterfaceCtorParam>();
+			var classWithNonInterfaceCtorParam = mocker.Create<ClassWithNonInterfaceCtorParam>();
 
 			// Act
+
 
 			// Assert
 			Assert.Fail();

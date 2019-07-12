@@ -47,6 +47,10 @@ namespace UnitTestBoilerplate.Utilities
 									RunCamelCaseReplacement(tokenName, tokenReplacementAction, i, builder);
 									break;
 
+								case "NewLineIfPopulated":
+									RunNewLineIfPopulatedReplacement(tokenName, tokenReplacementAction, i, builder);
+									break;
+
 								default:
 									// Ignore the modifier
 									tokenReplacementAction(tokenText, i, builder);
@@ -78,6 +82,19 @@ namespace UnitTestBoilerplate.Utilities
 			string tokenValue = tokenValueBuilder.ToString();
 
 			builder.Append(tokenValue.Substring(0, 1).ToLowerInvariant() + tokenValue.Substring(1));
+		}
+
+		private static void RunNewLineIfPopulatedReplacement(string tokenName, Action<string, int, StringBuilder> tokenReplacementAction, int propertyIndex, StringBuilder builder)
+		{
+			var tokenValueBuilder = new StringBuilder();
+			tokenReplacementAction(tokenName, propertyIndex, tokenValueBuilder);
+			string tokenValue = tokenValueBuilder.ToString();
+
+			builder.Append(tokenValue);
+			if (!string.IsNullOrEmpty(tokenValue))
+			{
+				builder.AppendLine();
+			}
 		}
 	}
 }

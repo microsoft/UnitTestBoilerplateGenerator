@@ -11,9 +11,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = new MixedInjectedClassMultiple(TODO, TODO);
+			var mixedInjectedClassMultiple = new MixedInjectedClassMultiple(TODO, TODO);
 
 			// Act
+
 
 			// Assert
 			Assert.Fail();

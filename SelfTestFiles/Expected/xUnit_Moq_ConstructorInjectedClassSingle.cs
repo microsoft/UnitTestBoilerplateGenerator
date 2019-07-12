@@ -34,9 +34,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = this.CreateConstructorInjectedClassSingle();
+			var constructorInjectedClassSingle = this.CreateConstructorInjectedClassSingle();
 
 			// Act
+
 
 			// Assert
 			Assert.True(false);

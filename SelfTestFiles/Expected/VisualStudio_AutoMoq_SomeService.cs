@@ -15,12 +15,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<SomeService>();
-			int a = TODO;
-			int b = TODO;
+			var service = mocker.Create<SomeService>();
+			int a = 0;
+			int b = 0;
 
 			// Act
-			var result = unitUnderTest.AddNumbers(
+			var result = service.AddNumbers(
 				a,
 				b);
 

@@ -195,9 +195,6 @@
     <Compile Include="Model\MethodArgumentDescriptor.cs" />
     <Compile Include="Model\MethodDescriptor.cs" />
     <Compile Include="Model\SelfTestDetectionTest.cs" />
-    <Compile Include="Model\Tokens\TestMethod\MethodNameToken.cs" />
-    <Compile Include="Model\Tokens\TestMethod\TestMethodToken.cs" />
-    <Compile Include="Model\Tokens\Token.cs" />
     <Compile Include="Services\IBoilerplateSettings.cs" />
     <Compile Include="Services\MockBoilerplateSettings.cs" />
     <Compile Include="Services\FrameworkPickerService.cs" />
@@ -205,8 +202,6 @@
     <Compile Include="Services\ITestGenerationService.cs" />
     <Compile Include="Services\TestGenerationService.cs" />
     <Compile Include="Services\BoilerplateSettings.cs" />
-    <Compile Include="Services\TokenEvaluation\TestedMethodNameTokenEvaluator.cs" />
-    <Compile Include="Services\TokenEvaluation\TokenEvaluator.cs" />
     <Compile Include="Utilities\FileUtilities.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
     <Compile Include="Model\TestCleanupStyle.cs" />

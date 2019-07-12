@@ -36,9 +36,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = this.CreateClassWithOddCtorParams();
+			var classWithOddCtorParams = this.CreateClassWithOddCtorParams();
 
 			// Act
+
 
 			// Assert
 			Assert.Fail();

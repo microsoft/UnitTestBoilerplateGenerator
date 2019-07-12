@@ -42,9 +42,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = this.CreateDerivedPropertyInjectedClass();
+			var derivedPropertyInjectedClass = this.CreateDerivedPropertyInjectedClass();
 
 			// Act
+
 
 			// Assert
 			Assert.True(false);

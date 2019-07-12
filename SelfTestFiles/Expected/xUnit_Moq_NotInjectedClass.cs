@@ -32,9 +32,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = this.CreateNotInjectedClass();
+			var notInjectedClass = this.CreateNotInjectedClass();
 
 			// Act
+
 
 			// Assert
 			Assert.True(false);

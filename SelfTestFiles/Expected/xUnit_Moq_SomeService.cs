@@ -37,12 +37,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void AddNumbers_StateUnderTest_ExpectedBehavior()
 		{
 			// Arrange
-			var unitUnderTest = this.CreateService();
-			int a = TODO;
-			int b = TODO;
+			var service = this.CreateService();
+			int a = 0;
+			int b = 0;
 
 			// Act
-			var result = unitUnderTest.AddNumbers(
+			var result = service.AddNumbers(
 				a,
 				b);
 

@@ -101,21 +101,27 @@
 				<TextBlock Text="Test method name format" />
 				<TextBox Style="{StaticResource LineTextBox}" Text="{Binding TestMethodNameTemplate, UpdateSourceTrigger=PropertyChanged}" />
 			</StackPanel>
-			
+
 			<StackPanel
                 Orientation="Vertical"
                 Style="{StaticResource LineSection}"
                 Visibility="{Binding TestMethodsVisible, Converter={StaticResource VisibilityConverter}}">
-				<TextBlock Text="Tested object creation format" />
-				<TextBox Style="{StaticResource LineTextBox}" Text="{Binding TestedObjectCreationTemplate, UpdateSourceTrigger=PropertyChanged}" />
+				<TextBlock Text="Test method format - Invocation" />
+				<TextBox 
+					AcceptsReturn="True"
+					AcceptsTab="True"
+					Text="{Binding TestMethodInvocationTemplate, UpdateSourceTrigger=PropertyChanged}" />
 			</StackPanel>
 
 			<StackPanel
                 Orientation="Vertical"
                 Style="{StaticResource LineSection}"
                 Visibility="{Binding TestMethodsVisible, Converter={StaticResource VisibilityConverter}}">
-				<TextBlock Text="Tested object reference format" />
-				<TextBox Style="{StaticResource LineTextBox}" Text="{Binding TestedObjectReferenceTemplate, UpdateSourceTrigger=PropertyChanged}" />
+				<TextBlock Text="Test method format - Empty" />
+				<TextBox 
+					AcceptsReturn="True"
+					AcceptsTab="True"
+					Text="{Binding TestMethodEmptyTemplate, UpdateSourceTrigger=PropertyChanged}" />
 			</StackPanel>
 		</StackPanel>
     </ScrollViewer>

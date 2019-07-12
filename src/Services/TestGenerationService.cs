@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 using UnitTestBoilerplate.Model;
-using UnitTestBoilerplate.Services.TokenEvaluation;
 using UnitTestBoilerplate.Utilities;
 
 namespace UnitTestBoilerplate.Services
@@ -271,6 +270,7 @@ namespace UnitTestBoilerplate.Services
 			return new TestGenerationContext(
 				mockFramework,
 				testFramework,
+				document,
 				unitTestNamespace,
 				className,
 				namespaceDeclarationSyntax.Name.ToString(),
@@ -305,19 +305,15 @@ namespace UnitTestBoilerplate.Services
 
 				ParameterModifier modifier = GetArgumentModifier(argumentList[i]);
 
-				var namedTypeSymbol = InjectableType.TryCreateInjectableTypeFromParameterNode(argumentList[i], semanticModel, mockFramework);
+				SyntaxNode node = argumentList[i].ChildNodes().FirstOrDefault();
+				SyntaxKind nodeKind = node.Kind();
 
-				if (namedTypeSymbol != null)
-				{
-					argumentDescriptors[i] = new MethodArgumentDescriptor(namedTypeSymbol, argumentName, modifier);
-					continue;
-				}
+				SymbolInfo symbolInfo = semanticModel.GetSymbolInfo(node);
+				TypeDescriptor typeDescriptor;
 
-				var argumentType = argumentList[i].Type;
+				typeDescriptor = new TypeDescriptor(symbolInfo, argumentList[i].Type, nodeKind);
 
-				string typeName = argumentType.ToString();
-
-				argumentDescriptors[i] = new MethodArgumentDescriptor(new TypeDescriptor(typeName, null), argumentName, modifier);
+				argumentDescriptors[i] = new MethodArgumentDescriptor(typeDescriptor, argumentName, modifier);
 			}
 
 			return argumentDescriptors;
@@ -448,6 +444,10 @@ namespace UnitTestBoilerplate.Services
 					this.WriteExplicitConstructor(builder, context, FindIndent(fileTemplate, propertyIndex));
 					break;
 
+				case "TodoConstructor":
+					WriteTodoConstructor(builder, context);
+					break;
+
 				case "TestMethods":
 					this.WriteTestMethods(builder, context);
 					break;
@@ -484,6 +484,204 @@ namespace UnitTestBoilerplate.Services
 			}
 
 			return true;
+		}
+
+		private bool WriteTestMethodCommonToken(string tokenName, int propertyIndex, StringBuilder builder, TestGenerationContext context, string testTemplate)
+		{
+			switch (tokenName)
+			{
+				case "ExplicitConstructor":
+					this.WriteExplicitConstructor(builder, context, FindIndent(testTemplate, propertyIndex));
+					break;
+
+				case "TodoConstructor":
+					WriteTodoConstructor(builder, context);
+					break;
+
+				default:
+					return false;
+			}
+
+			return true;
+		}
+
+		private bool WriteTestMethodInvocationToken(string tokenName, int propertyIndex, StringBuilder builder, TestGenerationContext context, string testTemplate, MethodDescriptor methodDescriptor)
+		{
+			int numberOfParameters = methodDescriptor.MethodParameters.Count();
+			switch (tokenName)
+			{
+				case "TestedMethodName":
+					builder.Append(methodDescriptor.Name);
+
+					break;
+				case "TestMethodName":
+					this.WriteTestMethodName(builder, context, methodDescriptor);
+					break;
+
+				case "AsyncModifier":
+					if (methodDescriptor.IsAsync)
+					{
+						builder.Append("async");
+					}
+
+					break;
+
+				case "AsyncReturnType":
+					builder.Append(methodDescriptor.IsAsync ? "Task" : "void");
+					break;
+
+				case "ParameterSetupDefaults":
+					WriteParameterSetupDefaults(builder, context, methodDescriptor);
+					break;
+
+				case "ParameterSetupTodo":
+					for (int j = 0; j < numberOfParameters; j++)
+					{
+						builder.Append($"{methodDescriptor.MethodParameters[j].TypeInformation} {methodDescriptor.MethodParameters[j].ArgumentName} = TODO;");
+
+						if (j < numberOfParameters - 1)
+						{
+							builder.AppendLine();
+						}
+					}
+
+					break;
+
+				case "MethodInvocationPrefix":
+					if (methodDescriptor.HasReturnType)
+					{
+						builder.Append("var result = ");
+					}
+
+					if (methodDescriptor.IsAsync)
+					{
+						builder.Append("await ");
+					}
+
+					break;
+
+				case "MethodInvocation":
+					WriteMethodInvocation(builder, methodDescriptor, FindIndent(testTemplate, propertyIndex));
+
+					break;
+
+				default:
+					return false;
+			}
+
+			return true;
+		}
+
+		private void WriteTestMethodName(StringBuilder builder, TestGenerationContext context, MethodDescriptor methodDescriptor)
+		{
+			string testMethodNameTemplate = this.Settings.GetTemplate(
+				context.TestFramework,
+				context.MockFramework,
+				TemplateType.TestMethodName);
+
+			string baseTestMethodName = StringUtilities.ReplaceTokens(
+				testMethodNameTemplate,
+				(tokenName2, propertyIndex2, builder2) =>
+				{
+					if (WriteGlobalToken(tokenName2, builder2, context))
+					{
+						return;
+					}
+
+					if (WriteTestMethodNameToken(tokenName2, builder2, methodDescriptor))
+					{
+						return;
+					}
+
+					WriteTokenPassthrough(tokenName2, builder2);
+				});
+
+			var testMethodName = CreateUniqueTestMethodName(context, baseTestMethodName);
+			context.UsedTestMethodNames.Add(testMethodName);
+			builder.Append(testMethodName);
+		}
+
+		private static bool WriteTestMethodNameToken(string tokenName, StringBuilder builder, MethodDescriptor methodDescriptor)
+		{
+			switch (tokenName)
+			{
+				case "TestedMethodName":
+					builder.Append(methodDescriptor.Name);
+					break;
+				default:
+					return false;
+			}
+
+			return true;
+		}
+
+		private static void WriteParameterSetupDefaults(StringBuilder builder, TestGenerationContext context, MethodDescriptor methodDescriptor)
+		{
+			int numberOfParameters = methodDescriptor.MethodParameters.Count();
+			for (int j = 0; j < numberOfParameters; j++)
+			{
+				TypeDescriptor typeInformation = methodDescriptor.MethodParameters[j].TypeInformation;
+
+				string argumentValue;
+				if (typeInformation.TypeSymbol != null)
+				{
+					// If we have proper type information, generate the default expression for this type
+					var generator = Microsoft.CodeAnalysis.Editing.SyntaxGenerator.GetGenerator(context.Document);
+					argumentValue = generator.DefaultExpression(typeInformation.TypeSymbol).ToString();
+				}
+				else
+				{
+					argumentValue = "TODO";
+				}
+
+				builder.Append($"{typeInformation} {methodDescriptor.MethodParameters[j].ArgumentName} = {argumentValue};");
+				if (j < numberOfParameters - 1)
+				{
+					builder.AppendLine();
+				}
+			}
+		}
+
+		private static void WriteMethodInvocation(StringBuilder builder, MethodDescriptor methodDescriptor, string currentIndent)
+		{
+			int numberOfParameters = methodDescriptor.MethodParameters.Count();
+			builder.Append($".{methodDescriptor.Name}(");
+
+			if (numberOfParameters == 0)
+			{
+				builder.Append(")");
+			}
+			else
+			{
+				builder.AppendLine();
+
+				for (int j = 0; j < numberOfParameters; j++)
+				{
+					builder.Append($"{currentIndent}	");
+
+					switch (methodDescriptor.MethodParameters[j].Modifier)
+					{
+						case ParameterModifier.Out:
+							builder.Append("out ");
+							break;
+						case ParameterModifier.Ref:
+							builder.Append("ref ");
+							break;
+						default:
+							break;
+					}
+					builder.Append($"{methodDescriptor.MethodParameters[j].ArgumentName}");
+
+					if (j < numberOfParameters - 1)
+					{
+						builder.AppendLine(",");
+					}
+					else
+					{
+						builder.Append(")");
+					}
+				}
+			}
 		}
 
 		private static void WriteTokenPassthrough(string tokenName, StringBuilder builder)
@@ -644,242 +842,70 @@ namespace UnitTestBoilerplate.Services
 
 		private void WriteTestMethods(StringBuilder builder, TestGenerationContext context)
 		{
-			string testedObjectReferenceTemplate = this.Settings.GetTemplate(
-				context.TestFramework,
-				context.MockFramework,
-				TemplateType.TestedObjectReference);
-			var testedObjectReference = this.ReplaceTestedObjectReferenceTokens(testedObjectReferenceTemplate, context);
-
-			string testedObjectCreationTemplate = this.Settings.GetTemplate(
-				context.TestFramework,
-				context.MockFramework,
-				TemplateType.TestedObjectCreation);
-			var testedObjectCreation = this.ReplaceTestedObjectCreationTokens(testedObjectCreationTemplate, context);
-
 			if (context.MethodDeclarations.Count == 0)
 			{
-				WriteDefaultTestMethod(builder, context, testedObjectCreation);
+				string testMethodEmptyTemplate = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.TestMethodEmpty);
+				WriteTestMethod(builder, context, testMethodEmptyTemplate);
 
 				return;
 			}
 
-			var usedTestMethodNames = new List<string>();
-
+			string testMethodInvokeTemplate = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.TestMethodInvocation);
 			for (int i = 0; i < context.MethodDeclarations.Count; i++)
 			{
 				var methodDescriptor = context.MethodDeclarations[i];
-				var baseTestMethodName = this.ReplaceAllowedTokens(
-					context,
-					TemplateType.TestMethodName,
-					new[] { new TestedMethodNameTokenEvaluator(methodDescriptor) });
 
-				var testMethodName = CreateUniqueTestMethodName(usedTestMethodNames, baseTestMethodName);
+				WriteTestMethod(builder, context, testMethodInvokeTemplate, methodDescriptor);
 
-				if (i > 0)
+				// Write separator line
+				if (i < context.MethodDeclarations.Count - 1)
 				{
-					builder.AppendLine();
+					builder.AppendLine(); // Finish the line with the closing }
+					builder.AppendLine(); // Make a blank line
 				}
-
-				string returnType = methodDescriptor.IsAsync ? "Task" : "void";
-
-				string asyncModifier = methodDescriptor.IsAsync ? "async" : string.Empty;
-
-				builder.AppendLine($"[{context.TestFramework.TestMethodAttribute}]");
-				builder.AppendLine($"public {asyncModifier} {returnType} {testMethodName}()");
-				builder.AppendLine("{");
-				builder.AppendLine("// Arrange");
-				builder.AppendLine(testedObjectCreation);
-				var numberOfParameters = methodDescriptor.MethodParameters.Count();
-				for (int j = 0; j < numberOfParameters; j++)
-				{
-					builder.AppendLine($"{methodDescriptor.MethodParameters[j].TypeInformation} {methodDescriptor.MethodParameters[j].ArgumentName} = TODO;");
-				}
-				builder.AppendLine(); // Separator
-
-				builder.AppendLine("// Act");
-				if (methodDescriptor.HasReturnType)
-				{
-					builder.Append("var result = ");
-				}
-
-				if (methodDescriptor.IsAsync)
-				{
-					builder.Append("await ");
-				}
-
-				builder.Append($"{testedObjectReference}.{methodDescriptor.Name}(");
-
-				if (numberOfParameters == 0)
-				{
-					builder.AppendLine(");");
-				}
-				else
-				{
-					builder.AppendLine();
-
-					for (int j = 0; j < numberOfParameters; j++)
-					{
-						builder.Append($"	");
-						switch (methodDescriptor.MethodParameters[j].Modifier)
-						{
-							case ParameterModifier.Out:
-								builder.Append("out ");
-								break;
-							case ParameterModifier.Ref:
-								builder.Append("ref ");
-								break;
-							default:
-								break;
-						}
-						builder.Append($"{methodDescriptor.MethodParameters[j].ArgumentName}");
-
-						if (j < numberOfParameters - 1)
-						{
-							builder.AppendLine(",");
-						}
-						else
-						{
-							builder.AppendLine(");");
-						}
-					}
-				}
-				builder.AppendLine(); // Separator
-
-				builder.AppendLine("// Assert");
-				builder.AppendLine(context.TestFramework.AssertFailStatement);
-				builder.Append("}");
-
-				if (i != context.MethodDeclarations.Count - 1)
-				{
-					builder.AppendLine();
-				}
-
-				usedTestMethodNames.Add(testMethodName);
 			}
 		}
 
-		private string ReplaceTestedObjectCreationTokens(string testedObjectCreationTemplate, TestGenerationContext context)
+		private void WriteTestMethod(StringBuilder builder, TestGenerationContext context, string testTemplate, MethodDescriptor methodDescriptor = null)
 		{
-			return StringUtilities.ReplaceTokens(
-				testedObjectCreationTemplate,
-				(tokenName, propertyIndex, builder) =>
+			string filledTemplate = StringUtilities.ReplaceTokens(
+				testTemplate,
+				(tokenName, propertyIndex, builder2) =>
 				{
-					if (WriteClassNameTokens(tokenName, builder, context))
+					if (WriteGlobalToken(tokenName, builder2, context))
 					{
 						return;
 					}
 
-					if (tokenName == "ExplicitConstructor")
+					if (this.WriteTestMethodCommonToken(tokenName, propertyIndex, builder2, context, testTemplate))
 					{
-						this.WriteExplicitConstructor(builder, context, string.Empty);
 						return;
 					}
 
-					if (tokenName == "TodoConstructor")
+					if (methodDescriptor != null && this.WriteTestMethodInvocationToken(tokenName, propertyIndex, builder2, context, testTemplate, methodDescriptor))
 					{
-						WriteTodoConstructor(builder, context);
 						return;
 					}
 
-					WriteTokenPassthrough(tokenName, builder);
+					WriteTokenPassthrough(tokenName, builder2);
 				});
+
+			builder.Append(filledTemplate);
 		}
 
-		private string ReplaceTestedObjectReferenceTokens(string testedObjectReferenceTemplate, TestGenerationContext context)
-		{
-			return StringUtilities.ReplaceTokens(
-				testedObjectReferenceTemplate,
-				(tokenName, propertyIndex, builder) =>
-				{
-					if (WriteClassNameTokens(tokenName, builder, context))
-					{
-						return;
-					}
-
-					WriteTokenPassthrough(tokenName, builder);
-				});
-		}
-
-		private static bool WriteClassNameTokens(string tokenName, StringBuilder builder, TestGenerationContext context)
-		{
-			switch (tokenName)
-			{
-				case "ClassName":
-					builder.Append(context.ClassName);
-					break;
-
-				case "ClassNameShort":
-					builder.Append(GetShortClassName(context.ClassName));
-					break;
-
-				case "ClassNameShortLower":
-					// Legacy, new syntax is ClassNameShort.CamelCase
-					builder.Append(GetShortClassNameLower(context.ClassName));
-					break;
-
-				default:
-					return false;
-			}
-
-			return true;
-		}
-
-
-		private static void WriteDefaultTestMethod(StringBuilder builder, TestGenerationContext context, string testedObjectCreation)
-		{
-			builder.AppendLine($"[{context.TestFramework.TestMethodAttribute}]");
-			builder.AppendLine($"public void TestMethod1()");
-			builder.AppendLine("{");
-			builder.AppendLine("// Arrange");
-			builder.AppendLine(testedObjectCreation);
-			builder.AppendLine(); // Separator
-
-			builder.AppendLine("// Act");
-			builder.AppendLine(); // Separator
-
-			builder.AppendLine("// Assert");
-			builder.AppendLine(context.TestFramework.AssertFailStatement);
-			builder.Append("}");
-		}
-
-		private static string CreateUniqueTestMethodName(List<string> usedTestMethodNames, string baseTestMethodName)
+		private static string CreateUniqueTestMethodName(TestGenerationContext context, string baseTestMethodName)
 		{
 			string testMethodName = baseTestMethodName;
 
 			int j = 1;
 
-			while (usedTestMethodNames.Contains(testMethodName))
+			while (context.UsedTestMethodNames.Contains(testMethodName))
 			{
 				testMethodName = baseTestMethodName + j;
 				j++;
 			}
 
 			return testMethodName;
-		}
-
-
-		private string ReplaceAllowedTokens(TestGenerationContext context, TemplateType templateType, IList<TokenEvaluator> allowedTokenEvaluators)
-		{
-			string templateValue = this.Settings.GetTemplate(
-					context.TestFramework,
-					context.MockFramework,
-					templateType);
-
-			return StringUtilities.ReplaceTokens(
-				templateValue,
-				(tokenName, propertyIndex, builder) =>
-				{
-					foreach (var tokenEvaluator in allowedTokenEvaluators)
-					{
-						if (tokenEvaluator.CanExecute(tokenName))
-						{
-							builder.Append(tokenEvaluator.Evaluate());
-							return;
-						}
-					}
-
-					WriteTokenPassthrough(tokenName, builder);
-				});
 		}
 
 		private static string FindIndent(string template, int currentIndex)

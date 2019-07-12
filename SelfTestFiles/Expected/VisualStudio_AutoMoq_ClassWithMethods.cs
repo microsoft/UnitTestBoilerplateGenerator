@@ -16,12 +16,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			IInterface3 interface3 = TODO;
-			DateTime time = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			IInterface3 interface3 = null;
+			DateTime time = default(global::System.DateTime);
 
 			// Act
-			var result = await unitUnderTest.GetBoolTaskAsync(
+			var result = await classWithMethods.GetBoolTaskAsync(
 				interface3,
 				time);
 
@@ -34,12 +34,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			IInterface3 interface3 = TODO;
-			DateTime time = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			IInterface3 interface3 = null;
+			DateTime time = default(global::System.DateTime);
 
 			// Act
-			var result = await unitUnderTest.GetBoolTaskNoAsync(
+			var result = await classWithMethods.GetBoolTaskNoAsync(
 				interface3,
 				time);
 
@@ -52,12 +52,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			IInterface3 interface3 = TODO;
-			DateTime time = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			IInterface3 interface3 = null;
+			DateTime time = default(global::System.DateTime);
 
 			// Act
-			await unitUnderTest.GetTaskNoAsync(
+			await classWithMethods.GetTaskNoAsync(
 				interface3,
 				time);
 
@@ -70,10 +70,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
+			var classWithMethods = mocker.Create<ClassWithMethods>();
 
 			// Act
-			var result = unitUnderTest.GetString();
+			var result = classWithMethods.GetString();
 
 			// Assert
 			Assert.Fail();
@@ -84,11 +84,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			string bla = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			string bla = null;
 
 			// Act
-			var result = unitUnderTest.GetIntMultipleSignatures(
+			var result = classWithMethods.GetIntMultipleSignatures(
 				bla);
 
 			// Assert
@@ -100,11 +100,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			IInterface4 interface4 = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			IInterface4 interface4 = null;
 
 			// Act
-			var result = unitUnderTest.GetIntMultipleSignatures(
+			var result = classWithMethods.GetIntMultipleSignatures(
 				interface4);
 
 			// Assert
@@ -116,12 +116,12 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			bool fufu = TODO;
-			int bubu = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			bool fufu = false;
+			int bubu = 0;
 
 			// Act
-			var result = unitUnderTest.GetOut(
+			var result = classWithMethods.GetOut(
 				fufu,
 				out bubu);
 
@@ -134,11 +134,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			ClassWithMethods refArg = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			ClassWithMethods refArg = null;
 
 			// Act
-			unitUnderTest.DoRef(
+			classWithMethods.DoRef(
 				ref refArg);
 
 			// Assert
@@ -150,11 +150,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			Cucu cucuENum = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			Cucu cucuENum = default(global::UnitBoilerplate.Sandbox.Classes.Cases.Cucu);
 
 			// Act
-			unitUnderTest.DoEnum(
+			classWithMethods.DoEnum(
 				cucuENum);
 
 			// Assert
@@ -166,11 +166,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			string[] values = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			string[] values = null;
 
 			// Act
-			var result = await unitUnderTest.GetParams(
+			var result = await classWithMethods.GetParams(
 				values);
 
 			// Assert
@@ -182,11 +182,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			DateTime[][] values = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			DateTime[][] values = null;
 
 			// Act
-			var result = await unitUnderTest.GetParams2D(
+			var result = await classWithMethods.GetParams2D(
 				values);
 
 			// Assert
@@ -198,11 +198,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			ClassWithMethods[] values = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			ClassWithMethods[] values = null;
 
 			// Act
-			var result = await unitUnderTest.GetParamsClass(
+			var result = await classWithMethods.GetParamsClass(
 				values);
 
 			// Assert
@@ -214,11 +214,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			ClassWithMethods[][] values = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			ClassWithMethods[][] values = null;
 
 			// Act
-			var result = await unitUnderTest.GetParamsClass2D(
+			var result = await classWithMethods.GetParamsClass2D(
 				values);
 
 			// Assert
@@ -230,11 +230,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			ClassWithMethods[][][][] values = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			ClassWithMethods[][][][] values = null;
 
 			// Act
-			var result = await unitUnderTest.GetWithClass4D(
+			var result = await classWithMethods.GetWithClass4D(
 				values);
 
 			// Assert
@@ -246,11 +246,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			int? argument = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			int? argument = null;
 
 			// Act
-			var result = unitUnderTest.MethodWithNullableArgument(
+			var result = classWithMethods.MethodWithNullableArgument(
 				argument);
 
 			// Assert
@@ -262,11 +262,11 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ClassWithMethods>();
-			Classes.IInterface3 myInterface = TODO;
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			IInterface3 myInterface = null;
 
 			// Act
-			var result = unitUnderTest.MethodWithNamespaceQualifiedArgument(
+			var result = classWithMethods.MethodWithNamespaceQualifiedArgument(
 				myInterface);
 
 			// Assert

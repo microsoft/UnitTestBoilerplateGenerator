@@ -11,9 +11,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = new PropertyInjectedClassSingle();
+			var propertyInjectedClassSingle = new PropertyInjectedClassSingle();
 
 			// Act
+
 
 			// Assert
 			Assert.Fail();

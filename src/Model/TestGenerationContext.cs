@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.CodeAnalysis;
+using System.Collections.Generic;
 
 namespace UnitTestBoilerplate.Model
 {
@@ -10,6 +11,7 @@ namespace UnitTestBoilerplate.Model
 		public TestGenerationContext(
 			MockFramework mockFramework,
 			TestFramework testFramework,
+			Document document,
 			string unitTestNamespace, 
 			string className, 
 			string classNamespace,
@@ -20,6 +22,7 @@ namespace UnitTestBoilerplate.Model
 		{
 			this.MockFramework = mockFramework;
 			this.TestFramework = testFramework;
+			this.Document = document;
 			this.UnitTestNamespace = unitTestNamespace;
 			this.ClassName = className;
 			this.ClassNamespace = classNamespace;
@@ -32,6 +35,8 @@ namespace UnitTestBoilerplate.Model
 		public MockFramework MockFramework { get; }
 
 		public TestFramework TestFramework { get; }
+
+		public Document Document { get; }
 
 		public string UnitTestNamespace { get; }
 
@@ -46,5 +51,7 @@ namespace UnitTestBoilerplate.Model
 		public IList<InjectableType> InjectedTypes { get; }
 
 		public IList<MethodDescriptor> MethodDeclarations { get; }
+
+		public IList<string> UsedTestMethodNames { get; } = new List<string>();
 	}
 }

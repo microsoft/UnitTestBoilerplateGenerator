@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using UnitTestBoilerplate.Model;
 
 namespace UnitTestBoilerplate.Utilities
 {
@@ -79,6 +81,24 @@ namespace UnitTestBoilerplate.Utilities
 			{
 				return false;
 			}
+		}
+
+		public static SymbolInfo? GetSymbolInfoFromParameterNode(SyntaxNode parameterNode, SemanticModel semanticModel, MockFramework mockFramework)
+		{
+			SyntaxNode node = parameterNode.ChildNodes().FirstOrDefault();
+			SyntaxKind nodeKind = node.Kind();
+
+			//if (nodeKind != SyntaxKind.IdentifierName && nodeKind != SyntaxKind.GenericName && nodeKind != SyntaxKind.PredefinedType && nodeKind != SyntaxKind.ArrayType && nodeKind != SyntaxKind.NullableType)
+			//{
+			//	return null;
+			//}
+
+			//if (nodeKind == SyntaxKind.GenericName && !mockFramework.SupportsGenerics)
+			//{
+			//	return null;
+			//}
+
+			return semanticModel.GetSymbolInfo(node);
 		}
 	}
 }

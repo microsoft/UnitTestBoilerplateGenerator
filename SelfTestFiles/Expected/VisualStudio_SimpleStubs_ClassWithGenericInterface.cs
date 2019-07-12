@@ -32,9 +32,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		public void TestMethod1()
 		{
 			// Arrange
-			var unitUnderTest = this.CreateClassWithGenericInterface();
+			var classWithGenericInterface = this.CreateClassWithGenericInterface();
 
 			// Act
+
 
 			// Assert
 			Assert.Fail();

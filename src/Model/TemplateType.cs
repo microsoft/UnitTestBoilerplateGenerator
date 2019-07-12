@@ -6,8 +6,8 @@
 		MockFieldDeclaration,
 		MockFieldInitialization,
 		MockObjectReference,
-		TestedObjectReference,
-		TestedObjectCreation,
+		TestMethodInvocation,
+		TestMethodEmpty,
 		TestMethodName
 	}
 }

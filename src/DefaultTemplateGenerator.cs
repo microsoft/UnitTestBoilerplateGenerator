@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnitTestBoilerplate.Model;
-using UnitTestBoilerplate.Model.Tokens;
 
 namespace UnitTestBoilerplate
 {
@@ -14,31 +13,9 @@ namespace UnitTestBoilerplate
 
 		private StringBuilder template;
 
-		public const string TestObjectReference = "unitUnderTest";
-
-		public static readonly string TestMethodName = $"{Token.TestMethod.MethodName.ToWrappedToken()}_StateUnderTest_ExpectedBehavior";
-
-		public static string GetTestObjectCreation(MockFramework mockFramework)
-		{
-			var declaration = $"var {TestObjectReference} = ";
-
-			if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.HelperMethod)
-			{
-				return $"{declaration}this.{ObjectCreationMethod};";
-			}
-			else if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.DirectCode)
-			{
-				return $"{mockFramework.TestArrangeCode}{Environment.NewLine}{declaration}{mockFramework.TestedObjectCreationCode}";
-			}
-			else if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.TodoStub)
-			{
-				return $"{declaration}$TodoConstructor$;";
-			}
-
-			throw new NotSupportedException($"Tested object creation style {mockFramework.TestedObjectCreationStyle} is not supported");
-		}
-
 		private const string ObjectCreationMethod = "Create$ClassNameShort$()";
+
+		public static readonly string TestMethodName = "$TestedMethodName$_StateUnderTest_ExpectedBehavior";
 
 		public string Get(TestFramework testFramework, MockFramework mockFramework)
 		{
@@ -166,6 +143,68 @@ namespace UnitTestBoilerplate
 			this.AppendLineIndented("}");
 			this.indentLevel--;
 			this.AppendLineIndented("}");
+
+			return this.template.ToString();
+		}
+
+		public string GetTestMethod(TestFramework testFramework, MockFramework mockFramework, bool invokeMethod)
+		{
+			this.indentLevel = 0;
+
+			this.template = new StringBuilder();
+
+			string testMethodName = invokeMethod ? "$TestMethodName$" : "TestMethod1";
+			string methodKeywords = invokeMethod ? "$AsyncModifier$ $AsyncReturnType$" : "void";
+
+			this.AppendLineIndented($"[{testFramework.TestMethodAttribute}]");
+			this.AppendLineIndented($"public {methodKeywords} {testMethodName}()");
+			this.AppendLineIndented("{");
+
+			this.indentLevel++;
+
+			this.AppendLineIndented("// Arrange");
+
+			var declaration = $"var $ClassNameShort.CamelCase$ = ";
+
+			if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.HelperMethod)
+			{
+				this.AppendLineIndented($"{declaration}this.{ObjectCreationMethod};");
+			}
+			else if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.DirectCode)
+			{
+				this.AppendLineIndented($"{mockFramework.TestArrangeCode}{Environment.NewLine}{declaration}{mockFramework.TestedObjectCreationCode}");
+			}
+			else if (mockFramework.TestedObjectCreationStyle == TestedObjectCreationStyle.TodoStub)
+			{
+				this.AppendLineIndented($"{declaration}$TodoConstructor$;");
+			}
+
+			if (invokeMethod)
+			{
+				this.AppendIndent();
+				this.template.Append("$ParameterSetupDefaults.NewLineIfPopulated$");
+			}
+
+			this.AppendLineIndented();
+
+			this.AppendLineIndented("// Act");
+			if (invokeMethod)
+			{
+				this.AppendLineIndented("$MethodInvocationPrefix$$ClassNameShort.CamelCase$$MethodInvocation$;");
+			}
+			else
+			{
+				this.AppendLineIndented();
+			}
+
+			this.AppendLineIndented();
+			this.AppendLineIndented("// Assert");
+			this.AppendLineIndented(testFramework.AssertFailStatement);
+
+			this.indentLevel--;
+
+			this.AppendIndent();
+			this.template.Append("}");
 
 			return this.template.ToString();
 		}

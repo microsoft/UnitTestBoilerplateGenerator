@@ -14,9 +14,10 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		{
 			// Arrange
 			var mocker = new AutoMoqer();
-			var unitUnderTest = mocker.Create<ConstructorInjectedClassMultiple>();
+			var constructorInjectedClassMultiple = mocker.Create<ConstructorInjectedClassMultiple>();
 
 			// Act
+
 
 			// Assert
 			Assert.Fail();

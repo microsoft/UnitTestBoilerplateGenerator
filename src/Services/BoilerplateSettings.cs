@@ -250,21 +250,20 @@ namespace UnitTestBoilerplate.Services
 		    switch (templateType)
 		    {
 			    case TemplateType.File:
-				    var templateGenerator = new DefaultTemplateGenerator();
-				    return templateGenerator.Get(testFramework, mockFramework);
+				    return new DefaultTemplateGenerator().Get(testFramework, mockFramework);
 			    case TemplateType.MockFieldDeclaration:
 				    return mockFramework.MockFieldDeclarationCode;
 			    case TemplateType.MockFieldInitialization:
 				    return mockFramework.MockFieldInitializationCode;
 			    case TemplateType.MockObjectReference:
 				    return mockFramework.MockObjectReferenceCode;
-				case TemplateType.TestedObjectReference:
-					return DefaultTemplateGenerator.TestObjectReference;
-				case TemplateType.TestedObjectCreation:
-					return DefaultTemplateGenerator.GetTestObjectCreation(mockFramework);
+				case TemplateType.TestMethodInvocation:
+					return new DefaultTemplateGenerator().GetTestMethod(testFramework, mockFramework, invokeMethod: true);
+				case TemplateType.TestMethodEmpty:
+					return new DefaultTemplateGenerator().GetTestMethod(testFramework, mockFramework, invokeMethod: false);
 				case TemplateType.TestMethodName:
 					return DefaultTemplateGenerator.TestMethodName;
-			    default:
+				default:
 				    throw new ArgumentOutOfRangeException(nameof(templateType), templateType, null);
 		    }
 	    }
