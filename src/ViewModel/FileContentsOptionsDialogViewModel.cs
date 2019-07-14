@@ -222,6 +222,19 @@ namespace UnitTestBoilerplate.ViewModel
 			}
 		}
 
+		private RelayCommand openTokenListCommand;
+		public RelayCommand OpenTokenListCommand
+		{
+			get
+			{
+				return this.openTokenListCommand ?? (this.openTokenListCommand = new RelayCommand(
+					() =>
+					{
+						System.Diagnostics.Process.Start("https://github.com/Microsoft/UnitTestBoilerplateGenerator/wiki/Custom-Format-Tokens");
+					}));
+			}
+		}
+
 		/// <summary>
 		/// Gets the working copy of the template on the options dialog.
 		/// </summary>

@@ -1,9 +1,17 @@
 # Roadmap
 
-- Support for dependency properties from other IoC frameworks
 - Add an option for what folder to add the test class to
+- Add ability to store settings inside local file to check in to source control
 
 # Changelog
+
+## 2.0.0
+**2019-07-13**
+- Added ability to customize the test method via a template. See the [Custom Format Tokens documentation](https://github.com/Microsoft/UnitTestBoilerplateGenerator/wiki/Custom-Format-Tokens) for available tokens in this new template.
+- Removed "Test object creation" and "Test object reference" formats as they are now incorporated into the test method format.
+- Changed generated test methods to initialize arguments with defaults rather than "TODO", to allow it to compile right away. If you prefer "TODO", you can use the `$ParameterSetupTodo$` token in place of `$ParameterSetupDefaults$`.
+- Added link to token reference from template options page.
+- Added "NewLineIfPopulated" token modifier that inserts a new line after the token if it's populated.
 
 ## 1.10.5
 **2019-06-01**

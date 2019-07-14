@@ -65,7 +65,7 @@
 
             <TextBox
                 Name="fileTemplateTextBox"
-                Margin="0 2 0 0"
+                Margin="0 4 0 0"
                 AcceptsReturn="True"
                 AcceptsTab="True"
                 Text="{Binding FileTemplate, UpdateSourceTrigger=PropertyChanged}" />
@@ -123,6 +123,8 @@
 					AcceptsTab="True"
 					Text="{Binding TestMethodEmptyTemplate, UpdateSourceTrigger=PropertyChanged}" />
 			</StackPanel>
+
+			<TextBlock Margin="0 4 0 0"><Hyperlink Command="{Binding OpenTokenListCommand}">List of valid tokens</Hyperlink></TextBlock>
 		</StackPanel>
     </ScrollViewer>
 </UserControl>
