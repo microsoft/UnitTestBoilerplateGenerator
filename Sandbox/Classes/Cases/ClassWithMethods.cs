@@ -17,6 +17,10 @@ namespace UnitBoilerplate.Sandbox.Classes.Cases
             this.someOtherInterface = someOtherInterface;
         }
 
+		public void AttributedMethod([Sample]string test)
+		{
+		}
+
 		public async Task<bool> GetBoolTaskAsync(IInterface3 interface3, DateTime time)
 		{
 			return await Task.FromResult(true);
@@ -99,6 +103,10 @@ namespace UnitBoilerplate.Sandbox.Classes.Cases
 		public string MethodWithNamespaceQualifiedArgument(Classes.IInterface3 myInterface)
 		{
 			return string.Empty;
+		}
+
+		private class SampleAttribute : Attribute
+		{
 		}
 	}
 

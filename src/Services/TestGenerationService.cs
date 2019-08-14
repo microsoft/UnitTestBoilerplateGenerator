@@ -305,18 +305,31 @@ namespace UnitTestBoilerplate.Services
 
 				ParameterModifier modifier = GetArgumentModifier(argumentList[i]);
 
-				SyntaxNode node = argumentList[i].ChildNodes().FirstOrDefault();
-				SyntaxKind nodeKind = node.Kind();
+				SyntaxNode node = GetMainNodeFromParameterEntry(argumentList[i]);
 
 				SymbolInfo symbolInfo = semanticModel.GetSymbolInfo(node);
 				TypeDescriptor typeDescriptor;
 
-				typeDescriptor = new TypeDescriptor(symbolInfo, argumentList[i].Type, nodeKind);
+				typeDescriptor = new TypeDescriptor(symbolInfo, argumentList[i].Type, node.Kind());
 
 				argumentDescriptors[i] = new MethodArgumentDescriptor(typeDescriptor, argumentName, modifier);
 			}
 
 			return argumentDescriptors;
+		}
+
+		private static SyntaxNode GetMainNodeFromParameterEntry(ParameterSyntax parameter)
+		{
+			foreach (var child in parameter.ChildNodes())
+			{
+				SyntaxKind nodeKind = child.Kind();
+				if (child.Kind() != SyntaxKind.AttributeList)
+				{
+					return child;
+				}
+			}
+
+			throw new InvalidOperationException("Could not find valid syntax node inside parameter.");
 		}
 
 		private static ParameterModifier GetArgumentModifier(ParameterSyntax parameterSyntax)

@@ -12,6 +12,22 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 	public class ClassWithMethodsTests
 	{
 		[TestMethod]
+		public void AttributedMethod_StateUnderTest_ExpectedBehavior()
+		{
+			// Arrange
+			var mocker = new AutoMoqer();
+			var classWithMethods = mocker.Create<ClassWithMethods>();
+			string test = null;
+
+			// Act
+			classWithMethods.AttributedMethod(
+				test);
+
+			// Assert
+			Assert.Fail();
+		}
+
+		[TestMethod]
 		public async Task GetBoolTaskAsync_StateUnderTest_ExpectedBehavior()
 		{
 			// Arrange

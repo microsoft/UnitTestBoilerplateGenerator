@@ -5,6 +5,10 @@
 
 # Changelog
 
+## 2.0.1
+**2019-08-13**
+- Fixed null reference error on classes that have attributes on method parameters.
+
 ## 2.0.0
 **2019-07-13**
 - Added ability to customize the test method via a template. See the [Custom Format Tokens documentation](https://github.com/Microsoft/UnitTestBoilerplateGenerator/wiki/Custom-Format-Tokens) for available tokens in this new template.

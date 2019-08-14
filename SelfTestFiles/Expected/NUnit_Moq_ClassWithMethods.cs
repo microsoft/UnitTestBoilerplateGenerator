@@ -38,6 +38,21 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		}
 
 		[Test]
+		public void AttributedMethod_StateUnderTest_ExpectedBehavior()
+		{
+			// Arrange
+			var classWithMethods = this.CreateClassWithMethods();
+			string test = null;
+
+			// Act
+			classWithMethods.AttributedMethod(
+				test);
+
+			// Assert
+			Assert.Fail();
+		}
+
+		[Test]
 		public async Task GetBoolTaskAsync_StateUnderTest_ExpectedBehavior()
 		{
 			// Arrange
