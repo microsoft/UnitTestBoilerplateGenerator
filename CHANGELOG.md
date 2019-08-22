@@ -5,6 +5,11 @@
 
 # Changelog
 
+## 2.1.0
+**2019-08-21**
+- Added ability to specify extra "using" namespaces to add to the test class.
+- Fixed options dialog closing when pressing Enter on the test method format fields.
+
 ## 2.0.1
 **2019-08-13**
 - Fixed null reference error on classes that have attributes on method parameters.

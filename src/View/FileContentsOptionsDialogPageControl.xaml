@@ -1,13 +1,13 @@
 ﻿<UserControl
-    x:Class="UnitTestBoilerplate.View.FileContentsOptionsDialogPageControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:UnitTestBoilerplate"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="300"
-    d:DesignWidth="400"
-    mc:Ignorable="d">
+	x:Class="UnitTestBoilerplate.View.FileContentsOptionsDialogPageControl"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:UnitTestBoilerplate"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	d:DesignHeight="300"
+	d:DesignWidth="400"
+	mc:Ignorable="d">
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -15,116 +15,139 @@
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</UserControl.Resources>
-    <ScrollViewer>
-        <StackPanel Orientation="Vertical">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="4" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        VerticalAlignment="Center"
-                        Text="Test Framework:" />
-                    <ComboBox
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        ItemsSource="{Binding TestFrameworkChoices}"
-                        SelectedItem="{Binding SelectedTestFramework}"
-                        Style="{StaticResource FrameworkCombo}" />
+	<ScrollViewer>
+		<StackPanel Orientation="Vertical">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="4" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<TextBlock
+						Grid.Row="0"
+						Grid.Column="0"
+						VerticalAlignment="Center"
+						Text="Test Framework:" />
+					<ComboBox
+						Grid.Row="0"
+						Grid.Column="1"
+						ItemsSource="{Binding TestFrameworkChoices}"
+						SelectedItem="{Binding SelectedTestFramework}"
+						Style="{StaticResource FrameworkCombo}" />
 
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        VerticalAlignment="Center"
-                        Text="Mock Framework:" />
-                    <ComboBox
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        ItemsSource="{Binding MockFrameworkChoices}"
-                        SelectedItem="{Binding SelectedMockFramework}"
-                        Style="{StaticResource FrameworkCombo}" />
-                </Grid>
-                <Button
-                    Grid.Column="1"
-                    Padding="10 2"
-                    Command="{Binding ResetCommand}"
-                    Content="Reset to default" />
-            </Grid>
+					<TextBlock
+						Grid.Row="2"
+						Grid.Column="0"
+						VerticalAlignment="Center"
+						Text="Mock Framework:" />
+					<ComboBox
+						Grid.Row="2"
+						Grid.Column="1"
+						ItemsSource="{Binding MockFrameworkChoices}"
+						SelectedItem="{Binding SelectedMockFramework}"
+						Style="{StaticResource FrameworkCombo}" />
+				</Grid>
+				<Button
+					Grid.Column="1"
+					Padding="10 2"
+					Command="{Binding ResetCommand}"
+					Content="Reset to default" />
+			</Grid>
 
-            <TextBox
-                Name="fileTemplateTextBox"
-                Margin="0 4 0 0"
-                AcceptsReturn="True"
-                AcceptsTab="True"
-                Text="{Binding FileTemplate, UpdateSourceTrigger=PropertyChanged}" />
-
-            <StackPanel
-                Orientation="Vertical"
-                Style="{StaticResource LineSection}"
-                Visibility="{Binding MockFieldDeclarationTemplateVisible, Converter={StaticResource VisibilityConverter}}">
-                <TextBlock Text="Mock field declaration format" />
-                <TextBox Style="{StaticResource LineTextBox}" Text="{Binding MockFieldDeclarationTemplate, UpdateSourceTrigger=PropertyChanged}" />
-            </StackPanel>
-
-            <StackPanel
-                Orientation="Vertical"
-                Style="{StaticResource LineSection}"
-                Visibility="{Binding MockFieldInitializationTemplateVisible, Converter={StaticResource VisibilityConverter}}">
-                <TextBlock Text="Mock field initialization format" />
-                <TextBox Style="{StaticResource LineTextBox}" Text="{Binding MockFieldInitializationTemplate, UpdateSourceTrigger=PropertyChanged}" />
-            </StackPanel>
+			<TextBox
+				Name="fileTemplateTextBox"
+				Margin="0 4 0 0"
+				AcceptsReturn="True"
+				AcceptsTab="True"
+				Text="{Binding FileTemplate,
+				               UpdateSourceTrigger=PropertyChanged}" />
 
 			<StackPanel
-                Orientation="Vertical"
-                Style="{StaticResource LineSection}"
-                Visibility="{Binding MockObjectReferenceTemplateVisible, Converter={StaticResource VisibilityConverter}}">
+				Orientation="Vertical"
+				Style="{StaticResource LineSection}"
+				ToolTip="One per line, namespace only">
+				<TextBlock Text="Extra &quot;using&quot; namespaces" />
+				<TextBox
+					Name="extraUsingNamespacesTextBox"
+					AcceptsReturn="True"
+					Text="{Binding ExtraUsingNamespaces,
+					               UpdateSourceTrigger=PropertyChanged}" />
+			</StackPanel>
+
+			<StackPanel
+				Orientation="Vertical"
+				Style="{StaticResource LineSection}"
+				Visibility="{Binding MockFieldDeclarationTemplateVisible,
+				                     Converter={StaticResource VisibilityConverter}}">
+				<TextBlock Text="Mock field declaration format" />
+				<TextBox Style="{StaticResource LineTextBox}" Text="{Binding MockFieldDeclarationTemplate, UpdateSourceTrigger=PropertyChanged}" />
+			</StackPanel>
+
+			<StackPanel
+				Orientation="Vertical"
+				Style="{StaticResource LineSection}"
+				Visibility="{Binding MockFieldInitializationTemplateVisible,
+				                     Converter={StaticResource VisibilityConverter}}">
+				<TextBlock Text="Mock field initialization format" />
+				<TextBox Style="{StaticResource LineTextBox}" Text="{Binding MockFieldInitializationTemplate, UpdateSourceTrigger=PropertyChanged}" />
+			</StackPanel>
+
+			<StackPanel
+				Orientation="Vertical"
+				Style="{StaticResource LineSection}"
+				Visibility="{Binding MockObjectReferenceTemplateVisible,
+				                     Converter={StaticResource VisibilityConverter}}">
 				<TextBlock Text="Mock object reference format" />
 				<TextBox Style="{StaticResource LineTextBox}" Text="{Binding MockObjectReferenceTemplate, UpdateSourceTrigger=PropertyChanged}" />
 			</StackPanel>
 
 			<StackPanel
-                Orientation="Vertical"
-                Style="{StaticResource LineSection}"
-                Visibility="{Binding TestMethodsVisible, Converter={StaticResource VisibilityConverter}}">
+				Orientation="Vertical"
+				Style="{StaticResource LineSection}"
+				Visibility="{Binding TestMethodsVisible,
+				                     Converter={StaticResource VisibilityConverter}}">
 				<TextBlock Text="Test method name format" />
 				<TextBox Style="{StaticResource LineTextBox}" Text="{Binding TestMethodNameTemplate, UpdateSourceTrigger=PropertyChanged}" />
 			</StackPanel>
 
 			<StackPanel
-                Orientation="Vertical"
-                Style="{StaticResource LineSection}"
-                Visibility="{Binding TestMethodsVisible, Converter={StaticResource VisibilityConverter}}">
+				Orientation="Vertical"
+				Style="{StaticResource LineSection}"
+				Visibility="{Binding TestMethodsVisible,
+				                     Converter={StaticResource VisibilityConverter}}">
 				<TextBlock Text="Test method format - Invocation" />
-				<TextBox 
+				<TextBox
+					Name="testMethodInvocationTextBox"
 					AcceptsReturn="True"
 					AcceptsTab="True"
-					Text="{Binding TestMethodInvocationTemplate, UpdateSourceTrigger=PropertyChanged}" />
+					Text="{Binding TestMethodInvocationTemplate,
+					               UpdateSourceTrigger=PropertyChanged}" />
 			</StackPanel>
 
 			<StackPanel
-                Orientation="Vertical"
-                Style="{StaticResource LineSection}"
-                Visibility="{Binding TestMethodsVisible, Converter={StaticResource VisibilityConverter}}">
+				Orientation="Vertical"
+				Style="{StaticResource LineSection}"
+				Visibility="{Binding TestMethodsVisible,
+				                     Converter={StaticResource VisibilityConverter}}">
 				<TextBlock Text="Test method format - Empty" />
-				<TextBox 
+				<TextBox
+					Name="testMethodEmptyTextBox"
 					AcceptsReturn="True"
 					AcceptsTab="True"
-					Text="{Binding TestMethodEmptyTemplate, UpdateSourceTrigger=PropertyChanged}" />
+					Text="{Binding TestMethodEmptyTemplate,
+					               UpdateSourceTrigger=PropertyChanged}" />
 			</StackPanel>
 
 			<TextBlock Margin="0 4 0 0"><Hyperlink Command="{Binding OpenTokenListCommand}">List of valid tokens</Hyperlink></TextBlock>
 		</StackPanel>
-    </ScrollViewer>
+	</ScrollViewer>
 </UserControl>

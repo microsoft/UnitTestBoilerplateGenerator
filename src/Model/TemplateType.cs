@@ -3,6 +3,7 @@
 	public enum TemplateType
 	{
 		File,
+		ExtraUsingNamespaces,
 		MockFieldDeclaration,
 		MockFieldInitialization,
 		MockObjectReference,

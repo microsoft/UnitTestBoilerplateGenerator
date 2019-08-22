@@ -84,6 +84,7 @@ namespace UnitTestBoilerplate.ViewModel
 		private void RaiseAllChanged()
 		{
 			this.RaisePropertyChanged(nameof(this.FileTemplate));
+			this.RaisePropertyChanged(nameof(this.ExtraUsingNamespaces));
 			this.RaisePropertyChanged(nameof(this.MockFieldDeclarationTemplate));
 			this.RaisePropertyChanged(nameof(this.MockFieldInitializationTemplate));
 			this.RaisePropertyChanged(nameof(this.MockObjectReferenceTemplate));
@@ -100,7 +101,7 @@ namespace UnitTestBoilerplate.ViewModel
 		{
 			get
 			{
-				return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.File);
+				return this.GetTemplate(TemplateType.File);
 			}
 
 			set
@@ -114,13 +115,24 @@ namespace UnitTestBoilerplate.ViewModel
 			}
 		}
 
-		public string MockFieldDeclarationTemplate
+		public string ExtraUsingNamespaces
 		{
-			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockFieldDeclaration); }
+			get { return this.GetTemplate(TemplateType.ExtraUsingNamespaces); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockFieldDeclaration, value);
+				this.SaveTemplateToDialogHolding(TemplateType.ExtraUsingNamespaces, value);
+				this.RaisePropertyChanged();
+			}
+		}
+
+		public string MockFieldDeclarationTemplate
+		{
+			get { return this.GetTemplate(TemplateType.MockFieldDeclaration); }
+
+			set
+			{
+				this.SaveTemplateToDialogHolding(TemplateType.MockFieldDeclaration, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -132,11 +144,11 @@ namespace UnitTestBoilerplate.ViewModel
 
 		public string MockFieldInitializationTemplate
 		{
-			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockFieldInitialization); }
+			get { return this.GetTemplate(TemplateType.MockFieldInitialization); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockFieldInitialization, value);
+				this.SaveTemplateToDialogHolding(TemplateType.MockFieldInitialization, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -148,11 +160,11 @@ namespace UnitTestBoilerplate.ViewModel
 
 		public string MockObjectReferenceTemplate
 		{
-			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockObjectReference); }
+			get { return this.GetTemplate(TemplateType.MockObjectReference); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.MockObjectReference, value);
+				this.SaveTemplateToDialogHolding(TemplateType.MockObjectReference, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -169,33 +181,33 @@ namespace UnitTestBoilerplate.ViewModel
 
 		public string TestMethodNameTemplate
 		{
-			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestMethodName); }
+			get { return this.GetTemplate(TemplateType.TestMethodName); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestMethodName, value);
+				this.SaveTemplateToDialogHolding(TemplateType.TestMethodName, value);
 				this.RaisePropertyChanged();
 			}
 		}
 
 		public string TestMethodInvocationTemplate
 		{
-			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestMethodInvocation); }
+			get { return this.GetTemplate(TemplateType.TestMethodInvocation); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestMethodInvocation, value);
+				this.SaveTemplateToDialogHolding(TemplateType.TestMethodInvocation, value);
 				this.RaisePropertyChanged();
 			}
 		}
 
 		public string TestMethodEmptyTemplate
 		{
-			get { return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestMethodEmpty); }
+			get { return this.GetTemplate( TemplateType.TestMethodEmpty); }
 
 			set
 			{
-				this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, TemplateType.TestMethodEmpty, value);
+				this.SaveTemplateToDialogHolding(TemplateType.TestMethodEmpty, value);
 				this.RaisePropertyChanged();
 			}
 		}
@@ -212,6 +224,7 @@ namespace UnitTestBoilerplate.ViewModel
 						MockFramework mockFramework = this.SelectedMockFramework;
 
 						this.FileTemplate = new DefaultTemplateGenerator().Get(testFramework, mockFramework);
+						this.ExtraUsingNamespaces = string.Empty;
 						this.MockFieldDeclarationTemplate = mockFramework.MockFieldDeclarationCode;
 						this.MockFieldInitializationTemplate = mockFramework.MockFieldInitializationCode;
 						this.MockObjectReferenceTemplate = mockFramework.MockObjectReferenceCode;
@@ -238,6 +251,16 @@ namespace UnitTestBoilerplate.ViewModel
 		/// <summary>
 		/// Gets the working copy of the template on the options dialog.
 		/// </summary>
+		/// <param name="templateType">The template type.</param>
+		/// <returns>The working copy of the template on the options dialog.</returns>
+		private string GetTemplate(TemplateType templateType)
+		{
+			return this.GetTemplate(this.SelectedTestFramework, this.SelectedMockFramework, templateType);
+		}
+
+		/// <summary>
+		/// Gets the working copy of the template on the options dialog.
+		/// </summary>
 		/// <param name="testFramework">The test framework the template applies to.</param>
 		/// <param name="mockFramework">The mock framework the template applies to.</param>
 		/// <param name="templateType">The template type.</param>
@@ -251,6 +274,16 @@ namespace UnitTestBoilerplate.ViewModel
 			}
 
 			return this.Settings.GetTemplate(testFramework, mockFramework, templateType);
+		}
+
+		/// <summary>
+		/// Saves the template to the dialog holding area. It will take effect when Apply() is called.
+		/// </summary>
+		/// <param name="templateType">The template type.</param>
+		/// <param name="template">The template to save.</param>
+		private void SaveTemplateToDialogHolding(TemplateType templateType, string template)
+		{
+			this.SaveTemplateToDialogHolding(this.SelectedTestFramework, this.SelectedMockFramework, templateType, template);
 		}
 
 		/// <summary>

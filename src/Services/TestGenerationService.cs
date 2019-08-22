@@ -442,7 +442,7 @@ namespace UnitTestBoilerplate.Services
 			switch (tokenName)
 			{
 				case "UsingStatements":
-					WriteUsings(builder, context);
+					this.WriteUsings(builder, context);
 					break;
 
 				case "MockFieldDeclarations":
@@ -702,7 +702,7 @@ namespace UnitTestBoilerplate.Services
 			builder.Append($"${tokenName}$");
 		}
 
-		private static void WriteUsings(StringBuilder builder, TestGenerationContext context)
+		private void WriteUsings(StringBuilder builder, TestGenerationContext context)
 		{
 			List<string> namespaces = new List<string>();
 			namespaces.AddRange(context.MockFramework.UsingNamespaces);
@@ -737,6 +737,10 @@ namespace UnitTestBoilerplate.Services
 			{
 				namespaces.Add("System.Threading.Tasks");
 			}
+
+			string extraNamespacesSetting = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.ExtraUsingNamespaces);
+			string[] extraNamespaces = extraNamespacesSetting.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+			namespaces.AddRange(extraNamespaces);
 
 			namespaces = namespaces.Distinct().ToList();
 			namespaces.Sort(StringComparer.Ordinal);

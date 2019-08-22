@@ -251,6 +251,8 @@ namespace UnitTestBoilerplate.Services
 		    {
 			    case TemplateType.File:
 				    return new DefaultTemplateGenerator().Get(testFramework, mockFramework);
+				case TemplateType.ExtraUsingNamespaces:
+					return string.Empty;
 			    case TemplateType.MockFieldDeclaration:
 				    return mockFramework.MockFieldDeclarationCode;
 			    case TemplateType.MockFieldInitialization:

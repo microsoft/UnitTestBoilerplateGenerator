@@ -26,6 +26,9 @@ namespace UnitTestBoilerplate.View
 			this.DataContext = this.ViewModel;
 
 			this.fileTemplateTextBox.AddHandler(UIElementDialogPage.DialogKeyPendingEvent, new RoutedEventHandler(this.OnDialogKeyPendingEvent));
+			this.extraUsingNamespacesTextBox.AddHandler(UIElementDialogPage.DialogKeyPendingEvent, new RoutedEventHandler(this.OnDialogKeyPendingEvent));
+			this.testMethodInvocationTextBox.AddHandler(UIElementDialogPage.DialogKeyPendingEvent, new RoutedEventHandler(this.OnDialogKeyPendingEvent));
+			this.testMethodEmptyTextBox.AddHandler(UIElementDialogPage.DialogKeyPendingEvent, new RoutedEventHandler(this.OnDialogKeyPendingEvent));
 		}
 
 		void OnDialogKeyPendingEvent(object sender, RoutedEventArgs e)
