@@ -8,6 +8,7 @@
 ## 2.2.0
 **2020-01-24**
 - Added ability to store extension settings in a .utbg.json config file that applies for all users of the solution. This allows sharing templates and settings with team members through source control.
+- Moved the Moq VerifyAll() call to the end of each test method. It can hide errors if it throws an exception from within the cleanup method.
 
 ## 2.1.0
 **2019-08-21**
