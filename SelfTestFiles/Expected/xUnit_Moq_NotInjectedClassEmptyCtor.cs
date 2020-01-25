@@ -5,7 +5,7 @@ using Xunit;
 
 namespace UnitTestBoilerplate.SelfTest.Cases
 {
-	public class NotInjectedClassEmptyCtorTests : IDisposable
+	public class NotInjectedClassEmptyCtorTests
 	{
 		private MockRepository mockRepository;
 
@@ -16,11 +16,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository = new MockRepository(MockBehavior.Strict);
 
 
-		}
-
-		public void Dispose()
-		{
-			this.mockRepository.VerifyAll();
 		}
 
 		private NotInjectedClassEmptyCtor CreateNotInjectedClassEmptyCtor()
@@ -39,6 +34,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.True(false);
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

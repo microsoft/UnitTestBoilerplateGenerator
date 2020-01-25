@@ -19,12 +19,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 		}
 
-		[TearDown]
-		public void TearDown()
-		{
-			this.mockRepository.VerifyAll();
-		}
-
 		private NotInjectedClassEmptyCtor CreateNotInjectedClassEmptyCtor()
 		{
 			return new NotInjectedClassEmptyCtor();
@@ -41,6 +35,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

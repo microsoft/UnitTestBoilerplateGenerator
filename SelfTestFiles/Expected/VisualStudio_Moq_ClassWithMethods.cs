@@ -24,12 +24,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockSomeOtherInterface = this.mockRepository.Create<ISomeOtherInterface>();
 		}
 
-		[TestCleanup]
-		public void TestCleanup()
-		{
-			this.mockRepository.VerifyAll();
-		}
-
 		private ClassWithMethods CreateClassWithMethods()
 		{
 			return new ClassWithMethods(
@@ -50,6 +44,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -67,6 +62,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -84,6 +80,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -101,6 +98,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -114,6 +112,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -129,6 +128,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -144,6 +144,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -161,6 +162,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -176,6 +178,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -191,6 +194,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -206,6 +210,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -221,6 +226,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -236,6 +242,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -251,6 +258,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -266,6 +274,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -281,6 +290,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 
 		[TestMethod]
@@ -296,6 +306,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

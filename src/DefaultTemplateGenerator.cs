@@ -200,7 +200,11 @@ namespace UnitTestBoilerplate
 			this.AppendLineIndented();
 			this.AppendLineIndented("// Assert");
 			this.AppendLineIndented(testFramework.AssertFailStatement);
-
+			if (mockFramework.AssertStatement != null)
+			{
+				this.AppendLineIndented(mockFramework.AssertStatement);
+			}
+			
 			this.indentLevel--;
 
 			this.AppendIndent();

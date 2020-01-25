@@ -28,7 +28,8 @@ namespace UnitTestBoilerplate.Model
 			string testArrangeCode,
 			TestedObjectCreationStyle testedObjectCreationStyle,
 			string testedObjectCreationCode,
-			string mockObjectReferenceCode)
+			string mockObjectReferenceCode,
+			string assertStatement)
 		{
 			this.Name = name;
 			this.DetectionReferenceMatches = detectionReferenceMatches;
@@ -45,6 +46,7 @@ namespace UnitTestBoilerplate.Model
 			this.TestedObjectCreationStyle = testedObjectCreationStyle;
 			this.TestedObjectCreationCode = testedObjectCreationCode;
 			this.MockObjectReferenceCode = mockObjectReferenceCode;
+			this.AssertStatement = assertStatement;
 		}
 
 		public string Name { get; }
@@ -122,6 +124,11 @@ namespace UnitTestBoilerplate.Model
 		/// Code referring to the mocked object.
 		/// </summary>
 		public string MockObjectReferenceCode { get; }
+
+		/// <summary>
+		/// Code that goes in the Assert block in tests.
+		/// </summary>
+		public string AssertStatement { get; }
 
 		public override string ToString()
 		{

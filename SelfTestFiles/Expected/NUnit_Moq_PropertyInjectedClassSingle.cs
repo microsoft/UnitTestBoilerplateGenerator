@@ -20,12 +20,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockSomeInterface = this.mockRepository.Create<ISomeInterface>();
 		}
 
-		[TearDown]
-		public void TearDown()
-		{
-			this.mockRepository.VerifyAll();
-		}
-
 		private PropertyInjectedClassSingle CreatePropertyInjectedClassSingle()
 		{
 			return new PropertyInjectedClassSingle
@@ -45,6 +39,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

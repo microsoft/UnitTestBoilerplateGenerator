@@ -26,12 +26,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockSomeOtherInterface = this.mockRepository.Create<ISomeOtherInterface>();
 		}
 
-		[TearDown]
-		public void TearDown()
-		{
-			this.mockRepository.VerifyAll();
-		}
-
 		private MixedInjectedClassMultiple CreateMixedInjectedClassMultiple()
 		{
 			return new MixedInjectedClassMultiple(
@@ -54,6 +48,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

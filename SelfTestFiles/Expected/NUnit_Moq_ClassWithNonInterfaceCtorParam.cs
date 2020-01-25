@@ -20,12 +20,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockSomeClass = this.mockRepository.Create<SomeClass>();
 		}
 
-		[TearDown]
-		public void TearDown()
-		{
-			this.mockRepository.VerifyAll();
-		}
-
 		private ClassWithNonInterfaceCtorParam CreateClassWithNonInterfaceCtorParam()
 		{
 			return new ClassWithNonInterfaceCtorParam(
@@ -43,6 +37,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

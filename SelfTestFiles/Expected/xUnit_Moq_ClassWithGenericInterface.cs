@@ -7,7 +7,7 @@ using Xunit;
 
 namespace UnitTestBoilerplate.SelfTest.Cases
 {
-	public class ClassWithGenericInterfaceTests : IDisposable
+	public class ClassWithGenericInterfaceTests
 	{
 		private MockRepository mockRepository;
 
@@ -28,11 +28,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockGenericInterfaceBool = this.mockRepository.Create<IGenericInterface<bool>>();
 			this.mockGenericInterfaceListString = this.mockRepository.Create<IGenericInterface<List<string>>>();
 			this.mockSomeInterface = this.mockRepository.Create<ISomeInterface>();
-		}
-
-		public void Dispose()
-		{
-			this.mockRepository.VerifyAll();
 		}
 
 		private ClassWithGenericInterface CreateClassWithGenericInterface()
@@ -59,6 +54,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.True(false);
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

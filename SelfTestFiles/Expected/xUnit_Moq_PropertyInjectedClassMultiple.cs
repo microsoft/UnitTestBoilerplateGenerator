@@ -6,7 +6,7 @@ using Xunit;
 
 namespace UnitTestBoilerplate.SelfTest.Cases
 {
-	public class PropertyInjectedClassMultipleTests : IDisposable
+	public class PropertyInjectedClassMultipleTests
 	{
 		private MockRepository mockRepository;
 
@@ -19,11 +19,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			this.mockSomeInterface = this.mockRepository.Create<ISomeInterface>();
 			this.mockSomeOtherInterface = this.mockRepository.Create<ISomeOtherInterface>();
-		}
-
-		public void Dispose()
-		{
-			this.mockRepository.VerifyAll();
 		}
 
 		private PropertyInjectedClassMultiple CreatePropertyInjectedClassMultiple()
@@ -46,6 +41,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.True(false);
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

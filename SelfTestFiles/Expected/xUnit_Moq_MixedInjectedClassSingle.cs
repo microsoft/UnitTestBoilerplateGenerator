@@ -6,7 +6,7 @@ using Xunit;
 
 namespace UnitTestBoilerplate.SelfTest.Cases
 {
-	public class MixedInjectedClassSingleTests : IDisposable
+	public class MixedInjectedClassSingleTests
 	{
 		private MockRepository mockRepository;
 
@@ -19,11 +19,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			this.mockInterface3 = this.mockRepository.Create<IInterface3>();
 			this.mockSomeInterface = this.mockRepository.Create<ISomeInterface>();
-		}
-
-		public void Dispose()
-		{
-			this.mockRepository.VerifyAll();
 		}
 
 		private MixedInjectedClassSingle CreateMixedInjectedClassSingle()
@@ -46,6 +41,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.True(false);
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

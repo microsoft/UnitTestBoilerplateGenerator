@@ -22,12 +22,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockSomeInterface = this.mockRepository.Create<ISomeInterface>();
 		}
 
-		[TestCleanup]
-		public void TestCleanup()
-		{
-			this.mockRepository.VerifyAll();
-		}
-
 		private MixedInjectedClassSingle CreateMixedInjectedClassSingle()
 		{
 			return new MixedInjectedClassSingle(
@@ -48,6 +42,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

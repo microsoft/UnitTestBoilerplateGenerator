@@ -23,12 +23,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockSomeOtherInterface = this.mockRepository.Create<ISomeOtherInterface>();
 		}
 
-		[TestCleanup]
-		public void TestCleanup()
-		{
-			this.mockRepository.VerifyAll();
-		}
-
 		private SomeService CreateService()
 		{
 			return new SomeService(
@@ -51,6 +45,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

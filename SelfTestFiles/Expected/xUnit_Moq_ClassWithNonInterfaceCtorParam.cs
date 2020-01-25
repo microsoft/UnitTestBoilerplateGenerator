@@ -6,7 +6,7 @@ using Xunit;
 
 namespace UnitTestBoilerplate.SelfTest.Cases
 {
-	public class ClassWithNonInterfaceCtorParamTests : IDisposable
+	public class ClassWithNonInterfaceCtorParamTests
 	{
 		private MockRepository mockRepository;
 
@@ -17,11 +17,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 			this.mockRepository = new MockRepository(MockBehavior.Strict);
 
 			this.mockSomeClass = this.mockRepository.Create<SomeClass>();
-		}
-
-		public void Dispose()
-		{
-			this.mockRepository.VerifyAll();
 		}
 
 		private ClassWithNonInterfaceCtorParam CreateClassWithNonInterfaceCtorParam()
@@ -41,6 +36,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.True(false);
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

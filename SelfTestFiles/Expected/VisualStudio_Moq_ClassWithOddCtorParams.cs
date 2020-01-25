@@ -19,12 +19,6 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 		}
 
-		[TestCleanup]
-		public void TestCleanup()
-		{
-			this.mockRepository.VerifyAll();
-		}
-
 		private ClassWithOddCtorParams CreateClassWithOddCtorParams()
 		{
 			return new ClassWithOddCtorParams(
@@ -43,6 +37,7 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 
 			// Assert
 			Assert.Fail();
+			this.mockRepository.VerifyAll();
 		}
 	}
 }

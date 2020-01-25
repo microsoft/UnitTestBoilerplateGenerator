@@ -32,7 +32,8 @@ namespace UnitTestBoilerplate.Model
 					testArrangeCode: null,
 					testedObjectCreationStyle: TestedObjectCreationStyle.TodoStub,
 					testedObjectCreationCode: null,
-					mockObjectReferenceCode: null),
+					mockObjectReferenceCode: null,
+					assertStatement: null),
 				new MockFramework(
 					name: MoqName,
 					detectionReferenceMatches: new List<string> { "Moq" },
@@ -44,11 +45,12 @@ namespace UnitTestBoilerplate.Model
 					initializeStartCode: "this.mockRepository = new MockRepository(MockBehavior.Strict);",
 					mockFieldDeclarationCode: "private Mock<$InterfaceType$> mock$InterfaceMockName$;",
 					mockFieldInitializationCode: "this.mock$InterfaceMockName$ = this.mockRepository.Create<$InterfaceType$>();",
-					testCleanupCode: "this.mockRepository.VerifyAll();",
+					testCleanupCode: null,
 					testArrangeCode: null,
 					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod, 
 					testedObjectCreationCode: null,
-					mockObjectReferenceCode: "this.mock$InterfaceMockName$.Object"),
+					mockObjectReferenceCode: "this.mock$InterfaceMockName$.Object",
+					assertStatement: "this.mockRepository.VerifyAll();"),
 				new MockFramework(
 					name: AutoMoqName,
 					detectionReferenceMatches: new List<string> { "AutoMoq" },
@@ -64,7 +66,8 @@ namespace UnitTestBoilerplate.Model
 					testArrangeCode: "var mocker = new AutoMoqer();",
 					testedObjectCreationStyle: TestedObjectCreationStyle.DirectCode, 
 					testedObjectCreationCode: "mocker.Create<$ClassName$>();",
-					mockObjectReferenceCode: null),
+					mockObjectReferenceCode: null,
+					assertStatement: null),
 				new MockFramework(
 					name: SimpleStubsName,
 					detectionReferenceMatches: new List<string> { "Etg.SimpleStubs" },
@@ -80,7 +83,8 @@ namespace UnitTestBoilerplate.Model
 					testArrangeCode: null,
 					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod, 
 					testedObjectCreationCode: null,
-					mockObjectReferenceCode: "this.stub$InterfaceNameBase$"),
+					mockObjectReferenceCode: "this.stub$InterfaceNameBase$",
+					assertStatement: null),
 				new MockFramework(
 					name: NSubstituteName,
 					detectionReferenceMatches: new List<string> { "NSubstitute" },
@@ -96,7 +100,8 @@ namespace UnitTestBoilerplate.Model
 					testArrangeCode: null,
 					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod, 
 					testedObjectCreationCode: null,
-					mockObjectReferenceCode: "this.sub$InterfaceMockName$"),
+					mockObjectReferenceCode: "this.sub$InterfaceMockName$",
+					assertStatement: null),
 				new MockFramework(
 					name: RhinoMocksName,
 					detectionReferenceMatches: new List<string> { "Rhino.Mocks", "RhinoMocks" },
@@ -112,7 +117,8 @@ namespace UnitTestBoilerplate.Model
 					testArrangeCode: null,
 					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod,
 					testedObjectCreationCode: null,
-					mockObjectReferenceCode: "this.stub$InterfaceMockName$"),
+					mockObjectReferenceCode: "this.stub$InterfaceMockName$",
+					assertStatement: null),
 				new MockFramework(
 					name: FakeItEasyName,
 					detectionReferenceMatches: new List<string> { "FakeItEasy" },
@@ -128,7 +134,8 @@ namespace UnitTestBoilerplate.Model
 					testArrangeCode: null,
 					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod,
 					testedObjectCreationCode: null,
-					mockObjectReferenceCode: "this.fake$InterfaceMockName$")
+					mockObjectReferenceCode: "this.fake$InterfaceMockName$",
+					assertStatement: null)
 			}.AsReadOnly();
 		}
 
