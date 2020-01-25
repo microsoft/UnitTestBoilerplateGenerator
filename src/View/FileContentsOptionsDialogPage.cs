@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.ComponentModel;
 using Microsoft.VisualStudio.ComponentModelHost;
+using UnitTestBoilerplate.Services;
+using System.ComponentModel.Composition;
 
 namespace UnitTestBoilerplate.View
 {
@@ -25,7 +27,8 @@ namespace UnitTestBoilerplate.View
 		{
 			base.OnActivate(e);
 
-			this.optionsDialogControl.ViewModel.Initialize();
+			this.optionsDialogControl.ViewModel.Refresh();
+			this.optionsDialogControl.ViewModel.SettingsCoordinator.ReportSettingsPageOpen(this.optionsDialogControl.ViewModel);
 		}
 
 		protected override void OnApply(PageApplyEventArgs args)
@@ -36,6 +39,13 @@ namespace UnitTestBoilerplate.View
 			}
 
 			base.OnApply(args);
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			this.optionsDialogControl.ViewModel.SettingsCoordinator.ReportSettingsPageClosed(this.optionsDialogControl.ViewModel);
+
+			base.OnClosed(e);
 		}
 	}
 }

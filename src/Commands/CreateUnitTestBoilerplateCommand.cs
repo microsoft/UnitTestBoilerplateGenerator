@@ -107,9 +107,6 @@ namespace UnitTestBoilerplate.Commands
 		/// <param name="e">Event args.</param>
 		private void MenuItemCallback(object sender, EventArgs e)
 		{
-			//var componentModel = (IComponentModel)this.ServiceProvider.GetService(typeof(SComponentModel));
-			//var settings = componentModel.DefaultExportProvider.GetExportedValue<IBoilerplateSettings>();
-
 			var dialog = new CreateUnitTestBoilerplateDialog();
 			dialog.ShowModal();
 		}

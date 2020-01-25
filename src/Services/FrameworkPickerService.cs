@@ -16,7 +16,7 @@ namespace UnitTestBoilerplate.Services
     public class FrameworkPickerService : IFrameworkPickerService
     {
 		[Import]
-		internal IBoilerplateSettings Settings { get; set; }
+		internal IBoilerplateSettingsFactory SettingsFactory { get; set; }
 
 	    public List<TestFramework> FindTestFrameworks(string projectFileName)
 	    {
@@ -40,7 +40,7 @@ namespace UnitTestBoilerplate.Services
 		    return matchingFrameworks;
 	    }
 
-	    public TestFramework PickDefaultTestFramework(IList<TestFramework> frameworks)
+	    public TestFramework PickDefaultTestFramework(IList<TestFramework> frameworks, IBoilerplateSettings settings)
 	    {
 		    // If there's only one framework detected, that must be it
 		    if (frameworks.Count == 1)
@@ -49,7 +49,7 @@ namespace UnitTestBoilerplate.Services
 		    }
 
 		    // If the preferred framework is included in the list, use it.
-		    TestFramework preferredFramework = this.Settings.PreferredTestFramework;
+		    TestFramework preferredFramework = settings.PreferredTestFramework;
 		    if (frameworks.Contains(preferredFramework))
 		    {
 			    return preferredFramework;
@@ -72,10 +72,10 @@ namespace UnitTestBoilerplate.Services
 		    return frameworks.OrderBy(f => f.DetectionRank).First();
 	    }
 
-	    public TestFramework FindTestFramework(string projectFileName)
+	    public TestFramework FindTestFramework(string projectFileName, IBoilerplateSettings settings)
 	    {
 		    var matchingFrameworks = this.FindTestFrameworks(projectFileName);
-		    return this.PickDefaultTestFramework(matchingFrameworks);
+		    return this.PickDefaultTestFramework(matchingFrameworks, settings);
 	    }
 
 	    public List<MockFramework> FindMockFrameworks(string projectFileName)
@@ -100,10 +100,10 @@ namespace UnitTestBoilerplate.Services
 		    return matchingFrameworks;
 	    }
 
-	    public MockFramework PickDefaultMockFramework(IList<MockFramework> frameworks)
+	    public MockFramework PickDefaultMockFramework(IList<MockFramework> frameworks, IBoilerplateSettings settings)
 	    {
 			// If the preferred framework is None, use that
-			MockFramework preferredFramework = this.Settings.PreferredMockFramework;
+			MockFramework preferredFramework = settings.PreferredMockFramework;
 			if (preferredFramework != null && preferredFramework.Name == MockFrameworks.NoneName)
 			{
 				return preferredFramework;
@@ -138,10 +138,10 @@ namespace UnitTestBoilerplate.Services
 		    return frameworks.OrderBy(f => f.DetectionRank).First();
 	    }
 
-	    public MockFramework FindMockFramework(string projectFileName)
+	    public MockFramework FindMockFramework(string projectFileName, IBoilerplateSettings settings)
 	    {
 		    var matchingFrameworks = this.FindMockFrameworks(projectFileName);
-		    return this.PickDefaultMockFramework(matchingFrameworks);
+		    return this.PickDefaultMockFramework(matchingFrameworks, settings);
 	    }
 
 	    private static IList<string> GetProjectReferences(string projectFileName)

@@ -192,14 +192,26 @@
     <Compile Include="Commands\DetectCsprojCommand.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="DefaultTemplateGenerator.cs" />
+    <Compile Include="Model\BoilerplateSettingsJson.cs" />
+    <Compile Include="Model\ISettingsPageViewModel.cs" />
     <Compile Include="Model\MethodArgumentDescriptor.cs" />
     <Compile Include="Model\MethodDescriptor.cs" />
     <Compile Include="Model\SelfTestDetectionTest.cs" />
+    <Compile Include="Services\BoilerplateCache.cs" />
+    <Compile Include="Services\BoilerplateSettingsFactory.cs" />
+    <Compile Include="Services\IBoilerplateCache.cs" />
     <Compile Include="Services\IBoilerplateSettings.cs" />
+    <Compile Include="Services\IBoilerplateSettingsFactory.cs" />
+    <Compile Include="Services\IBoilerplateSettingsStore.cs" />
+    <Compile Include="Services\ISettingsCoordinator.cs" />
     <Compile Include="Services\MockBoilerplateSettings.cs" />
     <Compile Include="Services\FrameworkPickerService.cs" />
     <Compile Include="Services\IFrameworkPickerService.cs" />
     <Compile Include="Services\ITestGenerationService.cs" />
+    <Compile Include="Services\MockBoilerplateSettingsFactory.cs" />
+    <Compile Include="Services\PersonalBoilerplateSettingsStore.cs" />
+    <Compile Include="Services\SettingsCoordinator.cs" />
+    <Compile Include="Services\WorkspaceBoilerplateSettingsStore.cs" />
     <Compile Include="Services\TestGenerationService.cs" />
     <Compile Include="Services\BoilerplateSettings.cs" />
     <Compile Include="Utilities\FileUtilities.cs" />
@@ -212,6 +224,7 @@
     <Compile Include="Utilities\SolutionUtilities.cs" />
     <Compile Include="Utilities\TypeUtilities.cs" />
     <Compile Include="ViewModel\OtherOptionsDialogViewModel.cs" />
+    <Compile Include="ViewModel\WorkspaceSettingsDialogViewModel.cs" />
     <Compile Include="View\CreateUnitTestBoilerplateDialog.xaml.cs">
       <DependentUpon>CreateUnitTestBoilerplateDialog.xaml</DependentUpon>
     </Compile>
@@ -238,6 +251,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\TestGenerationContext.cs" />
     <Compile Include="Model\TestProject.cs" />
+    <Compile Include="View\WorkspaceSettingsDialogPageControl.xaml.cs">
+      <DependentUpon>WorkspaceSettingsDialogPageControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\WorkspaceSettingsDialogPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\OtherOptionsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -343,6 +362,10 @@
     <Page Include="View\FileContentsOptionsDialogPageControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\WorkspaceSettingsDialogPageControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\OtherOptionsDialogPageControl.xaml">
       <SubType>Designer</SubType>

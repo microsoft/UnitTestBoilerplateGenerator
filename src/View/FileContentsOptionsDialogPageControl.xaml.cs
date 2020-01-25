@@ -22,6 +22,8 @@ namespace UnitTestBoilerplate.View
 			this.ViewModel = new FileContentsOptionsDialogViewModel();
 			IComponentModel componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
 			componentModel.DefaultCompositionService.SatisfyImportsOnce(this.ViewModel);
+			this.ViewModel.Initialize();
+			//this.ViewModel.SettingsCoordinator.ReportSettingsPageOpen(this.ViewModel);
 
 			this.DataContext = this.ViewModel;
 

@@ -35,7 +35,7 @@ namespace UnitTestBoilerplate.Services
 		};
 
 		[Import]
-		internal IBoilerplateSettings Settings { get; set; }
+		internal IBoilerplateSettingsFactory SettingsFactory { get; set; }
 
 		public async Task<string> GenerateUnitTestFileAsync(
 			ProjectItemSummary selectedFile,
@@ -53,14 +53,14 @@ namespace UnitTestBoilerplate.Services
 
 			string relativePath = this.GetRelativePath(selectedFile);
 
-			TestGenerationContext context = await this.CollectTestGenerationContextAsync(selectedFile, targetProject, testFramework, mockFramework);
+			TestGenerationContext context = await this.CollectTestGenerationContextAsync(selectedFile, targetProject, testFramework, mockFramework, this.SettingsFactory.Get());
 
 			string unitTestContents = this.GenerateUnitTestContents(context);
 
 			string testFolder = Path.Combine(Path.GetDirectoryName(targetProject.FullName), relativePath);
 
 			string testFileNameBase = StringUtilities.ReplaceTokens(
-				this.Settings.FileNameTemplate,
+				context.Settings.FileNameTemplate,
 				(tokenName, propertyIndex, builder) =>
 				{
 					if (WriteGlobalToken(tokenName, builder, context))
@@ -105,7 +105,7 @@ namespace UnitTestBoilerplate.Services
 				throw new InvalidOperationException("Error with selected file paths.");
 			}
 
-			TestGenerationContext context = await this.CollectTestGenerationContextAsync(selectedFile, targetProjectNamespace, testFramework, mockFramework);
+			TestGenerationContext context = await this.CollectTestGenerationContextAsync(selectedFile, targetProjectNamespace, testFramework, mockFramework, this.SettingsFactory.Get());
 
 			string unitTestContents = this.GenerateUnitTestContents(context);
 
@@ -147,7 +147,8 @@ namespace UnitTestBoilerplate.Services
 			ProjectItemSummary selectedFile, 
 			string targetProjectNamespace, 
 			TestFramework testFramework,
-			MockFramework mockFramework)
+			MockFramework mockFramework,
+			IBoilerplateSettings settings)
 		{
 			Microsoft.CodeAnalysis.Solution solution = CreateUnitTestBoilerplateCommandPackage.VisualStudioWorkspace.CurrentSolution;
 			DocumentId documentId = solution.GetDocumentIdsWithFilePath(selectedFile.FilePath).FirstOrDefault();
@@ -271,6 +272,7 @@ namespace UnitTestBoilerplate.Services
 				mockFramework,
 				testFramework,
 				document,
+				settings,
 				unitTestNamespace,
 				className,
 				namespaceDeclarationSyntax.Name.ToString(),
@@ -354,10 +356,10 @@ namespace UnitTestBoilerplate.Services
 			return parameterListNode.ChildNodes().Where(n => n.Kind() == SyntaxKind.Parameter).Cast<ParameterSyntax>();
 		}
 
-		private async Task<TestGenerationContext> CollectTestGenerationContextAsync(ProjectItemSummary selectedFile, EnvDTE.Project targetProject, TestFramework testFramework, MockFramework mockFramework)
+		private async Task<TestGenerationContext> CollectTestGenerationContextAsync(ProjectItemSummary selectedFile, EnvDTE.Project targetProject, TestFramework testFramework, MockFramework mockFramework, IBoilerplateSettings settings)
 		{
 			string targetProjectNamespace = targetProject.Properties.Item("DefaultNamespace").Value as string;
-			return await this.CollectTestGenerationContextAsync(selectedFile, targetProjectNamespace, testFramework, mockFramework);
+			return await this.CollectTestGenerationContextAsync(selectedFile, targetProjectNamespace, testFramework, mockFramework, settings);
 		}
 
 		private string GenerateUnitTestContents(TestGenerationContext context)
@@ -365,7 +367,7 @@ namespace UnitTestBoilerplate.Services
 			TestFramework testFramework = context.TestFramework;
 			MockFramework mockFramework = context.MockFramework;
 
-			string fileTemplate = this.Settings.GetTemplate(testFramework, mockFramework, TemplateType.File);
+			string fileTemplate = context.Settings.GetTemplate(testFramework, mockFramework, TemplateType.File);
 			string filledTemplate = StringUtilities.ReplaceTokens(
 				fileTemplate,
 				(tokenName, propertyIndex, builder) =>
@@ -587,7 +589,7 @@ namespace UnitTestBoilerplate.Services
 
 		private void WriteTestMethodName(StringBuilder builder, TestGenerationContext context, MethodDescriptor methodDescriptor)
 		{
-			string testMethodNameTemplate = this.Settings.GetTemplate(
+			string testMethodNameTemplate = context.Settings.GetTemplate(
 				context.TestFramework,
 				context.MockFramework,
 				TemplateType.TestMethodName);
@@ -738,7 +740,7 @@ namespace UnitTestBoilerplate.Services
 				namespaces.Add("System.Threading.Tasks");
 			}
 
-			string extraNamespacesSetting = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.ExtraUsingNamespaces);
+			string extraNamespacesSetting = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.ExtraUsingNamespaces);
 			string[] extraNamespaces = extraNamespacesSetting.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 			namespaces.AddRange(extraNamespaces);
 
@@ -758,13 +760,13 @@ namespace UnitTestBoilerplate.Services
 
 		private void WriteMockFieldDeclarations(StringBuilder builder, TestGenerationContext context)
 		{
-			string template = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldDeclaration);
+			string template = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldDeclaration);
 			WriteFieldLines(builder, context, template);
 		}
 
 		private void WriteMockFieldInitializations(StringBuilder builder, TestGenerationContext context)
 		{
-			string template = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldInitialization);
+			string template = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldInitialization);
 			WriteFieldLines(builder, context, template);
 		}
 
@@ -803,7 +805,7 @@ namespace UnitTestBoilerplate.Services
 					}
 					else
 					{
-						string template = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
+						string template = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
 						mockReferenceStatement = ReplaceInterfaceTokens(template, constructorType, context);
 					}
 
@@ -829,7 +831,7 @@ namespace UnitTestBoilerplate.Services
 
 				foreach (InjectableProperty property in context.Properties)
 				{
-					string template = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
+					string template = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
 					string mockReferenceStatement = ReplaceInterfaceTokens(template, property, context);
 
 					builder.AppendLine($"{property.PropertyName} = {mockReferenceStatement},");
@@ -861,13 +863,13 @@ namespace UnitTestBoilerplate.Services
 		{
 			if (context.MethodDeclarations.Count == 0)
 			{
-				string testMethodEmptyTemplate = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.TestMethodEmpty);
+				string testMethodEmptyTemplate = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.TestMethodEmpty);
 				WriteTestMethod(builder, context, testMethodEmptyTemplate);
 
 				return;
 			}
 
-			string testMethodInvokeTemplate = this.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.TestMethodInvocation);
+			string testMethodInvokeTemplate = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.TestMethodInvocation);
 			for (int i = 0; i < context.MethodDeclarations.Count; i++)
 			{
 				var methodDescriptor = context.MethodDeclarations[i];

@@ -7,7 +7,7 @@ using UnitTestBoilerplate.Services;
 
 namespace UnitTestBoilerplate.ViewModel
 {
-	public class FileContentsOptionsDialogViewModel : ViewModelBase
+	public class FileContentsOptionsDialogViewModel : ViewModelBase, ISettingsPageViewModel
 	{
 		private Dictionary<string, string> templateHoldingDictionary = new Dictionary<string, string>();
 
@@ -21,15 +21,32 @@ namespace UnitTestBoilerplate.ViewModel
 		}
 
 		[Import]
-		internal IBoilerplateSettings Settings { get; set; }
+		internal IBoilerplateSettingsFactory SettingsFactory { get; set; }
+
+		[Import]
+		internal ISettingsCoordinator SettingsCoordinator { get; set; }
+
+		private IBoilerplateSettings settings;
 
 		public void Initialize()
 		{
+			this.settings = this.SettingsFactory.Get();
+		}
+
+		public void Refresh()
+		{
+			this.settings = this.SettingsFactory.Get();
 			this.templateHoldingDictionary.Clear();
 			this.RaiseAllChanged();
 		}
 
 		public void Apply()
+		{
+			this.SaveCurrentSettings();
+			this.settings.Apply();
+		}
+
+		public void SaveCurrentSettings()
 		{
 			foreach (KeyValuePair<string, string> pair in this.templateHoldingDictionary)
 			{
@@ -39,7 +56,7 @@ namespace UnitTestBoilerplate.ViewModel
 				string mockFrameworkString = keyParts[1];
 				string templateTypeString = keyParts[2];
 
-				this.Settings.SetTemplate(testFrameworkString, mockFrameworkString, templateTypeString, pair.Value);
+				this.settings.SetTemplate(testFrameworkString, mockFrameworkString, templateTypeString, pair.Value);
 			}
 		}
 
@@ -273,7 +290,7 @@ namespace UnitTestBoilerplate.ViewModel
 				return template;
 			}
 
-			return this.Settings.GetTemplate(testFramework, mockFramework, templateType);
+			return this.settings.GetTemplate(testFramework, mockFramework, templateType);
 		}
 
 		/// <summary>

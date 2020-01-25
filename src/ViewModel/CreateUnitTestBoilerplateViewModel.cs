@@ -39,7 +39,7 @@ namespace UnitTestBoilerplate.ViewModel
 			this.TestProjects = new List<TestProject>();
 			IList<Project> allProjects = SolutionUtilities.GetProjects(this.dte);
 
-			string lastSelectedProject = this.Settings.GetLastSelectedProject(this.dte.Solution.FileName);
+			string lastSelectedProject = this.Cache.GetLastSelectedProject(this.dte.Solution.FileName);
 
 
 			var newProjectList = new List<TestProject>();
@@ -96,7 +96,10 @@ namespace UnitTestBoilerplate.ViewModel
 		}
 
 		[Import]
-		internal IBoilerplateSettings Settings { get; set; }
+		internal IBoilerplateCache Cache { get; set; }
+
+		[Import]
+		internal IBoilerplateSettingsFactory SettingsFactory { get; set; }
 
 		[Import]
 		internal IFrameworkPickerService FrameworkPickerService { get; set; }
@@ -206,7 +209,7 @@ namespace UnitTestBoilerplate.ViewModel
 					}
 				}
 
-				this.Settings.SaveSelectedTestProject(this.dte.Solution.FileName, this.SelectedProject.Project.FullName);
+				this.Cache.SaveSelectedTestProject(this.dte.Solution.FileName, this.SelectedProject.Project.FullName);
 			}
 
 			this.View?.Close();
@@ -221,11 +224,13 @@ namespace UnitTestBoilerplate.ViewModel
 			}
 			else
 			{
+				IBoilerplateSettings settings = this.SettingsFactory.Get();
+
 				List<TestFramework> testFrameworks = this.FrameworkPickerService.FindTestFrameworks(this.selectedProject.Project.FullName);
 				List<MockFramework> mockFrameworks = this.FrameworkPickerService.FindMockFrameworks(this.selectedProject.Project.FullName);
 
-				this.SelectedTestFramework = this.FrameworkPickerService.PickDefaultTestFramework(testFrameworks);
-				this.SelectedMockFramework = this.FrameworkPickerService.PickDefaultMockFramework(mockFrameworks);
+				this.SelectedTestFramework = this.FrameworkPickerService.PickDefaultTestFramework(testFrameworks, settings);
+				this.SelectedMockFramework = this.FrameworkPickerService.PickDefaultMockFramework(mockFrameworks, settings);
 
 				if (testFrameworks.Count == 0)
 				{

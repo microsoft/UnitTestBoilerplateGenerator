@@ -20,21 +20,20 @@ using UnitTestBoilerplate.ViewModel;
 namespace UnitTestBoilerplate.View
 {
 	/// <summary>
-	/// Interaction logic for OtherOptionsDialogPageControl.xaml
+	/// Interaction logic for WorkspaceSettingsDialogPageControl.xaml
 	/// </summary>
-	public partial class OtherOptionsDialogPageControl : UserControl
+	public partial class WorkspaceSettingsDialogPageControl : UserControl
 	{
-		public OtherOptionsDialogViewModel ViewModel { get; }
+		public WorkspaceSettingsDialogViewModel ViewModel { get; }
 
-		public OtherOptionsDialogPageControl()
+		public WorkspaceSettingsDialogPageControl()
 		{
 			this.InitializeComponent();
 
-			this.ViewModel = new OtherOptionsDialogViewModel();
+			this.ViewModel = new WorkspaceSettingsDialogViewModel();
 			IComponentModel componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
 			componentModel.DefaultCompositionService.SatisfyImportsOnce(this.ViewModel);
 			this.ViewModel.Initialize();
-			//this.ViewModel.SettingsCoordinator.ReportSettingsPageOpen(this.ViewModel);
 
 			this.DataContext = this.ViewModel;
 		}

@@ -1,10 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
+using UnitTestBoilerplate.Services;
 
 namespace UnitTestBoilerplate.Model
 {
 	/// <summary>
-	/// Holds all the data required to generate the test file. Includes information about the class to generate tests for, and the unit test project the test will be added to.
+	/// Holds all the data required to generate the test file. Includes information about the class to generate tests for, the unit test project the test will be added to, and the settings to use.
 	/// </summary>
 	public class TestGenerationContext
 	{
@@ -12,6 +13,7 @@ namespace UnitTestBoilerplate.Model
 			MockFramework mockFramework,
 			TestFramework testFramework,
 			Document document,
+			IBoilerplateSettings settings,
 			string unitTestNamespace, 
 			string className, 
 			string classNamespace,
@@ -23,6 +25,7 @@ namespace UnitTestBoilerplate.Model
 			this.MockFramework = mockFramework;
 			this.TestFramework = testFramework;
 			this.Document = document;
+			this.Settings = settings;
 			this.UnitTestNamespace = unitTestNamespace;
 			this.ClassName = className;
 			this.ClassNamespace = classNamespace;
@@ -37,6 +40,8 @@ namespace UnitTestBoilerplate.Model
 		public TestFramework TestFramework { get; }
 
 		public Document Document { get; }
+
+		public IBoilerplateSettings Settings { get; }
 
 		public string UnitTestNamespace { get; }
 

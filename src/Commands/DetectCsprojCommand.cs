@@ -94,9 +94,11 @@ namespace UnitTestBoilerplate.Commands
 			{
 				IComponentModel componentModel = (IComponentModel)await this.package.GetServiceAsync(typeof(SComponentModel));
 				var frameworkPickerService = componentModel.GetService<IFrameworkPickerService>();
+				var settingsFactory = componentModel.GetService<IBoilerplateSettingsFactory>();
+				IBoilerplateSettings settings = settingsFactory.Get();
 
-				MessageBox.Show("Test framework: " + frameworkPickerService.FindTestFramework(dialog.FileName) + Environment.NewLine + "Mock framework: " +
-				                frameworkPickerService.FindMockFramework(dialog.FileName));
+				MessageBox.Show("Test framework: " + frameworkPickerService.FindTestFramework(dialog.FileName, settings) + Environment.NewLine + "Mock framework: " +
+				                frameworkPickerService.FindMockFramework(dialog.FileName, settings));
 			}
 		}
 	}

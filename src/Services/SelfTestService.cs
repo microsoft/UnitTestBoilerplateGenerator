@@ -166,10 +166,10 @@ namespace UnitTestBoilerplate.Services
 
 				string projectFileName = GetFileNameFromSandboxProjectName(test.ProjectName, dte);
 
-				frameworkPickerService.Settings = test.Settings;
+				frameworkPickerService.SettingsFactory = new MockBoilerplateSettingsFactory(test.Settings);
 
-				TestFramework actualTestFramework = frameworkPickerService.FindTestFramework(projectFileName);
-				MockFramework actualMockFramework = frameworkPickerService.FindMockFramework(projectFileName);
+				TestFramework actualTestFramework = frameworkPickerService.FindTestFramework(projectFileName, test.Settings);
+				MockFramework actualMockFramework = frameworkPickerService.FindMockFramework(projectFileName, test.Settings);
 
 				if (test.ExpectedTestFramework!= actualTestFramework.Name)
 				{

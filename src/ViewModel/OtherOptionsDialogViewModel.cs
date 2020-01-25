@@ -10,7 +10,7 @@ using UnitTestBoilerplate.Services;
 
 namespace UnitTestBoilerplate.ViewModel
 {
-	public class OtherOptionsDialogViewModel : ViewModelBase
+	public class OtherOptionsDialogViewModel : ViewModelBase, ISettingsPageViewModel
 	{
 		private const string AutoName = "Auto";
 
@@ -24,12 +24,24 @@ namespace UnitTestBoilerplate.ViewModel
 		}
 
 		[Import]
-		internal IBoilerplateSettings Settings { get; set; }
+		internal IBoilerplateSettingsFactory SettingsFactory { get; set; }
+
+		[Import]
+		internal ISettingsCoordinator SettingsCoordinator { get; set; }
+
+		private IBoilerplateSettings settings;
 
 		public void Initialize()
 		{
-			this.TestFileNameFormat = this.Settings.FileNameTemplate;
-			TestFramework settingsPreferredTestFramework = this.Settings.PreferredTestFramework;
+			this.settings = this.SettingsFactory.Get();
+		}
+
+		public void Refresh()
+		{
+			this.settings = this.SettingsFactory.Get();
+
+			this.TestFileNameFormat = this.settings.FileNameTemplate;
+			TestFramework settingsPreferredTestFramework = this.settings.PreferredTestFramework;
 
 			if (settingsPreferredTestFramework == null)
 			{
@@ -40,7 +52,7 @@ namespace UnitTestBoilerplate.ViewModel
 				this.PreferredTestFramework = settingsPreferredTestFramework;
 			}
 
-			MockFramework settingsPreferredMockFramework = this.Settings.PreferredMockFramework;
+			MockFramework settingsPreferredMockFramework = this.settings.PreferredMockFramework;
 
 			if (settingsPreferredMockFramework == null)
 			{
@@ -54,24 +66,30 @@ namespace UnitTestBoilerplate.ViewModel
 
 		public void Apply()
 		{
-			this.Settings.FileNameTemplate = this.TestFileNameFormat;
+			this.SaveCurrentSettings();
+			this.settings.Apply();
+		}
+
+		public void SaveCurrentSettings()
+		{
+			this.settings.FileNameTemplate = this.TestFileNameFormat;
 
 			if (this.PreferredTestFramework.Name == AutoName)
 			{
-				this.Settings.PreferredTestFramework = null;
+				this.settings.PreferredTestFramework = null;
 			}
 			else
 			{
-				this.Settings.PreferredTestFramework = this.PreferredTestFramework;
+				this.settings.PreferredTestFramework = this.PreferredTestFramework;
 			}
 
 			if (this.PreferredMockFramework.Name == AutoName)
 			{
-				this.Settings.PreferredMockFramework = null;
+				this.settings.PreferredMockFramework = null;
 			}
 			else
 			{
-				this.Settings.PreferredMockFramework = this.PreferredMockFramework;
+				this.settings.PreferredMockFramework = this.PreferredMockFramework;
 			}
 		}
 

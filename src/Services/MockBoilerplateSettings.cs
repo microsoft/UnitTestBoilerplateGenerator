@@ -37,5 +37,9 @@ namespace UnitTestBoilerplate.Services
 	    public void RevertTemplateToDefault(TestFramework testFramework, MockFramework mockFramework)
 	    {
 	    }
-    }
+
+		public void Apply()
+		{
+		}
+	}
 }
