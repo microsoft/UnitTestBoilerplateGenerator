@@ -162,11 +162,11 @@ namespace UnitTestBoilerplate.Services
 			SyntaxNode root = await document.GetSyntaxRootAsync();
 			SemanticModel semanticModel = await document.GetSemanticModelAsync();
 
-			SyntaxNode firstClassDeclaration = root.DescendantNodes().FirstOrDefault(node => node.Kind() == SyntaxKind.ClassDeclaration);
+			SyntaxNode firstClassDeclaration = root.DescendantNodes().FirstOrDefault(node => node.Kind() == SyntaxKind.ClassDeclaration || node.Kind() == SyntaxKind.StructDeclaration);
 
 			if (firstClassDeclaration == null)
 			{
-				throw new InvalidOperationException("Could not find class declaration.");
+				throw new InvalidOperationException("Could not find class or struct declaration.");
 			}
 
 			if (firstClassDeclaration.ChildTokens().Any(node => node.Kind() == SyntaxKind.AbstractKeyword))
@@ -175,7 +175,7 @@ namespace UnitTestBoilerplate.Services
 			}
 
 			SyntaxToken classIdentifierToken = firstClassDeclaration.ChildTokens().FirstOrDefault(n => n.Kind() == SyntaxKind.IdentifierToken);
-			if (classIdentifierToken == default(SyntaxToken))
+			if (classIdentifierToken == default)
 			{
 				throw new InvalidOperationException("Could not find class identifier.");
 			}
