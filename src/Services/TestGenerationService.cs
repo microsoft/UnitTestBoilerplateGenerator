@@ -175,7 +175,7 @@ namespace UnitTestBoilerplate.Services
 			}
 
 			SyntaxToken classIdentifierToken = firstClassDeclaration.ChildTokens().FirstOrDefault(n => n.Kind() == SyntaxKind.IdentifierToken);
-			if (classIdentifierToken == default)
+			if (classIdentifierToken == default(SyntaxToken))
 			{
 				throw new InvalidOperationException("Could not find class identifier.");
 			}
