@@ -1,9 +1,13 @@
 # Roadmap
 
 - Add an option for what folder to add the test class to
-- Add ability to store settings inside local file to check in to source control
 
 # Changelog
+
+## 2.3.0
+**2020-02-23**
+- Added ability to generate tests for structs.
+- Added support for custom mock implementations. These can be automatically used for specified interfaces.
 
 ## 2.2.0
 **2020-01-24**
