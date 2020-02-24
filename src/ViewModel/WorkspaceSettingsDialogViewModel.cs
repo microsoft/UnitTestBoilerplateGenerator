@@ -81,7 +81,11 @@ namespace UnitTestBoilerplate.ViewModel
 							templates,
 							preferredTestFrameworkName: personalSettingsStore.PreferredTestFrameworkName,
 							preferredMockFrameworkName: personalSettingsStore.PreferredMockFrameworkName,
-							fileNameTemplate: personalSettingsStore.FileNameTemplate);
+							fileNameTemplate: personalSettingsStore.FileNameTemplate,
+							customMocks: personalSettingsStore.CustomMocks,
+							customMockFieldDeclarationTemplate: personalSettingsStore.CustomMockFieldDeclarationTemplate,
+							customMockFieldInitializationTemplate: personalSettingsStore.CustomMockFieldInitializationTemplate,
+							customMockObjectReferenceTemplate: personalSettingsStore.CustomMockObjectReferenceTemplate);
 
 						workspaceStore.Apply();
 

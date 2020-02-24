@@ -9,6 +9,9 @@ using UnitTestBoilerplate.Model;
 
 namespace UnitTestBoilerplate.Services
 {
+	/// <summary>
+	/// Workspace storage for UTBG settings. (JSON file)
+	/// </summary>
 	public class WorkspaceBoilerplateSettingsStore : IBoilerplateSettingsStore
 	{
 		private BoilerplateSettingsJson jsonObject;
@@ -28,7 +31,11 @@ namespace UnitTestBoilerplate.Services
 			IDictionary<string, string> templates,
 			string preferredTestFrameworkName,
 			string preferredMockFrameworkName,
-			string fileNameTemplate)
+			string fileNameTemplate,
+			IDictionary<string, string> customMocks,
+			string customMockFieldDeclarationTemplate,
+			string customMockFieldInitializationTemplate,
+			string customMockObjectReferenceTemplate)
 		{
 			this.settingsFilePath = settingsFilePath;
 
@@ -38,47 +45,58 @@ namespace UnitTestBoilerplate.Services
 				PreferredTestFrameworkName = preferredTestFrameworkName,
 				PreferredMockFrameworkName = preferredMockFrameworkName,
 				FileNameTemplate = fileNameTemplate,
+				CustomMockFieldDeclarationTemplate = customMockFieldDeclarationTemplate,
+				CustomMockFieldInitializationTemplate = customMockFieldInitializationTemplate,
+				CustomMockObjectReferenceTemplate = customMockObjectReferenceTemplate,
 				Templates = templates
 			};
+
+			if (customMocks != null && customMocks.Count > 0)
+			{
+				this.jsonObject.CustomMocks = customMocks;
+			}
 		}
 
 		public string PreferredTestFrameworkName
 		{
-			get
-			{
-				return this.jsonObject.PreferredTestFrameworkName;
-			}
-
-			set
-			{
-				this.jsonObject.PreferredTestFrameworkName = value;
-			}
+			get => this.jsonObject.PreferredTestFrameworkName;
+			set => this.jsonObject.PreferredTestFrameworkName = value;
 		}
 
 		public string PreferredMockFrameworkName
 		{
-			get
-			{
-				return this.jsonObject.PreferredMockFrameworkName;
-			}
-
-			set
-			{
-				this.jsonObject.PreferredMockFrameworkName = value;
-			}
+			get => this.jsonObject.PreferredMockFrameworkName;
+			set => this.jsonObject.PreferredMockFrameworkName = value;
 		}
 
 		public string FileNameTemplate
 		{
-			get
-			{
-				return this.jsonObject.FileNameTemplate;
-			}
+			get => this.jsonObject.FileNameTemplate;
+			set => this.jsonObject.FileNameTemplate = value;
+		}
 
-			set
-			{
-				this.jsonObject.FileNameTemplate = value;
-			}
+		public IDictionary<string, string> CustomMocks
+		{
+			get => this.jsonObject.CustomMocks;
+			set => this.jsonObject.CustomMocks = value;
+		}
+
+		public string CustomMockFieldDeclarationTemplate
+		{
+			get => this.jsonObject.CustomMockFieldDeclarationTemplate;
+			set => this.jsonObject.CustomMockFieldDeclarationTemplate = value;
+		}
+
+		public string CustomMockFieldInitializationTemplate
+		{
+			get => this.jsonObject.CustomMockFieldInitializationTemplate;
+			set => this.jsonObject.CustomMockFieldInitializationTemplate = value;
+		}
+
+		public string CustomMockObjectReferenceTemplate
+		{
+			get => this.jsonObject.CustomMockObjectReferenceTemplate;
+			set => this.jsonObject.CustomMockObjectReferenceTemplate = value;
 		}
 
 		public string GetTemplate(string templateSettingsKey)

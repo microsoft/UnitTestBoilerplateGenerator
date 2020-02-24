@@ -44,6 +44,7 @@
     <Compile Include="Cases\DerivedPropertyInjectedClass.cs" />
     <Compile Include="Cases\SomeService.cs" />
     <Compile Include="Cases\SomeStruct.cs" />
+    <Compile Include="CustomMock.cs" />
     <Compile Include="IGenericInterface.cs" />
     <Compile Include="IInterface3.cs" />
     <Compile Include="IInterface4.cs" />

@@ -96,5 +96,11 @@ namespace UnitTestBoilerplate.Utilities
 				builder.AppendLine();
 			}
 		}
+
+		public static string GetShortNameFromFullTypeName(string fullName)
+		{
+			int lastDotIndex = fullName.LastIndexOf('.');
+			return lastDotIndex > 0 ? fullName.Substring(lastDotIndex + 1) : fullName;
+		}
 	}
 }

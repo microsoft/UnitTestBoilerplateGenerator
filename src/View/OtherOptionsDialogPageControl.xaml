@@ -1,57 +1,111 @@
 ﻿<UserControl
-    x:Class="UnitTestBoilerplate.View.OtherOptionsDialogPageControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:UnitTestBoilerplate.View"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="300"
-    d:DesignWidth="300"
-    mc:Ignorable="d">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/UnitTestBoilerplate;component/View/XamlResources.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
-        <TextBlock Text="Test file name format" />
-        <TextBox Style="{StaticResource LineTextBox}" Text="{Binding TestFileNameFormat, UpdateSourceTrigger=PropertyChanged}" />
+	x:Class="UnitTestBoilerplate.View.OtherOptionsDialogPageControl"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:UnitTestBoilerplate.View"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vm="clr-namespace:UnitTestBoilerplate.ViewModel"
+	d:DesignHeight="300"
+	d:DesignWidth="300"
+	mc:Ignorable="d">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/UnitTestBoilerplate;component/View/XamlResources.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</UserControl.Resources>
+	<StackPanel Orientation="Vertical">
+		<TextBlock Text="Test file name format" />
+		<TextBox Style="{StaticResource LineTextBox}" Text="{Binding TestFileNameFormat, UpdateSourceTrigger=PropertyChanged}" />
 
-        <Grid Margin="0 12 0 0" ToolTip="The preferred framework will be chosen by default when no frameworks are found or when multiple different frameworks are found. Leave as 'None' and we will make our best guess.">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="4" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <TextBlock
-                Grid.Row="0"
-                Grid.Column="0"
-                VerticalAlignment="Center"
-                Text="Preferred test framework:" />
-            <ComboBox
-                Grid.Row="0"
-                Grid.Column="1"
-                ItemsSource="{Binding TestFrameworkChoices}"
-                SelectedItem="{Binding PreferredTestFramework}"
-                Style="{StaticResource FrameworkCombo}" />
+		<Grid Margin="0 12 0 0" ToolTip="The preferred framework will be chosen by default when no frameworks are found or when multiple different frameworks are found. Leave as 'None' and we will make our best guess.">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="4" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<TextBlock
+				Grid.Row="0"
+				Grid.Column="0"
+				VerticalAlignment="Center"
+				Text="Preferred test framework:" />
+			<ComboBox
+				Grid.Row="0"
+				Grid.Column="1"
+				ItemsSource="{Binding TestFrameworkChoices}"
+				SelectedItem="{Binding PreferredTestFramework}"
+				Style="{StaticResource FrameworkCombo}" />
 
-            <TextBlock
-                Grid.Row="2"
-                Grid.Column="0"
-                VerticalAlignment="Center"
-                Text="Preferred mock framework:" />
-            <ComboBox
-                Grid.Row="2"
-                Grid.Column="1"
-                ItemsSource="{Binding MockFrameworkChoices}"
-                SelectedItem="{Binding PreferredMockFramework}"
-                Style="{StaticResource FrameworkCombo}" />
-        </Grid>
-    </StackPanel>
+			<TextBlock
+				Grid.Row="2"
+				Grid.Column="0"
+				VerticalAlignment="Center"
+				Text="Preferred mock framework:" />
+			<ComboBox
+				Grid.Row="2"
+				Grid.Column="1"
+				ItemsSource="{Binding MockFrameworkChoices}"
+				SelectedItem="{Binding PreferredMockFramework}"
+				Style="{StaticResource FrameworkCombo}" />
+		</Grid>
+
+		<TextBlock
+			Margin="0 12 0 0"
+			Text="Custom mock implementations (use fully-qualified names)"
+			TextWrapping="Wrap" />
+		<Grid Margin="0 4 0 0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="20" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+			<TextBlock Text="Interface" />
+			<TextBlock Grid.Column="2" Text="Class" />
+		</Grid>
+		<ItemsControl ItemsSource="{Binding CustomMocks}">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate DataType="{x:Type vm:CustomMockViewModel}">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition Width="20" />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+						<TextBox Text="{Binding Interface, UpdateSourceTrigger=PropertyChanged}" />
+						<TextBlock
+							Grid.Column="1"
+							HorizontalAlignment="Center"
+							Text="→" />
+						<TextBox Grid.Column="2" Text="{Binding Class, UpdateSourceTrigger=PropertyChanged}" />
+					</Grid>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+		<Button
+			Margin="0 4 0 0"
+			HorizontalAlignment="Stretch"
+			Command="{Binding AddNewCustomMockCommand}"
+			Content="+" />
+
+		<StackPanel Orientation="Vertical" Style="{StaticResource LineSection}">
+			<TextBlock Text="Custom mock field declaration format" />
+			<TextBox Style="{StaticResource LineTextBox}" Text="{Binding CustomMockFieldDeclarationTemplate, UpdateSourceTrigger=PropertyChanged}" />
+		</StackPanel>
+
+		<StackPanel Orientation="Vertical" Style="{StaticResource LineSection}">
+			<TextBlock Text="Custom mock field initialization format" />
+			<TextBox Style="{StaticResource LineTextBox}" Text="{Binding CustomMockFieldInitializationTemplate, UpdateSourceTrigger=PropertyChanged}" />
+		</StackPanel>
+
+		<StackPanel Orientation="Vertical" Style="{StaticResource LineSection}">
+			<TextBlock Text="Custom mock object reference format" />
+			<TextBox Style="{StaticResource LineTextBox}" Text="{Binding CustomMockObjectReferenceTemplate, UpdateSourceTrigger=PropertyChanged}" />
+		</StackPanel>
+	</StackPanel>
 </UserControl>

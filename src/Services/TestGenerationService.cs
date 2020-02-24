@@ -411,6 +411,31 @@ namespace UnitTestBoilerplate.Services
 				});
 		}
 
+		private static string ReplaceInterfaceTokensCustom(string template, InjectableType injectableType, TestGenerationContext context, string customMockClassName)
+		{
+			return StringUtilities.ReplaceTokens(
+				template,
+				(tokenName, propertyIndex, builder) =>
+				{
+					if (WriteGlobalToken(tokenName, builder, context))
+					{
+						return;
+					}
+
+					if (WriteInterfaceContentToken(injectableType, tokenName, builder))
+					{
+						return;
+					}
+
+					if (WriteInterfaceCustomContentToken(customMockClassName, tokenName, builder))
+					{
+						return;
+					}
+
+					WriteTokenPassthrough(tokenName, builder);
+				});
+		}
+
 		private static bool WriteGlobalToken(string tokenName, StringBuilder builder, TestGenerationContext context)
 		{
 			switch (tokenName)
@@ -499,6 +524,17 @@ namespace UnitTestBoilerplate.Services
 			}
 
 			return true;
+		}
+
+		private static bool WriteInterfaceCustomContentToken(string customMockClassName, string tokenName, StringBuilder builder)
+		{
+			if (tokenName == "CustomMockClass")
+			{
+				builder.Append(customMockClassName);
+				return true;
+			}
+
+			return false;
 		}
 
 		private bool WriteTestMethodCommonToken(string tokenName, int propertyIndex, StringBuilder builder, TestGenerationContext context, string testTemplate)
@@ -716,9 +752,20 @@ namespace UnitTestBoilerplate.Services
 				namespaces.Add("System");
 			}
 
+			IDictionary<string, string> customMocks = context.Settings.CustomMocks;
 			foreach (InjectableType injectedType in context.InjectedTypes)
 			{
 				namespaces.AddRange(injectedType.TypeNamespaces);
+
+				// Add in namespaces for custom mock if needed.
+				if (customMocks.TryGetValue(injectedType.FullName, out string customMockClassFull))
+				{
+					int lastDotIndex = customMockClassFull.LastIndexOf('.');
+					if (lastDotIndex > 0)
+					{
+						namespaces.Add(customMockClassFull.Substring(0, lastDotIndex));
+					}
+				}
 			}
 
 			foreach (TypeDescriptor argumentDescriptor in
@@ -761,22 +808,48 @@ namespace UnitTestBoilerplate.Services
 		private void WriteMockFieldDeclarations(StringBuilder builder, TestGenerationContext context)
 		{
 			string template = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldDeclaration);
-			WriteFieldLines(builder, context, template);
+			IDictionary<string, string> customMocks = context.Settings.CustomMocks;
+			for (int i = 0; i < context.InjectedTypes.Count; i++)
+			{
+				InjectableType injectedType = context.InjectedTypes[i];
+				string line;
+
+				if (customMocks.TryGetValue(injectedType.FullName, out string customMockClassFull))
+				{
+					string customMockClassName = StringUtilities.GetShortNameFromFullTypeName(customMockClassFull);
+					line = ReplaceInterfaceTokensCustom(context.Settings.CustomMockFieldDeclarationTemplate, injectedType, context, customMockClassName);
+				}
+				else
+				{
+					line = ReplaceInterfaceTokens(template, injectedType, context);
+				}
+
+				builder.Append(line);
+
+				if (i < context.InjectedTypes.Count - 1)
+				{
+					builder.AppendLine();
+				}
+			}
 		}
 
 		private void WriteMockFieldInitializations(StringBuilder builder, TestGenerationContext context)
 		{
 			string template = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockFieldInitialization);
-			WriteFieldLines(builder, context, template);
-		}
-
-		// Works for both field declarations and initializations.
-		private static void WriteFieldLines(StringBuilder builder, TestGenerationContext context, string template)
-		{
+			IDictionary<string, string> customMocks = context.Settings.CustomMocks;
 			for (int i = 0; i < context.InjectedTypes.Count; i++)
 			{
 				InjectableType injectedType = context.InjectedTypes[i];
-				string line = ReplaceInterfaceTokens(template, injectedType, context);
+				string line;
+				if (customMocks.TryGetValue(injectedType.FullName, out string customMockClassFull))
+				{
+					string customMockClassName = StringUtilities.GetShortNameFromFullTypeName(customMockClassFull);
+					line = ReplaceInterfaceTokensCustom(context.Settings.CustomMockFieldInitializationTemplate, injectedType, context, customMockClassName);
+				}
+				else
+				{
+					line = ReplaceInterfaceTokens(template, injectedType, context);
+				}
 
 				builder.Append(line);
 
@@ -805,8 +878,7 @@ namespace UnitTestBoilerplate.Services
 					}
 					else
 					{
-						string template = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
-						mockReferenceStatement = ReplaceInterfaceTokens(template, constructorType, context);
+						mockReferenceStatement = CreateMockReferenceStatement(context, constructorType);
 					}
 
 					builder.Append($"{currentIndent}    {mockReferenceStatement}");
@@ -831,14 +903,26 @@ namespace UnitTestBoilerplate.Services
 
 				foreach (InjectableProperty property in context.Properties)
 				{
-					string template = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
-					string mockReferenceStatement = ReplaceInterfaceTokens(template, property, context);
-
-					builder.AppendLine($"{property.PropertyName} = {mockReferenceStatement},");
+					builder.AppendLine($"{property.PropertyName} = {CreateMockReferenceStatement(context, property)},");
 				}
 
 				builder.Append(@"}");
 			}
+		}
+
+		private static string CreateMockReferenceStatement(TestGenerationContext context, InjectableType injectedType)
+		{
+			string template;
+			if (context.Settings.CustomMocks.ContainsKey(injectedType.FullName))
+			{
+				template = context.Settings.CustomMockObjectReferenceTemplate;
+			}
+			else
+			{
+				template = context.Settings.GetTemplate(context.TestFramework, context.MockFramework, TemplateType.MockObjectReference);
+			}
+
+			return ReplaceInterfaceTokens(template, injectedType, context);
 		}
 
 		private static void WriteTodoConstructor(StringBuilder builder, TestGenerationContext context)

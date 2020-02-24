@@ -88,6 +88,20 @@ namespace UnitTestBoilerplate.Model
 			}
 		}
 
+		public string FullName
+		{
+			get
+			{
+				string fullName = this.TypeName;
+				if (this.TypeNamespace != null)
+				{
+					fullName = this.TypeNamespace + "." + fullName;
+				}
+
+				return fullName;
+			}
+		}
+
 		public string TypeBaseName => TypeUtilities.GetTypeBaseName(this.TypeName);
 
 		public string LongMockName

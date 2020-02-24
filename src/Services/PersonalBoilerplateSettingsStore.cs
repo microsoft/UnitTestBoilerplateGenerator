@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Settings;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,14 @@ namespace UnitTestBoilerplate.Services
 
 		private const string FileNameTemplateKey = "FileNameTemplate";
 
+		private const string CustomMocksKey = "CustomMocks";
+
+		private const string CustomMockFieldDeclarationTemplateKey = "CustomMockFieldDeclarationTemplate";
+
+		private const string CustomMockFieldInitializationTemplateKey = "CustomMockFieldInitializationTemplate";
+
+		private const string CustomMockObjectReferenceTemplateKey = "CustomMockObjectReferenceTemplate";
+
 		private readonly WritableSettingsStore store;
 
 		public PersonalBoilerplateSettingsStore()
@@ -48,8 +57,6 @@ namespace UnitTestBoilerplate.Services
 			{
 				this.SetVersionToLatest();
 			}
-
-			this.store = store;
 		}
 
 		private void SetVersionToLatest()
@@ -129,6 +136,107 @@ namespace UnitTestBoilerplate.Services
 			set
 			{ 
 			    this.store.SetString(CollectionPath, FileNameTemplateKey, value);
+			}
+		}
+
+		public IDictionary<string, string> CustomMocks
+		{
+			get
+			{
+				if (this.store.PropertyExists(CollectionPath, CustomMocksKey))
+				{
+					string customMocks = this.store.GetString(CollectionPath, CustomMocksKey);
+					return JsonConvert.DeserializeObject<Dictionary<string, string>>(customMocks);
+				}
+
+				return null;
+			}
+
+			set
+			{
+				if (value == null)
+				{
+					this.store.DeleteProperty(CollectionPath, CustomMocksKey);
+				}
+				else
+				{
+					this.store.SetString(CollectionPath, CustomMocksKey, JsonConvert.SerializeObject(value));
+				}
+			}
+		}
+
+		public string CustomMockFieldDeclarationTemplate 
+		{
+			get
+			{
+				if (this.store.PropertyExists(CollectionPath, CustomMockFieldDeclarationTemplateKey))
+				{
+					return this.store.GetString(CollectionPath, CustomMockFieldDeclarationTemplateKey);
+				}
+
+				return null;
+			}
+
+			set
+			{
+				if (value == null)
+				{
+					this.store.DeleteProperty(CollectionPath, CustomMockFieldDeclarationTemplateKey);
+				}
+				else
+				{
+					this.store.SetString(CollectionPath, CustomMockFieldDeclarationTemplateKey, value);
+				}
+			}
+		}
+
+		public string CustomMockFieldInitializationTemplate
+		{
+			get
+			{
+				if (this.store.PropertyExists(CollectionPath, CustomMockFieldInitializationTemplateKey))
+				{
+					return this.store.GetString(CollectionPath, CustomMockFieldInitializationTemplateKey);
+				}
+
+				return null;
+			}
+
+			set
+			{
+				if (value == null)
+				{
+					this.store.DeleteProperty(CollectionPath, CustomMockFieldInitializationTemplateKey);
+				}
+				else
+				{
+					this.store.SetString(CollectionPath, CustomMockFieldInitializationTemplateKey, value);
+				}
+			}
+		}
+
+		public string CustomMockObjectReferenceTemplate
+		{
+			get
+			{
+				if (this.store.PropertyExists(CollectionPath, CustomMockObjectReferenceTemplateKey))
+				{
+					return this.store.GetString(CollectionPath, CustomMockObjectReferenceTemplateKey);
+				}
+
+				return null;
+			}
+
+			set
+			{
+				if (value == null)
+				{
+					this.store.DeleteProperty(CollectionPath, CustomMockObjectReferenceTemplateKey);
+				}
+				else
+				{
+					this.store.SetString(CollectionPath, CustomMockObjectReferenceTemplateKey, value);
+				}
 			}
 		}
 

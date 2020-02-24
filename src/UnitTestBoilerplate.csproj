@@ -223,6 +223,7 @@
     <Compile Include="CreateUnitTestBoilerplateCommandPackage.cs" />
     <Compile Include="Utilities\SolutionUtilities.cs" />
     <Compile Include="Utilities\TypeUtilities.cs" />
+    <Compile Include="ViewModel\CustomMockViewModel.cs" />
     <Compile Include="ViewModel\OtherOptionsDialogViewModel.cs" />
     <Compile Include="ViewModel\WorkspaceSettingsDialogViewModel.cs" />
     <Compile Include="View\CreateUnitTestBoilerplateDialog.xaml.cs">

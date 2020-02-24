@@ -12,6 +12,10 @@ namespace UnitTestBoilerplate.Services
 {
     public class BoilerplateSettings : IBoilerplateSettings
     {
+		private const string DefaultCustomMockFieldDeclarationTemplate = "private $CustomMockClass$ mock$InterfaceMockName$;";
+		private const string DefaultCustomMockFieldInitializationTemplate = "this.mock$InterfaceMockName$ = new $CustomMockClass$();";
+		private const string DefaultCustomMockObjectReferenceTemplate = "this.mock$InterfaceMockName$";
+
 		private readonly IBoilerplateSettingsStore store;
 
 		public BoilerplateSettings(IBoilerplateSettingsStore store)
@@ -66,7 +70,92 @@ namespace UnitTestBoilerplate.Services
 		    }
 	    }
 
-	    public string GetTemplate(TestFramework testFramework, MockFramework mockFramework, TemplateType templateType)
+		public IDictionary<string, string> CustomMocks
+		{
+			get
+			{
+				return this.store.CustomMocks ?? new Dictionary<string, string>();
+			}
+
+			set
+			{
+				this.store.CustomMocks = value;
+			}
+		}
+
+		public string CustomMockFieldDeclarationTemplate 
+		{
+			get
+			{
+				string template = this.store.CustomMockFieldDeclarationTemplate;
+				if (template != null)
+				{
+					return template;
+				}
+
+				return DefaultCustomMockFieldDeclarationTemplate;
+			}
+
+			set
+			{
+				if (value == DefaultCustomMockFieldDeclarationTemplate)
+				{
+					this.store.CustomMockFieldDeclarationTemplate = null;
+				}
+
+				this.store.CustomMockFieldDeclarationTemplate = value;
+			}
+		}
+
+		public string CustomMockFieldInitializationTemplate
+		{
+			get
+			{
+				string template = this.store.CustomMockFieldInitializationTemplate;
+				if (template != null)
+				{
+					return template;
+				}
+
+				return DefaultCustomMockFieldInitializationTemplate;
+			}
+
+			set
+			{
+				if (value == DefaultCustomMockFieldInitializationTemplate)
+				{
+					this.store.CustomMockFieldInitializationTemplate = null;
+				}
+
+				this.store.CustomMockFieldInitializationTemplate = value;
+			}
+		}
+
+		public string CustomMockObjectReferenceTemplate
+		{
+			get
+			{
+				string template = this.store.CustomMockObjectReferenceTemplate;
+				if (template != null)
+				{
+					return template;
+				}
+
+				return DefaultCustomMockObjectReferenceTemplate;
+			}
+
+			set
+			{
+				if (value == DefaultCustomMockObjectReferenceTemplate)
+				{
+					this.store.CustomMockObjectReferenceTemplate = null;
+				}
+
+				this.store.CustomMockObjectReferenceTemplate = value;
+			}
+		}
+
+		public string GetTemplate(TestFramework testFramework, MockFramework mockFramework, TemplateType templateType)
 	    {
 			// First, check to see if we have a template in storage
 		    string templateSettingKey = GetTemplateSettingsKey(testFramework, mockFramework, templateType);

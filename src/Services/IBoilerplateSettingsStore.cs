@@ -15,6 +15,10 @@ namespace UnitTestBoilerplate.Services
 		string PreferredTestFrameworkName { get; set; }
 		string PreferredMockFrameworkName { get; set; }
 		string FileNameTemplate { get; set; }
+		IDictionary<string, string> CustomMocks { get; set; }
+		string CustomMockFieldDeclarationTemplate { get; set; }
+		string CustomMockFieldInitializationTemplate { get; set; }
+		string CustomMockObjectReferenceTemplate { get; set; }
 		string GetTemplate(string templateSettingsKey);
 		void SetTemplate(string templateSettingsKey, string template);
 		void RevertTemplateToDefault(TestFramework testFramework, MockFramework mockFramework);

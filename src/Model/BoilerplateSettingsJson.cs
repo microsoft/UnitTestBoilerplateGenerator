@@ -16,6 +16,14 @@ namespace UnitTestBoilerplate.Model
 
 		public string FileNameTemplate { get; set; }
 
+		public IDictionary<string, string> CustomMocks { get; set; }
+
+		public string CustomMockFieldDeclarationTemplate { get; set; }
+
+		public string CustomMockFieldInitializationTemplate { get; set; }
+
+		public string CustomMockObjectReferenceTemplate { get; set; }
+
 		public IDictionary<string, string> Templates { get; set; } = new Dictionary<string, string>();
 	}
 }
