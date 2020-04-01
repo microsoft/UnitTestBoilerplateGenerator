@@ -16,6 +16,8 @@ namespace UnitTestBoilerplate.Services
 	public class BoilerplateSettingsFactory : IBoilerplateSettingsFactory
 	{
 		public const string WorkspaceSettingsFileSuffix = ".utbg.json";
+		public static string UserCreatedSettingsPath;
+		public static bool LoadUserCreatedSettings;
 
 		private readonly DTE2 dte;
 
@@ -61,7 +63,7 @@ namespace UnitTestBoilerplate.Services
 				return;
 			}
 
-			string solutionSettingsFileName = solution.FullName + WorkspaceSettingsFileSuffix;
+			string solutionSettingsFileName = LoadUserCreatedSettings ? UserCreatedSettingsPath : $"{solution.FullName}{WorkspaceSettingsFileSuffix}";
 			if (!File.Exists(solutionSettingsFileName))
 			{
 				this.ClearWorkspaceStore();

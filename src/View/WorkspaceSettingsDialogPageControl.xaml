@@ -25,5 +25,11 @@
             ToolTip="Will create a config file for the solution and copy current settings to it."
             Visibility="{Binding ShowCopyButton,
                                  Converter={StaticResource VisibilityConverter}}" />
+        <Button
+            MinHeight="50"
+            Margin="0 6 0 0"
+            Command="{Binding LoadSettingsFileCommand}"
+            Content="Load settings from a file"
+            ToolTip="Select a config file load settings from it." />
     </StackPanel>
 </UserControl>
