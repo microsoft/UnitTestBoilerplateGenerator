@@ -19,8 +19,8 @@ namespace UnitTestBoilerplate.Services
 	{
 		public const string WorkspaceSettingsFileSuffix = ".utbg.json";
 		public const string UserBoilerPlateSettings = "UserBoilerPlateSettings";
-		public static string UserCreatedSettingsPath;
-		public static bool LoadUserCreatedSettings;
+		public string UserCreatedSettingsPath { get; set; }
+		public bool LoadUserCreatedSettings { get; set; }
 
 		private readonly DTE2 dte;
 
@@ -74,10 +74,11 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
-		public void ReloadUserSettings()
+		public void ClearWorkspaceStore()
 		{
-			ClearWorkspaceStore();
-			UpdateWorkspaceStore();
+			this.workspaceStoreSolutionPath = null;
+			this.workspaceStore = null;
+			this.workspaceSettings = null;
 		}
 
 		private void UpdateWorkspaceStore()
@@ -113,13 +114,6 @@ namespace UnitTestBoilerplate.Services
 			{
 				this.ClearWorkspaceStore();
 			}
-		}
-
-		private void ClearWorkspaceStore()
-		{
-			this.workspaceStoreSolutionPath = null;
-			this.workspaceStore = null;
-			this.workspaceSettings = null;
 		}
 	}
 }

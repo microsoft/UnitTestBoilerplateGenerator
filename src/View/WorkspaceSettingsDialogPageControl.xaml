@@ -30,6 +30,6 @@
             Margin="0 6 0 0"
             Command="{Binding LoadSettingsFileCommand}"
             Content="Load settings from a file"
-            ToolTip="Select a config file load settings from it." />
+            ToolTip="Select a config file to load settings from." />
     </StackPanel>
 </UserControl>

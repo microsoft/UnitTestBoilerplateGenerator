@@ -47,9 +47,9 @@ namespace UnitTestBoilerplate.ViewModel
 		{
 			get
 			{
-				if (BoilerplateSettingsFactory.LoadUserCreatedSettings)
+				if (SettingsFactory.LoadUserCreatedSettings)
 				{
-					return $"Workspace settings are stored in {BoilerplateSettingsFactory.UserCreatedSettingsPath}";
+					return $"Workspace settings are stored in {SettingsFactory.UserCreatedSettingsPath}";
 				}
 				else if (this.hasWorkspaceSettings)
 				{
@@ -66,7 +66,7 @@ namespace UnitTestBoilerplate.ViewModel
 		{
 			get
 			{
-				return !this.hasWorkspaceSettings || BoilerplateSettingsFactory.LoadUserCreatedSettings;
+				return !this.hasWorkspaceSettings || SettingsFactory.LoadUserCreatedSettings;
 			}
 		}
 
@@ -78,7 +78,13 @@ namespace UnitTestBoilerplate.ViewModel
 				return this.copySettingsToWorkspaceCommand ?? (this.copySettingsToWorkspaceCommand = new RelayCommand(
 					() =>
 					{
-						BoilerplateSettingsFactory.LoadUserCreatedSettings = false;
+						SettingsFactory.LoadUserCreatedSettings = false;
+						SettingsFactory.UserCreatedSettingsPath = string.Empty;
+						SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
+						WritableSettingsStore store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+						store.CreateCollection(PersonalBoilerplateSettingsStore.CollectionPath);
+						store.SetString(PersonalBoilerplateSettingsStore.CollectionPath, BoilerplateSettingsFactory.UserBoilerPlateSettings, "");
+
 						this.SettingsCoordinator.SaveSettingsInOpenPages();
 
 						var personalSettingsStore = new PersonalBoilerplateSettingsStore();
@@ -97,6 +103,7 @@ namespace UnitTestBoilerplate.ViewModel
 
 						workspaceStore.Apply();
 
+						SettingsFactory.ClearWorkspaceStore();
 						this.Refresh();
 						this.SettingsCoordinator.RefreshOpenPages();
 					}));
@@ -119,19 +126,19 @@ namespace UnitTestBoilerplate.ViewModel
 
 						if (result == true)
 						{
-							BoilerplateSettingsFactory.UserCreatedSettingsPath = openFileDialog.FileName;
-							BoilerplateSettingsFactory.LoadUserCreatedSettings = true;
+							SettingsFactory.UserCreatedSettingsPath = openFileDialog.FileName;
+							SettingsFactory.LoadUserCreatedSettings = true;
 							SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
 							WritableSettingsStore store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
 
 							store.CreateCollection(PersonalBoilerplateSettingsStore.CollectionPath);
-							store.SetString(PersonalBoilerplateSettingsStore.CollectionPath, "UserBoilerPlateSettings", BoilerplateSettingsFactory.UserCreatedSettingsPath);
+							store.SetString(PersonalBoilerplateSettingsStore.CollectionPath, BoilerplateSettingsFactory.UserBoilerPlateSettings, SettingsFactory.UserCreatedSettingsPath);
 
-							BoilerplateSettingsFactory boilerplateSettingsFactory = SettingsFactory as BoilerplateSettingsFactory;
-							boilerplateSettingsFactory?.ReloadUserSettings();
+							SettingsFactory.ClearWorkspaceStore();
 						}
 
 						this.Refresh();
+						this.SettingsCoordinator.RefreshOpenPages();
 					}));
 			}
 		}
