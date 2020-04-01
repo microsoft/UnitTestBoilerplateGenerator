@@ -1,6 +1,8 @@
 ﻿using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Settings;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -16,6 +18,7 @@ namespace UnitTestBoilerplate.Services
 	public class BoilerplateSettingsFactory : IBoilerplateSettingsFactory
 	{
 		public const string WorkspaceSettingsFileSuffix = ".utbg.json";
+		public const string UserBoilerPlateSettings = "UserBoilerPlateSettings";
 		public static string UserCreatedSettingsPath;
 		public static bool LoadUserCreatedSettings;
 
@@ -32,6 +35,23 @@ namespace UnitTestBoilerplate.Services
 		{
 			this.dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
 			this.personalSettings = new BoilerplateSettings(this.personalStore);
+
+			SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
+			WritableSettingsStore store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+			store.CreateCollection(PersonalBoilerplateSettingsStore.CollectionPath);
+			if (store.PropertyExists(PersonalBoilerplateSettingsStore.CollectionPath, UserBoilerPlateSettings))
+			{
+				UserCreatedSettingsPath = store.GetString(PersonalBoilerplateSettingsStore.CollectionPath, UserBoilerPlateSettings);
+
+				if (string.IsNullOrEmpty(UserCreatedSettingsPath) == false)
+				{
+					LoadUserCreatedSettings = true;
+				}
+				else
+				{
+					LoadUserCreatedSettings = false;
+				}
+			}
 		}
 
 		public IBoilerplateSettings Get()
@@ -52,6 +72,12 @@ namespace UnitTestBoilerplate.Services
 				this.UpdateWorkspaceStore();
 				return this.workspaceStore != null;
 			}
+		}
+
+		public void ReloadUserSettings()
+		{
+			ClearWorkspaceStore();
+			UpdateWorkspaceStore();
 		}
 
 		private void UpdateWorkspaceStore()

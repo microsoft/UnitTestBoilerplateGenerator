@@ -47,7 +47,11 @@ namespace UnitTestBoilerplate.ViewModel
 		{
 			get
 			{
-				if (this.hasWorkspaceSettings)
+				if (BoilerplateSettingsFactory.LoadUserCreatedSettings)
+				{
+					return $"Workspace settings are stored in {BoilerplateSettingsFactory.UserCreatedSettingsPath}";
+				}
+				else if (this.hasWorkspaceSettings)
 				{
 					return $"Workspace settings are stored in {this.dte.Solution.FileName}{BoilerplateSettingsFactory.WorkspaceSettingsFileSuffix}";
 				}
@@ -62,7 +66,7 @@ namespace UnitTestBoilerplate.ViewModel
 		{
 			get
 			{
-				return !this.hasWorkspaceSettings;
+				return !this.hasWorkspaceSettings || BoilerplateSettingsFactory.LoadUserCreatedSettings;
 			}
 		}
 
@@ -74,6 +78,7 @@ namespace UnitTestBoilerplate.ViewModel
 				return this.copySettingsToWorkspaceCommand ?? (this.copySettingsToWorkspaceCommand = new RelayCommand(
 					() =>
 					{
+						BoilerplateSettingsFactory.LoadUserCreatedSettings = false;
 						this.SettingsCoordinator.SaveSettingsInOpenPages();
 
 						var personalSettingsStore = new PersonalBoilerplateSettingsStore();
@@ -123,6 +128,7 @@ namespace UnitTestBoilerplate.ViewModel
 							store.SetString(PersonalBoilerplateSettingsStore.CollectionPath, "UserBoilerPlateSettings", BoilerplateSettingsFactory.UserCreatedSettingsPath);
 
 							BoilerplateSettingsFactory boilerplateSettingsFactory = SettingsFactory as BoilerplateSettingsFactory;
+							boilerplateSettingsFactory?.ReloadUserSettings();
 						}
 
 						this.Refresh();
