@@ -10,12 +10,12 @@ namespace UnitTestBoilerplate.Services
 	{
 		IBoilerplateSettings Get();
 
-		void ClearWorkspaceStore();
+		void ClearSettingsFileStore();
 
 		bool UsingWorkspaceSettings { get; }
 
 		string UserCreatedSettingsPath { get; set; }
 
-		bool LoadUserCreatedSettings { get; set; }
+		bool LoadUserCreatedSettings { get; }
 	}
 }

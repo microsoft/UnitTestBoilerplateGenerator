@@ -78,12 +78,11 @@ namespace UnitTestBoilerplate.ViewModel
 				return this.copySettingsToWorkspaceCommand ?? (this.copySettingsToWorkspaceCommand = new RelayCommand(
 					() =>
 					{
-						SettingsFactory.LoadUserCreatedSettings = false;
-						SettingsFactory.UserCreatedSettingsPath = string.Empty;
+						SettingsFactory.UserCreatedSettingsPath = null;
 						SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
 						WritableSettingsStore store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
 						store.CreateCollection(PersonalBoilerplateSettingsStore.CollectionPath);
-						store.SetString(PersonalBoilerplateSettingsStore.CollectionPath, BoilerplateSettingsFactory.UserBoilerPlateSettings, "");
+						store.SetString(PersonalBoilerplateSettingsStore.CollectionPath, BoilerplateSettingsFactory.UserBoilerplateSettings, string.Empty);
 
 						this.SettingsCoordinator.SaveSettingsInOpenPages();
 
@@ -103,7 +102,7 @@ namespace UnitTestBoilerplate.ViewModel
 
 						workspaceStore.Apply();
 
-						SettingsFactory.ClearWorkspaceStore();
+						SettingsFactory.ClearSettingsFileStore();
 						this.Refresh();
 						this.SettingsCoordinator.RefreshOpenPages();
 					}));
@@ -127,18 +126,16 @@ namespace UnitTestBoilerplate.ViewModel
 						if (result == true)
 						{
 							SettingsFactory.UserCreatedSettingsPath = openFileDialog.FileName;
-							SettingsFactory.LoadUserCreatedSettings = true;
 							SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
 							WritableSettingsStore store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
 
 							store.CreateCollection(PersonalBoilerplateSettingsStore.CollectionPath);
-							store.SetString(PersonalBoilerplateSettingsStore.CollectionPath, BoilerplateSettingsFactory.UserBoilerPlateSettings, SettingsFactory.UserCreatedSettingsPath);
+							store.SetString(PersonalBoilerplateSettingsStore.CollectionPath, BoilerplateSettingsFactory.UserBoilerplateSettings, SettingsFactory.UserCreatedSettingsPath);
 
-							SettingsFactory.ClearWorkspaceStore();
+							SettingsFactory.ClearSettingsFileStore();
+							this.Refresh();
+							this.SettingsCoordinator.RefreshOpenPages();
 						}
-
-						this.Refresh();
-						this.SettingsCoordinator.RefreshOpenPages();
 					}));
 			}
 		}

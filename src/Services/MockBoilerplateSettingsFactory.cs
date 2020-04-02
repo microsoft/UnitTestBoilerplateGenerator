@@ -20,7 +20,7 @@ namespace UnitTestBoilerplate.Services
 			return this.settings;
 		}
 
-		public void ClearWorkspaceStore()
+		public void ClearSettingsFileStore()
 		{
 		}
 
@@ -28,6 +28,6 @@ namespace UnitTestBoilerplate.Services
 
 		public string UserCreatedSettingsPath { get; set; }
 
-		public bool LoadUserCreatedSettings { get; set; }
+		public bool LoadUserCreatedSettings { get; }
 	}
 }
