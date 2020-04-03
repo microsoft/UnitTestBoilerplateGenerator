@@ -82,7 +82,7 @@ namespace UnitTestBoilerplate.ViewModel
 						SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
 						WritableSettingsStore store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
 						store.CreateCollection(PersonalBoilerplateSettingsStore.CollectionPath);
-						store.SetString(PersonalBoilerplateSettingsStore.CollectionPath, BoilerplateSettingsFactory.UserBoilerplateSettings, string.Empty);
+						store.DeleteProperty(PersonalBoilerplateSettingsStore.CollectionPath, BoilerplateSettingsFactory.UserBoilerplateSettings);
 
 						this.SettingsCoordinator.SaveSettingsInOpenPages();
 

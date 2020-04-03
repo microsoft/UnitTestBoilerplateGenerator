@@ -19,17 +19,14 @@ namespace UnitTestBoilerplate.Services
 	{
 		public const string WorkspaceSettingsFileSuffix = ".utbg.json";
 		public const string UserBoilerplateSettings = "UserBoilerplateSettings";
-		public string UserCreatedSettingsPath { get; set; }
-		public bool LoadUserCreatedSettings => !string.IsNullOrEmpty(this.UserCreatedSettingsPath);
-
+		
 		private readonly DTE2 dte;
-
 		private readonly PersonalBoilerplateSettingsStore personalStore = new PersonalBoilerplateSettingsStore();
 		private readonly BoilerplateSettings personalSettings;
 
-		private string workspaceStoreSolutionPath;
+		private string settingsFilePath;
 		private WorkspaceBoilerplateSettingsStore settingsFileStore;
-		private BoilerplateSettings workspaceSettings;
+		private BoilerplateSettings fileSettings;
 
 		public BoilerplateSettingsFactory()
 		{
@@ -45,12 +42,15 @@ namespace UnitTestBoilerplate.Services
 			}
 		}
 
+		public string UserCreatedSettingsPath { get; set; }
+		public bool LoadUserCreatedSettings => !string.IsNullOrEmpty(this.UserCreatedSettingsPath);
+
 		public IBoilerplateSettings Get()
 		{
 			this.UpdateSettingsFileStore();
-			if (this.workspaceSettings != null)
+			if (this.fileSettings != null)
 			{
-				return this.workspaceSettings;
+				return this.fileSettings;
 			}
 
 			return this.personalSettings;
@@ -67,9 +67,9 @@ namespace UnitTestBoilerplate.Services
 
 		public void ClearSettingsFileStore()
 		{
-			this.workspaceStoreSolutionPath = null;
+			this.settingsFilePath = null;
 			this.settingsFileStore = null;
-			this.workspaceSettings = null;
+			this.fileSettings = null;
 		}
 
 		private void UpdateSettingsFileStore()
@@ -82,7 +82,7 @@ namespace UnitTestBoilerplate.Services
 			}
 
 			string solutionSettingsFileName;
-			if (this.LoadUserCreatedSettings && File.Exists(UserCreatedSettingsPath))
+			if (this.LoadUserCreatedSettings && File.Exists(this.UserCreatedSettingsPath))
 			{
 				solutionSettingsFileName = UserCreatedSettingsPath;
 			}
@@ -96,7 +96,7 @@ namespace UnitTestBoilerplate.Services
 				return;
 			}
 
-			if (this.settingsFileStore != null && solution.FullName == this.workspaceStoreSolutionPath)
+			if (this.settingsFileStore != null && solution.FullName == this.settingsFilePath)
 			{
 				// We are current. Return.
 				return;
@@ -106,8 +106,8 @@ namespace UnitTestBoilerplate.Services
 			{
 				// Initialize the new store from that settings file.
 				this.settingsFileStore = new WorkspaceBoilerplateSettingsStore(solutionSettingsFileName);
-				this.workspaceSettings = new BoilerplateSettings(this.settingsFileStore);
-				this.workspaceStoreSolutionPath = solution.FullName;
+				this.fileSettings = new BoilerplateSettings(this.settingsFileStore);
+				this.settingsFilePath = solution.FullName;
 			}
 			catch
 			{
