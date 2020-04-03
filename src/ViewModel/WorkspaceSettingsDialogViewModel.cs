@@ -2,7 +2,10 @@
 using EnvDTE80;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Settings;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -44,7 +47,11 @@ namespace UnitTestBoilerplate.ViewModel
 		{
 			get
 			{
-				if (this.hasWorkspaceSettings)
+				if (SettingsFactory.LoadUserCreatedSettings)
+				{
+					return $"Workspace settings are stored in {SettingsFactory.UserCreatedSettingsPath}";
+				}
+				else if (this.hasWorkspaceSettings)
 				{
 					return $"Workspace settings are stored in {this.dte.Solution.FileName}{BoilerplateSettingsFactory.WorkspaceSettingsFileSuffix}";
 				}
@@ -59,7 +66,7 @@ namespace UnitTestBoilerplate.ViewModel
 		{
 			get
 			{
-				return !this.hasWorkspaceSettings;
+				return !this.hasWorkspaceSettings || SettingsFactory.LoadUserCreatedSettings;
 			}
 		}
 
@@ -71,6 +78,12 @@ namespace UnitTestBoilerplate.ViewModel
 				return this.copySettingsToWorkspaceCommand ?? (this.copySettingsToWorkspaceCommand = new RelayCommand(
 					() =>
 					{
+						SettingsFactory.UserCreatedSettingsPath = null;
+						SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
+						WritableSettingsStore store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+						store.CreateCollection(PersonalBoilerplateSettingsStore.CollectionPath);
+						store.DeleteProperty(PersonalBoilerplateSettingsStore.CollectionPath, BoilerplateSettingsFactory.UserBoilerplateSettings);
+
 						this.SettingsCoordinator.SaveSettingsInOpenPages();
 
 						var personalSettingsStore = new PersonalBoilerplateSettingsStore();
@@ -89,8 +102,40 @@ namespace UnitTestBoilerplate.ViewModel
 
 						workspaceStore.Apply();
 
+						SettingsFactory.ClearSettingsFileStore();
 						this.Refresh();
 						this.SettingsCoordinator.RefreshOpenPages();
+					}));
+			}
+		}
+
+		private RelayCommand loadSettingsFileCommand;
+		public RelayCommand LoadSettingsFileCommand
+		{
+			get
+			{
+				return this.loadSettingsFileCommand ?? (this.loadSettingsFileCommand = new RelayCommand(
+					() =>
+					{
+						Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+						openFileDialog.DefaultExt = ".json";
+						openFileDialog.Filter = "JSON Files (*.json)|*.json";
+
+						bool? result = openFileDialog.ShowDialog();
+
+						if (result == true)
+						{
+							SettingsFactory.UserCreatedSettingsPath = openFileDialog.FileName;
+							SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
+							WritableSettingsStore store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+
+							store.CreateCollection(PersonalBoilerplateSettingsStore.CollectionPath);
+							store.SetString(PersonalBoilerplateSettingsStore.CollectionPath, BoilerplateSettingsFactory.UserBoilerplateSettings, SettingsFactory.UserCreatedSettingsPath);
+
+							SettingsFactory.ClearSettingsFileStore();
+							this.Refresh();
+							this.SettingsCoordinator.RefreshOpenPages();
+						}
 					}));
 			}
 		}

@@ -1,6 +1,8 @@
 ﻿using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Settings;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -16,28 +18,39 @@ namespace UnitTestBoilerplate.Services
 	public class BoilerplateSettingsFactory : IBoilerplateSettingsFactory
 	{
 		public const string WorkspaceSettingsFileSuffix = ".utbg.json";
-
+		public const string UserBoilerplateSettings = "UserBoilerplateSettings";
+		
 		private readonly DTE2 dte;
-
 		private readonly PersonalBoilerplateSettingsStore personalStore = new PersonalBoilerplateSettingsStore();
 		private readonly BoilerplateSettings personalSettings;
 
-		private string workspaceStoreSolutionPath;
-		private WorkspaceBoilerplateSettingsStore workspaceStore;
-		private BoilerplateSettings workspaceSettings;
+		private string settingsFilePath;
+		private WorkspaceBoilerplateSettingsStore settingsFileStore;
+		private BoilerplateSettings fileSettings;
 
 		public BoilerplateSettingsFactory()
 		{
 			this.dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
 			this.personalSettings = new BoilerplateSettings(this.personalStore);
+
+			SettingsManager settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
+			WritableSettingsStore store = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+			store.CreateCollection(PersonalBoilerplateSettingsStore.CollectionPath);
+			if (store.PropertyExists(PersonalBoilerplateSettingsStore.CollectionPath, UserBoilerplateSettings))
+			{
+				UserCreatedSettingsPath = store.GetString(PersonalBoilerplateSettingsStore.CollectionPath, UserBoilerplateSettings);
+			}
 		}
+
+		public string UserCreatedSettingsPath { get; set; }
+		public bool LoadUserCreatedSettings => !string.IsNullOrEmpty(this.UserCreatedSettingsPath);
 
 		public IBoilerplateSettings Get()
 		{
-			this.UpdateWorkspaceStore();
-			if (this.workspaceSettings != null)
+			this.UpdateSettingsFileStore();
+			if (this.fileSettings != null)
 			{
-				return this.workspaceSettings;
+				return this.fileSettings;
 			}
 
 			return this.personalSettings;
@@ -47,28 +60,43 @@ namespace UnitTestBoilerplate.Services
 		{
 			get
 			{
-				this.UpdateWorkspaceStore();
-				return this.workspaceStore != null;
+				this.UpdateSettingsFileStore();
+				return this.settingsFileStore != null;
 			}
 		}
 
-		private void UpdateWorkspaceStore()
+		public void ClearSettingsFileStore()
+		{
+			this.settingsFilePath = null;
+			this.settingsFileStore = null;
+			this.fileSettings = null;
+		}
+
+		private void UpdateSettingsFileStore()
 		{
 			var solution = this.dte.Solution;
 			if (solution == null)
 			{
-				this.ClearWorkspaceStore();
+				this.ClearSettingsFileStore();
 				return;
 			}
 
-			string solutionSettingsFileName = solution.FullName + WorkspaceSettingsFileSuffix;
-			if (!File.Exists(solutionSettingsFileName))
+			string solutionSettingsFileName;
+			if (this.LoadUserCreatedSettings && File.Exists(this.UserCreatedSettingsPath))
 			{
-				this.ClearWorkspaceStore();
+				solutionSettingsFileName = UserCreatedSettingsPath;
+			}
+			else if(File.Exists(solution.FullName + WorkspaceSettingsFileSuffix))
+			{
+				solutionSettingsFileName = solution.FullName + WorkspaceSettingsFileSuffix;
+			}
+			else
+			{
+				this.ClearSettingsFileStore();
 				return;
 			}
 
-			if (this.workspaceStore != null && solution.FullName == this.workspaceStoreSolutionPath)
+			if (this.settingsFileStore != null && solution.FullName == this.settingsFilePath)
 			{
 				// We are current. Return.
 				return;
@@ -77,21 +105,14 @@ namespace UnitTestBoilerplate.Services
 			try
 			{
 				// Initialize the new store from that settings file.
-				this.workspaceStore = new WorkspaceBoilerplateSettingsStore(solutionSettingsFileName);
-				this.workspaceSettings = new BoilerplateSettings(this.workspaceStore);
-				this.workspaceStoreSolutionPath = solution.FullName;
+				this.settingsFileStore = new WorkspaceBoilerplateSettingsStore(solutionSettingsFileName);
+				this.fileSettings = new BoilerplateSettings(this.settingsFileStore);
+				this.settingsFilePath = solution.FullName;
 			}
 			catch
 			{
-				this.ClearWorkspaceStore();
+				this.ClearSettingsFileStore();
 			}
-		}
-
-		private void ClearWorkspaceStore()
-		{
-			this.workspaceStoreSolutionPath = null;
-			this.workspaceStore = null;
-			this.workspaceSettings = null;
 		}
 	}
 }
