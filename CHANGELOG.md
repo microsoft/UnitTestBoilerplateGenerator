@@ -1,6 +1,6 @@
 # Roadmap
 
-- Add an option for what folder to add the test class to
+- Add an option for what folder to add the test class to.
 
 # Changelog
 
