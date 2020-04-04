@@ -4,6 +4,10 @@
 
 # Changelog
 
+## 2.4.0
+**2020-04-04**
+- Added ability to load settings from a user-specified file, thanks to Jess McAnally.
+
 ## 2.3.0
 **2020-02-23**
 - Added ability to generate tests for structs.
