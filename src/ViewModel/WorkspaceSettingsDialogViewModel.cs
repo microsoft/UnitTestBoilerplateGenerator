@@ -49,15 +49,15 @@ namespace UnitTestBoilerplate.ViewModel
 			{
 				if (SettingsFactory.LoadUserCreatedSettings)
 				{
-					return $"Workspace settings are stored in {SettingsFactory.UserCreatedSettingsPath}";
+					return $"Settings are coming from a user specified file: {SettingsFactory.UserCreatedSettingsPath}";
 				}
 				else if (this.hasWorkspaceSettings)
 				{
-					return $"Workspace settings are stored in {this.dte.Solution.FileName}{BoilerplateSettingsFactory.WorkspaceSettingsFileSuffix}";
+					return $"Settings are controlled by the workspace in this file: {this.dte.Solution.FileName}{BoilerplateSettingsFactory.WorkspaceSettingsFileSuffix}";
 				}
 				else
 				{
-					return "There are no settings stored in this workspace.";
+					return "Settings are coming from built-in Visual Studio settings.";
 				}
 			}
 		}
