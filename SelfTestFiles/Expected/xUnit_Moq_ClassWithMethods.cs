@@ -46,6 +46,46 @@ namespace UnitTestBoilerplate.SelfTest.Cases
 		}
 
 		[Fact]
+		public void ValueTypeParams_StateUnderTest_ExpectedBehavior()
+		{
+			// Arrange
+			var classWithMethods = this.CreateClassWithMethods();
+			bool boolParam = false;
+			byte byteParam = 0;
+			sbyte sbyteParam = 0;
+			short shortParam = 0;
+			ushort ushortParam = 0;
+			int intParam = 0;
+			uint uintParam = 0;
+			long longParam = 0;
+			ulong ulongParam = 0;
+			float floatParam = 0;
+			double doubleParam = 0;
+			char charParam = default(global::System.Char);
+			decimal decimalParam = 0;
+
+			// Act
+			classWithMethods.ValueTypeParams(
+				boolParam,
+				byteParam,
+				sbyteParam,
+				shortParam,
+				ushortParam,
+				intParam,
+				uintParam,
+				longParam,
+				ulongParam,
+				floatParam,
+				doubleParam,
+				charParam,
+				decimalParam);
+
+			// Assert
+			Assert.True(false);
+			this.mockRepository.VerifyAll();
+		}
+
+		[Fact]
 		public async Task GetBoolTaskAsync_StateUnderTest_ExpectedBehavior()
 		{
 			// Arrange

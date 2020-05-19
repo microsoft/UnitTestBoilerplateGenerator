@@ -21,6 +21,23 @@ namespace UnitBoilerplate.Sandbox.Classes.Cases
 		{
 		}
 
+		public void ValueTypeParams(
+			bool boolParam,
+			byte byteParam,
+			sbyte sbyteParam,
+			short shortParam,
+			ushort ushortParam,
+			int intParam,
+			uint uintParam,
+			long longParam,
+			ulong ulongParam,
+			float floatParam,
+			double doubleParam,
+			char charParam, 
+			decimal decimalParam)
+		{
+		}
+
 		public async Task<bool> GetBoolTaskAsync(IInterface3 interface3, DateTime time)
 		{
 			return await Task.FromResult(true);
