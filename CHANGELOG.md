@@ -4,6 +4,10 @@
 
 # Changelog
 
+## 2.4.5
+**2020-05-25**
+- Enhanced framework detection logic to work when pulling references in with .props files.
+
 ## 2.4.0
 **2020-04-04**
 - Added ability to load settings from a user-specified file, thanks to Jess McAnally.
