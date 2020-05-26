@@ -226,8 +226,8 @@ namespace UnitTestBoilerplate.ViewModel
 			{
 				IBoilerplateSettings settings = this.SettingsFactory.Get();
 
-				List<TestFramework> testFrameworks = this.FrameworkPickerService.FindTestFrameworks(this.selectedProject.Project.FullName);
-				List<MockFramework> mockFrameworks = this.FrameworkPickerService.FindMockFrameworks(this.selectedProject.Project.FullName);
+				List<TestFramework> testFrameworks = this.FrameworkPickerService.FindTestFrameworks(this.selectedProject.Project);
+				List<MockFramework> mockFrameworks = this.FrameworkPickerService.FindMockFrameworks(this.selectedProject.Project);
 
 				this.SelectedTestFramework = this.FrameworkPickerService.PickDefaultTestFramework(testFrameworks, settings);
 				this.SelectedMockFramework = this.FrameworkPickerService.PickDefaultMockFramework(mockFrameworks, settings);

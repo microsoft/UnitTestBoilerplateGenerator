@@ -144,6 +144,7 @@ namespace UnitTestBoilerplate.Services
 				new SelfTestDetectionTest("NetCoreNUnitTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.MoqName),
 				new SelfTestDetectionTest("NetCoreSimpleStubsTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName),
 				new SelfTestDetectionTest("NetCoreVSRhinoMocksTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName),
+				new SelfTestDetectionTest("NetStandardPropsNUnitNSubstitute", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.NSubstituteName),
 				new SelfTestDetectionTest("NoFrameworkTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.NoneName),
 				new SelfTestDetectionTest("NoFrameworkTestCases", nunitNSubSettings, TestFrameworks.NUnitName, MockFrameworks.NSubstituteName),
 				new SelfTestDetectionTest("NSubstituteTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName),
@@ -164,24 +165,31 @@ namespace UnitTestBoilerplate.Services
 			{
 				result.TotalCount++;
 
-				string projectFileName = GetFileNameFromSandboxProjectName(test.ProjectName, dte);
+				Project project = GetProjectFromName(test.ProjectName, dte);
 
-				frameworkPickerService.SettingsFactory = new MockBoilerplateSettingsFactory(test.Settings);
-
-				TestFramework actualTestFramework = frameworkPickerService.FindTestFramework(projectFileName, test.Settings);
-				MockFramework actualMockFramework = frameworkPickerService.FindMockFramework(projectFileName, test.Settings);
-
-				if (test.ExpectedTestFramework!= actualTestFramework.Name)
+				if (project == null)
 				{
-					failures.Add($"Expected {test.ExpectedTestFramework} test framework for {test.ProjectName} but got {actualTestFramework.Name}. (Preferred Framework: {test.Settings.PreferredTestFramework})");
-				}
-				else if (test.ExpectedMockFramework != actualMockFramework.Name)
-				{
-					failures.Add($"Expected {test.ExpectedMockFramework} mock framework for {test.ProjectName} but got {actualMockFramework.Name}. (Preferred Framework: {test.Settings.PreferredMockFramework})");
+					failures.Add($"Cannot find project '{test.ProjectName}'");
 				}
 				else
 				{
-					result.SucceededCount++;
+					frameworkPickerService.SettingsFactory = new MockBoilerplateSettingsFactory(test.Settings);
+
+					TestFramework actualTestFramework = frameworkPickerService.FindTestFramework(project, test.Settings);
+					MockFramework actualMockFramework = frameworkPickerService.FindMockFramework(project, test.Settings);
+
+					if (test.ExpectedTestFramework != actualTestFramework.Name)
+					{
+						failures.Add($"Expected {test.ExpectedTestFramework} test framework for {test.ProjectName} but got {actualTestFramework.Name}. (Preferred Framework: {test.Settings.PreferredTestFramework})");
+					}
+					else if (test.ExpectedMockFramework != actualMockFramework.Name)
+					{
+						failures.Add($"Expected {test.ExpectedMockFramework} mock framework for {test.ProjectName} but got {actualMockFramework.Name}. (Preferred Framework: {test.Settings.PreferredMockFramework})");
+					}
+					else
+					{
+						result.SucceededCount++;
+					}
 				}
 			}
 
@@ -190,10 +198,10 @@ namespace UnitTestBoilerplate.Services
 			return result;
 		}
 
-		private static string GetFileNameFromSandboxProjectName(string projectName, DTE2 dte)
+		private static Project GetProjectFromName(string projectName, DTE2 dte)
 		{
-			string solutionDirectory = Path.GetDirectoryName(dte.Solution.FileName);
-			return Path.Combine(solutionDirectory, projectName, projectName + ".csproj");
+			IList<Project> projects = SolutionUtilities.GetProjects(dte);
+			return projects.FirstOrDefault(p => p.Name == projectName);
 		}
 
 		public async System.Threading.Tasks.Task GenerateTestFilesAsync(Project classesProject)

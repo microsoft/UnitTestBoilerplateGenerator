@@ -77,7 +77,6 @@ namespace UnitTestBoilerplate
 #if DEBUG
 			await SelfTestCommand.InitializeAsync(this);
 			await SelfTestCleanCommand.InitializeAsync(this);
-			await DetectCsprojCommand.InitializeAsync(this);
 #endif
 			await base.InitializeAsync(cancellationToken, progress);
 

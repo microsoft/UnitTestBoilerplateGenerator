@@ -89,13 +89,6 @@
           <ButtonText>Clean Self Test</ButtonText>
         </Strings>
       </Button>
-    
-      <Button guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="DetectCsprojCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidCreateUnitTestBoilerplateCommandPackageCmdSet" id="DebugMenuGroup" />
-        <Strings>
-          <ButtonText>Detect frameworks from .csproj</ButtonText>
-        </Strings>
-      </Button>
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -121,7 +114,6 @@
       <IDSymbol name="CreateUnitTestBoilerplateCommandId" value="0x0100" />
       <IDSymbol name="SelfTestCommandId" value="0x0101" />
       <IDSymbol name="SelfTestCleanCommandId" value="0x0102" />
-      <IDSymbol name="DetectCsprojCommandId" value="0x0103" />
     </GuidSymbol>
     
     <GuidSymbol name="guidImages" value="{e37f3d2a-9d80-48fd-a90f-31ac4daf9a07}" >
