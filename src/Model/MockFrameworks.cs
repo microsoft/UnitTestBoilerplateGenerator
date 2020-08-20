@@ -12,6 +12,7 @@ namespace UnitTestBoilerplate.Model
 		public const string NSubstituteName = "NSubstitute";
 		public const string RhinoMocksName = "Rhino Mocks";
 		public const string FakeItEasyName = "FakeItEasy";
+		public const string JustMockName = "JustMock";
 
 		static MockFrameworks()
 		{
@@ -135,6 +136,23 @@ namespace UnitTestBoilerplate.Model
 					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod,
 					testedObjectCreationCode: null,
 					mockObjectReferenceCode: "this.fake$InterfaceMockName$",
+					assertStatement: null),
+				new MockFramework(
+					name: JustMockName,
+					detectionReferenceMatches: new List<string> { "JustMock", "Telerik.JustMock" },
+					detectionRank: 2,
+					usingNamespaces: new List<string> { "Telerik.JustMock" },
+					supportsGenerics: true,
+					classStartCode: null,
+					hasMockFields: true,
+					initializeStartCode: null,
+					mockFieldDeclarationCode: "private $InterfaceType$ mock$InterfaceMockName$;",
+					mockFieldInitializationCode: "this.mock$InterfaceMockName$ = Mock.Create<$InterfaceType$>();",
+					testCleanupCode: null,
+					testArrangeCode: null,
+					testedObjectCreationStyle: TestedObjectCreationStyle.HelperMethod,
+					testedObjectCreationCode: null,
+					mockObjectReferenceCode: "this.mock$InterfaceMockName$",
 					assertStatement: null)
 			}.AsReadOnly();
 		}

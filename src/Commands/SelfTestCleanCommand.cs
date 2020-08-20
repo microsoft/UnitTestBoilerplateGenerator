@@ -88,7 +88,7 @@ namespace UnitTestBoilerplate.Commands
 		private void MenuItemCallback(object sender, EventArgs e)
 		{
 			var createTestService = new SelfTestService();
-			createTestService.Clean(save: true);
+			createTestService.Clean();
 		}
 	}
 }

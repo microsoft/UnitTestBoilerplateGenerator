@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,34 +10,12 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using UnitTestBoilerplate.Model;
 using UnitTestBoilerplate.Utilities;
-using UnitTestBoilerplate.ViewModel;
 
 namespace UnitTestBoilerplate.Services
 {
 	public class SelfTestService
 	{
-		//// Key is project name, value is the expected detection result
-		//private static readonly Dictionary<string, SelfTestDetectionResult> ExpectedDetectionResults = new Dictionary<string, SelfTestDetectionResult>
-		//{
-		//	{ "AutoMoqTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.AutoMoqName) },
-		//	{ "NetCoreAutoMoqTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.AutoMoqName) },
-		//	{ "NetCoreMoqTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
-		//	{ "NetCoreNSubstituteTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName) },
-		//	{ "NetCoreNUnitTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.MoqName) },
-		//	{ "NetCoreSimpleStubsTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName) },
-		//	{ "NetCoreVSRhinoMocksTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName) },
-		//	{ "NoFrameworkTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
-		//	{ "NSubstituteTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.NSubstituteName) },
-		//	{ "NUnitTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.MoqName) },
-		//	{ "NUnitUwpTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.SimpleStubsName) },
-		//	{ "SimpleStubsTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName) },
-		//	{ "VSRhinoMocksTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName) },
-		//	{ "VSTestCases", new SelfTestDetectionResult(TestFrameworks.VisualStudioName, MockFrameworks.MoqName) },
-		//	{ "XUnitMoqTestCases", new SelfTestDetectionResult(TestFrameworks.XUnitName, MockFrameworks.MoqName) },
-		//	{ "MultipleFrameworkTestCases", new SelfTestDetectionResult(TestFrameworks.NUnitName, MockFrameworks.NSubstituteName) },
-		//};
-
-		public void Clean(IList<Project> projects = null, bool save = false)
+		public void Clean(IList<Project> projects = null)
 		{
 			var dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
 			if (projects == null)
@@ -144,6 +121,7 @@ namespace UnitTestBoilerplate.Services
 				new SelfTestDetectionTest("NetCoreNUnitTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.MoqName),
 				new SelfTestDetectionTest("NetCoreSimpleStubsTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName),
 				new SelfTestDetectionTest("NetCoreVSRhinoMocksTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName),
+				new SelfTestDetectionTest("NetCoreJustMockTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.JustMockName),
 				new SelfTestDetectionTest("NetStandardPropsNUnitNSubstitute", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.NSubstituteName),
 				new SelfTestDetectionTest("NoFrameworkTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.NoneName),
 				new SelfTestDetectionTest("NoFrameworkTestCases", nunitNSubSettings, TestFrameworks.NUnitName, MockFrameworks.NSubstituteName),
@@ -152,6 +130,7 @@ namespace UnitTestBoilerplate.Services
 				new SelfTestDetectionTest("NUnitUwpTestCases", defaultSettings, TestFrameworks.NUnitName, MockFrameworks.SimpleStubsName),
 				new SelfTestDetectionTest("SimpleStubsTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.SimpleStubsName),
 				new SelfTestDetectionTest("VSRhinoMocksTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.RhinoMocksName),
+				new SelfTestDetectionTest("JustMockTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.JustMockName),
 				new SelfTestDetectionTest("VSTestCases", defaultSettings, TestFrameworks.VisualStudioName, MockFrameworks.MoqName),
 				new SelfTestDetectionTest("VSTestCases", noMockFrameworkSettings, TestFrameworks.VisualStudioName, MockFrameworks.NoneName),
 				new SelfTestDetectionTest("XUnitMoqTestCases", defaultSettings, TestFrameworks.XUnitName, MockFrameworks.MoqName),
