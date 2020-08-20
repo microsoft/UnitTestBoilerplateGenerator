@@ -4,6 +4,10 @@
 
 # Changelog
 
+## 2.5.0
+**2020-08-20**
+- Added support for Telerik JustMock framework.
+
 ## 2.4.5
 **2020-05-25**
 - Enhanced framework detection logic to work when pulling references in with .props files.

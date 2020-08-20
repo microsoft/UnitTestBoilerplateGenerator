@@ -15,12 +15,12 @@ Test frameworks supported:
 * xUnit
 
 Mock frameworks supported:
-* Moq
-* AutoMoq
-* NSubstitute
-* SimpleStubs
-* Rhino Mocks
 * FakeItEasy
+* JustMock
+* Moq + AutoMoq
+* NSubstitute
+* Rhino Mocks
+* SimpleStubs
 
 Dependency injection modes supported:
 * Constructor injection via any IoC framework
